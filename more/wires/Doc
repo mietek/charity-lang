@@ -1,0 +1,10 @@
+This is a preliminary version.
+Documentation is lacking.
+Look for documentation in the modal mu directories for general documentation.
+Look for sample proofs or counter examples in wireTest
+
+To run this, use "proveIt wireTest".
+
+A more complete version will be up in October 2001.
+
+

@@ -1,0 +1,27 @@
+
+val ante2 = COMPILE "<{u}B{v}>[{x}A{y}]{y,v}P{}";
+val suc2 = COMPILE "[{x}A{y}]<{u}B{v}>{y,v}P{}";
+
+val seq2 = ASSUMPTION(["x","u"],[],[ante2],[suc2],[],[]);
+show "Poss Box and Box Poss" (dp seq2);
+
+val ante3 = COMPILE "<{u}B{v}><{x}A{y}>{y,v}P{}";
+val suc3 = COMPILE "<{x}A{y}><{u}B{v}>{y,v}P{}";
+
+val seq3 = ASSUMPTION(["x","u"],[],[ante3],[suc3],[],[]);
+show "Poss Poss" (dp seq3);
+
+
+val ante = COMPILE "&(<{x}A{y}>{y}P{},(<{x}A{y}>{y}Q{}))";
+val suc = COMPILE "<{x}A{y}>{y}P{}";
+
+val seq1 = ASSUMPTION(["x"],[],[ante],[suc],[],[]);
+show "Poss AND Poss" (dp seq1);
+
+val ante4 = COMPILE ("&(<{x}A{y}>{u,y}P{}, <{x}A{y}>{u,y}Q{}," ^ 
+	"<{u}B{v}>[{x}A{y}]{v,y}R{})") ;
+
+val seq4 = ASSUMPTION(["x,u"],[],[ante4],[],[],[]);
+
+Counter.counter seq4;
+(* Prints out a petri net counter example *)

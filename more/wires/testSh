@@ -1,0 +1,11 @@
+#/bin/csh
+
+cd /tmp
+set fn =  ($1 pp$$)
+set fileName = $fn[1]
+
+cat - > $fileName.tex
+latex $fileName.tex
+xdvi -paper 100x100 $fileName.dvi
+rm -f $fileName.dvi $fileName.log $fileName.aux $fileName.tex
+
