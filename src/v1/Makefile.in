@@ -1,0 +1,107 @@
+#------------------------------------------------------------------------------
+#
+# CHARITY MAKEFILE
+#
+#------------------------------------------------------------------------------
+
+# THE CHARITY SOURCE:
+
+SRCDIR = @srcdir@
+INC    = $(SRCDIR)/Include
+
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ -I$(INC)
+CC=@CC@
+LEX=@LEX@
+YACC=@YACC@
+
+# THE MODULE DIRECTORIES:
+
+GD = $(SRCDIR)/General
+LD = $(SRCDIR)/Lists
+PD = $(SRCDIR)/ParseLex
+ST = $(SRCDIR)/Symtab
+PM = $(SRCDIR)/Pm
+TR = $(SRCDIR)/Translate
+CP = $(SRCDIR)/Compile
+MC = $(SRCDIR)/Machine
+TC = $(SRCDIR)/TypeCheck
+VA = $(SRCDIR)/Variance
+
+GD_OBJS = $(GD)/main.o $(GD)/commands.o $(GD)/lib.o $(GD)/ioChar.o \
+	$(GD)/pmem.o
+LD_OBJS = $(LD)/list.o
+PD_OBJS = $(PD)/lex.yy.o $(PD)/y.tab.o $(PD)/parse.o $(PD)/printParse.o \
+	$(PD)/listParse.o
+ST_OBJS = $(ST)/symtab.o $(ST)/addSymtab.o $(ST)/lookupSymtab.o \
+	$(ST)/miscSymtab.o $(ST)/codetab.o $(ST)/combPrint.o
+PM_OBJS = $(PM)/pm.o $(PM)/pmLib.o $(PM)/pmTransExprs.o \
+	$(PM)/pmTransPhrases.o
+TR_OBJS = $(TR)/ctTranslate.o
+CP_OBJS = $(CP)/compile.o $(CP)/decompile.o $(CP)/emit.o
+MC_OBJS = $(MC)/machine.o $(MC)/gc.o
+TC_OBJS = $(TC)/tc_convert.o $(TC)/tc_list.o $(TC)/tc_main.o \
+	$(TC)/tc_subst.o $(TC)/tc_unify.o
+VA_OBJS = $(VA)/variance.o
+
+
+# THE OBJECT FILES
+
+OBJ = $(GD_OBJS) $(LD_OBJS) $(PD_OBJS) $(ST_OBJS) $(PM_OBJS) $(TR_OBJS) \
+	$(CP_OBJS) $(MC_OBJS) $(TC_OBJS) $(VA_OBJS)
+
+C_SRCS = $(OBJ:.o=.c)
+
+# THE TARGETS:
+
+.PHONY: clean distclean maintainer-clean install
+
+all: charity
+
+charity: $(OBJ)
+	cd Compile && make all
+	cd General && make all
+	cd Lists && make all
+	cd Machine && make all
+	cd ParseLex && make all
+	cd Pm && make all
+	cd Symtab && make all
+	cd Translate && make all
+	cd TypeCheck && make all
+	cd Variance && make all
+	@echo "Linking $@..."
+	$(CC) -o $@ $(OBJ) $(LFLAGS) @EFENCE@
+
+clean:
+	cd Compile && make clean
+	cd General && make clean
+	cd Lists && make clean
+	cd Machine && make clean
+	cd ParseLex && make clean
+	cd Pm && make clean
+	cd Symtab && make clean
+	cd Translate && make clean
+	cd TypeCheck && make clean
+	cd Variance && make clean
+	$(RM) charity
+
+distclean: clean
+	cd Compile && make distclean
+	cd General && make distclean
+	cd Lists && make distclean
+	cd Machine && make distclean
+	cd ParseLex && make distclean
+	cd Pm && make distclean
+	cd Symtab && make distclean
+	cd Translate && make distclean
+	cd TypeCheck && make distclean
+	cd Variance && make distclean
+	$(RM) config.cache config.status config.log Makefile
+
+maintainer-clean: distclean
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'deletes files that may need special tools to rebuild.'
+	$(RM) $(PD)/lex.yy.c $(PD)/y.tab.h $(PD)/y.tab.c
+
+install: charity
+	$(MV) charity @exec_prefix@/charity/charity

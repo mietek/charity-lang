@@ -1,0 +1,38 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(Pm/pm.c)
+
+dnl Support Electric Fence memory debugger
+AC_MSG_CHECKING([for Electric Fence])
+AC_ARG_ENABLE(efence, [
+  --enable-efence	  Electric Fence heap allocation debugger],
+  EFENCE=$enableval)
+if test "$EFENCE" != ""; then
+  if test -r $EFENCE; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_ERROR([
+  *** Unable to find $EFENCE])
+  fi
+fi
+
+AC_SUBST(EFENCE)
+
+dnl Checks for programs.
+AC_PROG_YACC
+AC_PROG_LEX
+AC_PROG_CC
+AC_PROG_MAKE_SET
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(limits.h malloc.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+dnl Checks for library functions.
+AC_CHECK_FUNCS(strtol)
+
+AC_OUTPUT(ParseLex/Makefile Machine/Makefile Compile/Makefile Variance/Makefile Pm/Makefile General/Makefile Translate/Makefile Lists/Makefile TypeCheck/Makefile Symtab/Makefile Makefile)

@@ -1,0 +1,32 @@
+You need flex and bison to build this source.
+
+I've added GNU autoconf support, hopefully this works properly.  To
+build the Charity interpreter you should be in the base directory of the
+source (where this file is found) and run the following commands:
+
+./configure
+make
+
+You should then find the Charity interpreter, called charity, in the
+base directory.
+
+The following configure options are useful:
+  --enable-efence	Enable Electric Fence memory debugger, argument
+  gives the required linking options (eg. the full path and name of the
+  .a file, or the appropriate -L and -l flags).
+
+Building an RPM
+---------------
+
+The sources include a spec-file for the Redhat package manager used with
+many Linux systems.  To build a Charity binary rpm just run
+
+rpm -tb charity-1.99.gz
+
+this should leave the rpm file in /usr/src/redhat/RPMS/.  Be warned that
+this process actually installs the charity interpreter on your system.
+You can then install the rpm and all should be well.
+
+
+Dana Harrington
+danaha@cpsc.ucalgary.ca

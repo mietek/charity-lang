@@ -92,9 +92,9 @@ SystemDestruct(void)
      pmDestructCTHeap();
      ge_DestructIncDirs();
 /*     MemDisplayState();*/
+     printMsg(MSG, "");
      MemDestruct();
      fclose(yyin);
-     printMsg(MSG, "");
 }
 
 

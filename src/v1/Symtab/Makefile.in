@@ -1,0 +1,42 @@
+#------------------------------------------------------------------------------
+#
+# CHARITY MAKEFILE
+#
+#------------------------------------------------------------------------------
+
+SRCDIR=@top_srcdir@
+CC=@CC@
+LEX=@LEX@
+YACC=@YACC@
+
+INC=$(SRCDIR)/Include
+
+CFLAGS=@CFLAGS@ 
+CPPFLAGS=@CPPFLAGS@ -I$(INC)
+
+# THE OBJECT FILES
+
+C_SRCS = addSymtab.c codetab.c combPrint.c lookupSymtab.c miscSymtab.c \
+	symtab.c
+OBJS = $(C_SRCS:.c=.o)
+
+.PHONY:	all clean distclean
+
+all: $(OBJS)
+
+clean:
+	$(RM) *.o *.d
+
+distclean: clean
+	$(RM) Makefile
+
+-include $(C_SRCS:.c=.d)
+
+%.d : %.c
+	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
+		| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
+		[ -s $@ ] || rm -f $@'
+
+%.o : %.c
+	@echo "Compiling $@..."
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@

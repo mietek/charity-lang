@@ -180,7 +180,10 @@ MemDealloc(MEMORY heapDesc)
      MemReset(heapDesc);
 
      cfree(MemTable[heapDesc]->currentPage);
-     cfree(MemPageListHead(MemTable[heapDesc]->pageList)); 
+     /** This next line causes a seg fault on Linux **
+      ** Electric Fence also complains.             **
+      ** Probably memory already freed in MemReset  **/
+     /* cfree(MemPageListHead(MemTable[heapDesc]->pageList)); */
      cfree(MemTable[heapDesc]);
 
      MemTable[heapDesc] = NULL;
@@ -392,8 +395,3 @@ MemReset(MEMORY heapDesc)
      MemTable[heapDesc]->pageList    = curr;
      assert(MemPageListTail(curr) == NULL); 
 }
-
-
-
-
-

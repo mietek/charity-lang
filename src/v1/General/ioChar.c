@@ -282,7 +282,7 @@ clearBuff() {
 
 int i=0;
 
-while (printBuff[i] && (i < MaxPrintbuff)) {
+while ((printBuff[i] != NULL) && (i < MaxPrintbuff)) {
   printBuff[i++] = 0;
 }
 

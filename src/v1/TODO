@@ -1,0 +1,5 @@
+- Implement set
+- Put /usr/share/charity/ in include path for interpreter
+- Use prefix option to allow relocatable installation
+- Fix spec file so that the files are not actually installed when
+  building the rpms
