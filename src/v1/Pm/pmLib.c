@@ -16,6 +16,7 @@
  **************************************************************************/
 
 #include <assert.h>
+#include <string.h>
 #include "ioChar.h"
 #include "lib.h"
 #include "list.h"
@@ -89,7 +90,7 @@ ctMakeVarBase(MEMORY heap, char *var, BBOOL copyVar) {
 
     if ( var ) {
         vbase->tag = CT_VB_VAR;
-        if ( copyVar == BTRUE ) 
+        if ( copyVar ) 
             vbase->info.var = libStrdup(heap, var);
         else
             vbase->info.var = var;
@@ -113,7 +114,7 @@ ctMakeStructTerm(MEMORY heap, char *structName, BBOOL copyVar){
   CT_TERM *result = (CT_TERM *)MHA(heap, 1, sizeof(CT_TERM));
   result->tag = CT_T_STRUCTOR;
 
-  if ( copyVar == BTRUE )
+  if ( copyVar )
       result->info.struct_name = libStrdup(heap, structName);
   else
       result->info.struct_name = structName;
@@ -138,7 +139,7 @@ ctMakeFunTerm(MEMORY heap, char *funName,
   result->tag = CT_T_FUNCTION;
   result->info.function = fun;
 
-  if ( copyFunName == BTRUE )
+  if ( copyFunName )
       fun->fun_name = libStrdup(heap, funName);
   else
       fun->fun_name = funName;
@@ -170,7 +171,7 @@ ctMakeVarExpr(MEMORY heap, char *var, BBOOL copyVar) {
   if ( var ) {
       result->tag = CT_VAR;
   
-      if ( copyVar == BTRUE ) 
+      if ( copyVar ) 
           result->info.var = libStrdup(heap, var);
       else
           result->info.var = var;
@@ -409,17 +410,17 @@ ctTermExpr(MEMORY heap, CT_TERM *term, CT_EXPR *expr) {
         result = NULL;
         break;
     case CT_T_FUNCTION :
-        while ( phr = term->info.function->macros[i++] )
+        while ( (phr = term->info.function->macros[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &phr->expr, expr),
                                           result);
         break;
     case CT_T_MACRO :
-        while ( phr = term->info.macro->macros[i++] )
+        while ( (phr = term->info.macro->macros[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &phr->expr, expr),
                                           result);
         break;
     case CT_T_MAP :
-        while ( mphr = term->info.maps->phrases[i++] ) {
+        while ( (mphr = term->info.maps->phrases[i++]) ) {
             if ( mphr->expr )
                 result = 
                     CTExprAddrListAppend(ctExprExpr(heap, &mphr->expr, expr),
@@ -432,22 +433,22 @@ ctTermExpr(MEMORY heap, CT_TERM *term, CT_EXPR *expr) {
         }   /*  elihw  */
         break;
     case CT_T_FOLD :
-        while ( fld = term->info.folds[i++] )
+        while ( (fld = term->info.folds[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &fld->expr, expr),
                                           result);
         break;
     case CT_T_UNFOLD :
-        while ( unfld = term->info.unfolds[i++] )
+        while ( (unfld = term->info.unfolds[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &unfld->expr, expr),
                                           result);
         break;
     case CT_T_CASE :
-        while ( cse = term->info.cases[i++] )
+        while ( (cse = term->info.cases[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &cse->expr, expr),
                                           result);
         break;
     case CT_T_RECORD :
-        while ( rec = term->info.records[i++] )
+        while ( (rec = term->info.records[i++]) )
             result = CTExprAddrListAppend(ctExprExpr(heap, &rec->expr, expr),
                                           result);
         break;
@@ -509,8 +510,8 @@ ct_isVarBase(PE_PATT *patt) {
   switch (patt->tag) {
   case P_BANG   : 
   case P_VAR    : result = BTRUE;                              break;
-  case P_PAIR   : result = ct_isVarBase(patt->info.ppair.l) &&
-                           ct_isVarBase(patt->info.ppair.r);   break;
+  case P_PAIR   : result = (ct_isVarBase(patt->info.ppair.l) &&
+                            ct_isVarBase(patt->info.ppair.r));   break;
   case P_HOVAR  : 
   case P_RECORD : 
   case P_INT    :
@@ -518,6 +519,7 @@ ct_isVarBase(PE_PATT *patt) {
   case P_CHAR   :
   case P_CONSTR : result = BFALSE;                             break;
   default       :
+    result = BFALSE;
     printMsg(FATAL_MSG, 
 	     "ct_isVarBase - %d is not a valid PE_PATT tag", patt->tag);
   }   /*  hctiws  */

@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include "typecheckI.h"
+#include <string.h>
 
 MEMORY tc_memory;					/* all local memory usage */
 TC_TYPE_VARIABLE next_new_var;				/* for renaming type vars */

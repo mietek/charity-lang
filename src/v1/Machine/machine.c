@@ -146,7 +146,6 @@ int
 _Machine(V_INSTR **value)
 {
      int    machineOps = 0;
-     int    num        = 0;
 
      while (PC->instr != MChalt) {
 

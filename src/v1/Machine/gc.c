@@ -93,7 +93,7 @@ V_INSTR
 	       V_assert(src->instr == MCbang);
 	       new_locn = src;
 	  } else if ( ((src > oldHeap2Top) && (src <= oldHeap2Bot)) ||
-		      ((extraHeapOn == BTRUE) && (src > extHeapTop) && (src <= extHeapBot)) ) { /* pairs */
+		      ( extraHeapOn && (src > extHeapTop) && (src <= extHeapBot)) ) { /* pairs */
 	       if (src->info.gc.gcId == GC_MOVED) {      /* item already collected */
 		    V_assert(src->instr == MCgc_ptr);
 		    new_locn = src->info.gc.heapItm;
@@ -337,7 +337,7 @@ gc(int heapRequested)
      oldHeap2Top = H2;
      oldHeap2Bot = HeapStore + Hp_size - 1;
 
-     if (extraHeapOn == BTRUE) {
+     if ( extraHeapOn ) {
 
 	  Hp_size = Hp_size * 2;
 	  extraHeapHD = MemAlloc("extra heap", Hp_size, sizeof(V_INSTR));
@@ -381,7 +381,7 @@ gc(int heapRequested)
      printf("%d/%d cells, %d%% used, Done\n", cellsused, Hp_size, memused);
 #endif
 
-     if (extraHeapOn == BTRUE) {
+     if ( extraHeapOn ) {
 	  MemDealloc(Hp1HeapDesc);
 	  MemDealloc(Hp2HeapDesc);
 	  Hp1HeapDesc = extraHeapHD;

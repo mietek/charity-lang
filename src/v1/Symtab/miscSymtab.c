@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <string.h>
 #include "symtab.h"
 #include "symtabI.h"
 #include "ioChar.h"
@@ -6,8 +7,8 @@
 #include "lib.h"
 #include "machine.h"     /* [BI] ADDED THIS INCLUDE */
 
-int prodNestedDepth = -1;       /* used in showDomain to track nesting level */
-int sumNestedDepth = -1;        /* used in showDomain to track nesting level */
+static int prodNestedDepth = -1; /* used in showDomain to track nesting level */
+static int sumNestedDepth = -1;  /* used in showDomain to track nesting level */
 ST_KEY               PROD_KEY;
 ST_KEY               TERM_KEY;
 
@@ -654,8 +655,6 @@ ST_ENTRY *
 st_LoadBaseDatatype(char *tName,ST_DT_KIND class,int numParams,int numStructs){
 
   ST_ENTRY   *dType  = (ST_ENTRY *)MHA(symTab->scopeHD, 1, sizeof(ST_ENTRY));
-  int         i;
-  char       *structName;
 
   dType->tag = ST_DATATYPE;
   dType->name = libStrdup(symTab->scopeHD, tName);
@@ -691,10 +690,6 @@ loadProdDatatype(void) {
            *destrType,
            *prodComb,
            *mapProdComb;
-  ST_TYPE  *st_type,
-           *genStateType,
-           *domain,
-           *codomain;
   int       i, j;
 
   /* add PROD_TYPE data type */

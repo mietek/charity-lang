@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include <stdlib.h>
+#include <string.h>
 #include "symtab.h"
 #include "symtabI.h"
 #include "ioChar.h"

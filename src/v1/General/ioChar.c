@@ -10,6 +10,7 @@
 /* module for doing IO */
 
 #include <assert.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include "ioChar.h"
 #include "pmem.h"
@@ -19,10 +20,10 @@
 #define MAX_PRINT_BUFF_DEFAULT 100   /* !!!! should be cut back to 100 */
 #define MAX_MSG_LENGTH         1000   /* should satisfy all windbags */
 
-char     *printBuff;
-int      printBuffPtr;
-MEMORY   printBuffDesc;
-int 	 MaxPrintbuff;
+static char     *printBuff;
+static int      printBuffPtr;
+static MEMORY   printBuffDesc;
+static int 	 MaxPrintbuff;
 int      delayedErrorCount = 0;
 
 /**************************

@@ -9,6 +9,7 @@
  *****************************************************************************/
  
 #include <stdio.h>
+#include <stdlib.h>
 #include "ioChar.h"
 #include "codetab.h"
 #include "emit.h"

@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 #include <assert.h>
+#include <string.h>
 #include <stdio.h>
 #include <limits.h>
 #include "ioChar.h"
@@ -28,7 +29,7 @@
  *                           internal variables                              *
  *                                                                           *
  *****************************************************************************/
-int uniqueInt = 0;
+static int uniqueInt = 0;
 
 /***************************************
  *                                     *
@@ -172,7 +173,7 @@ char *
 lb_BuildMacroName(MEMORY hd, char *funName, char *macroName) {
 
   char *result;
-  int   resLen = strlen(RES_PREFIX) +1+ strlen(funName) +1+ strlen(macroName);
+  int   resLen = strlen(RES_PREFIX)+1+strlen(funName)+1+strlen(macroName)+1;
 
   result = (char *)MemHeapAlloc(hd, resLen, sizeof(char));
 

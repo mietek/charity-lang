@@ -103,7 +103,7 @@ ParseStream(void) {
       ParserReset();
       yyparse();
       if (!delayedErrorCount)
-	result = ProcessCmd(&ParseResult);
+	      result = ProcessCmd(&ParseResult);
       else
 	delayedErrorCount = 0;
     }
@@ -404,7 +404,6 @@ PE_DEF *
 pe_MakeFunBody(PE_LIST_T_PHRASE *t_case) {
 
      PE_DEF *defPart = (PE_DEF *)MHA(parseHeapDesc, 1, sizeof(PE_DEF));
-     PE_EXPR *expr;
      PE_T_PHRASE *t_phrase;
 
      assert(t_case);
@@ -603,9 +602,11 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
         while ( orig->info.record[i++] )     ;
         result->info.record = (P_STRUCTOR **)MHA(heap, i,sizeof(P_STRUCTOR *));
         i = 0;
-        while ( orig->info.record[i] )
+        while ( orig->info.record[i] ) {
             result->info.record[i] = 
-                peCopyPStructor(heap, orig->info.record[i++]);
+                peCopyPStructor(heap, orig->info.record[i+1]);
+            i += 1;
+        }
         result->info.record[i] = NULL;
         break;
     case P_BANG :
@@ -659,7 +660,7 @@ peCopyPStructor(MEMORY heap, P_STRUCTOR *orig) {
 PE_PATT *
 pePatt1(PE_PATT *patty) {
 
-    if ( gbChangeScope == BTRUE ) /* didn't push scope */
+    if ( gbChangeScope ) /* didn't push scope */
         PushScope();   /* keeps things in sync */
     gbChangeScope = BTRUE;
 
@@ -773,7 +774,7 @@ peReplaceVar(char *var, BBOOL isHO) {
     if ( strncmp(var, RES_PREFIX, strlen(RES_PREFIX)) == 0 ) 
         return var;
 
-    if ( gbChangeScope == BTRUE ) {
+    if ( gbChangeScope ) {
         PushScope();
         gbChangeScope = BFALSE;
     }   /*  fi  */
@@ -786,7 +787,7 @@ peReplaceVar(char *var, BBOOL isHO) {
                 failed = BTRUE;
             }   /*  fi  */
 
-    if ( failed != BTRUE )
+    if ( !failed )
         /* var is not in symbol table  at this level ---  normal case */
         varKey = stAddVar(var, isHO);
 
@@ -968,13 +969,14 @@ P_STRUCTOR_ARRAY *P_RecordAdd(P_STRUCTOR *structor, P_STRUCTOR_ARRAY *sArray)
   assert(structor);
   if (!sArray) {
     printMsg(FATAL_MSG, "(parse.c) P_RecordAdd failure on null P_STRUCTOR_ARRAY");
+  } else {
+    structorPosn = getStructorPosn(structor->id);
+    if (sArray->array[structorPosn] != NULL) {
+      printMsg(DELAYEDERROR_MSG, "destructor %s occurs more than once in pattern", structor->id);
+    }
+    else sArray->array[structorPosn] = structor;
+    return sArray;
   }
-  structorPosn = getStructorPosn(structor->id);
-  if (sArray->array[structorPosn] != NULL) {
-    printMsg(DELAYEDERROR_MSG, "destructor %s occurs more than once in pattern", structor->id);
-  }
-  else sArray->array[structorPosn] = structor;
-  return sArray;
 }
 
 
@@ -1469,7 +1471,6 @@ PE_TERM
 {
   PE_TERM           *term        = (PE_TERM *)MHA(prsHD,1, sizeof(PE_TERM));
   PE_RECORD         *rec         = NULL;
-  char              *parent      = NULL;
   int                numStructs,
                      structPos,
                      numRecordPhrases = 0;
@@ -2851,7 +2852,7 @@ peMakeVarPatt(MEMORY heap, char *var, BBOOL copyVar) {
   PE_PATT *patt = (PE_PATT *)MHA(heap, 1, sizeof(PE_PATT));
   patt->tag = P_VAR;
 
-  if ( copyVar == BTRUE )
+  if ( copyVar )
       patt->info.var = libStrdup(heap, var);
   else
      patt->info.var = var;

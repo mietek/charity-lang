@@ -138,7 +138,7 @@ void
 MemConstruct(int maxTableSize)
 {
      MemTable = (MEM_TABLE **) calloc(maxTableSize+1, sizeof(MEM_TABLE *));
-     assert(MemTable);
+     assert(MemTable != NULL);
 
      MemTableSize = maxTableSize + 1;
 }
@@ -179,12 +179,12 @@ MemDealloc(MEMORY heapDesc)
 
      MemReset(heapDesc);
 
-     cfree(MemTable[heapDesc]->currentPage);
+     free(MemTable[heapDesc]->currentPage);
      /** This next line causes a seg fault on Linux **
       ** Electric Fence also complains.             **
       ** Probably memory already freed in MemReset  **/
-     /* cfree(MemPageListHead(MemTable[heapDesc]->pageList)); */
-     cfree(MemTable[heapDesc]);
+     /* free(MemPageListHead(MemTable[heapDesc]->pageList)); */
+     free(MemTable[heapDesc]->pageList);
 
      MemTable[heapDesc] = NULL;
 }
@@ -226,7 +226,7 @@ MemDisplayState(void)
  *                                     *
  ***************************************/
 MEMORY
-MemAlloc(char *name, int len, int size)
+MemAlloc(char *name, size_t len, size_t size)
 {
 /* MemAlloc()
  * Allocate a heap;
@@ -237,8 +237,8 @@ MemAlloc(char *name, int len, int size)
      assert(MemTable);
 
      /* search for a free memory heap location */
-     while ((count < MemTableSize) && MemTable[count]) { 
-	  count++;
+     while ((count < MemTableSize) && (MemTable[count] != NULL) ) { 
+	     count++;
      }
 
      if (count >= MemTableSize) {
@@ -279,7 +279,7 @@ MemAlloc(char *name, int len, int size)
  *                                     *
  ***************************************/
 char
-*MemHeapAlloc(MEMORY heapDesc, int len, int size)
+*MemHeapAlloc(MEMORY heapDesc, size_t len, size_t size)
 {
 /* MemHeapAlloc()
  * Allocate a chunk of memory in a given heap
@@ -289,7 +289,6 @@ char
      int   amount = 0;
      int   align  = 0;
      int   ptrBytes = sizeof(char *);
-     MEM_LIST_PAGE *tmp = NULL;
 
      char *mem    = NULL;
 
@@ -366,25 +365,25 @@ MemReset(MEMORY heapDesc)
      int            count = 0;
      int            num   = 0;
 
-     assert(MemTable[heapDesc]);
+     assert(MemTable[heapDesc] != NULL);
 
      curr = MemTable[heapDesc]->pageList;
      tmp = MemPageListTail(curr);
 
      num = MemTable[heapDesc]->numPages - 1;
      for (count = 0; count < num; count++) {
-	  cfree(MemPageListHead(curr));
-	  cfree(curr);
-	  curr = tmp;
-	  tmp = MemPageListTail(curr);
+       free(MemPageListHead(curr));
+       free(curr);
+       curr = tmp;
+       tmp = MemPageListTail(curr);
      }
 /*
      while (tmp != NULL) {
 	  if (tmp->next == curr) {
 	       printMsg(FATAL_MSG, "cyclic pmem\n");
 	  }
-	  cfree(MemPageListHead(curr));
-	  cfree(curr);
+	  free(MemPageListHead(curr));
+	  free(curr);
 	  curr = tmp;
 	  tmp = MemPageListTail(curr);
      }

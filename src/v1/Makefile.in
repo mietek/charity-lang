@@ -105,3 +105,11 @@ maintainer-clean: distclean
 
 install: charity
 	$(MV) charity @exec_prefix@/charity/charity
+
+lint:
+	$(LINT) $(CPPFLAGS) -I$(GD) -I$(LD) -I$(PD) -I$(ST) -I$(PM) \
+	-I$(TR) -I$(CP) -I$(MC) -I$(TC) -I$(VA) \
+	`find $(SRCDIR) -name '*.c'`
+
+tags:
+	$(CTAGS) `find $(SRCDIR) -name '*.[ch]'`

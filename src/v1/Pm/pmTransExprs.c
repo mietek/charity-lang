@@ -15,6 +15,7 @@
  *                                                                        *
  **************************************************************************/
 
+#include <string.h>
 #include "pmPrivate.h"
 #include "pm.h"
 #include "lib.h"
@@ -504,7 +505,7 @@ prepPhrs(PE_LIST_T_PHRASE *phrases) {
     PM_PHRASE      *pmPhrase = NULL;
     PM_LIST_PHRASE *pmPhrases = NULL;
 
-    if ( tPhrase = T_PhraseListHead(phrases) ) {
+    if ( (tPhrase = T_PhraseListHead(phrases)) ) {
         pmPhrase = (PM_PHRASE *)MHA(scratchHD, 1, sizeof(PM_PHRASE));
         pmPhrase->patts = PE_PattListCons(tPhrase->patt, NULL);
         tailPMPhrases = prepPhrs(tailPEPhrases);
@@ -524,7 +525,6 @@ prepPhrs(PE_LIST_T_PHRASE *phrases) {
 
 }   /*  end prepPhrs  */
 
-
 /*********************************
  *                               *
  *    makeCorePhraseArray        *

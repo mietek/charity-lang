@@ -11,6 +11,7 @@
    codetab.h. */
 
 #include <ctype.h>     /* [BI] ADDED THIS INCLUDE */
+#include <string.h>
 
 #include "codetab.h"
 #include "ioChar.h"
@@ -27,9 +28,9 @@ typedef enum
 PP_COMB_WARNING;
 
 
-int MaxRecordDepth;                /* the maximum depth to print records to. */
-int MaxShowDepth;
-char integer[400];                 /* max length of an integer */
+static int MaxRecordDepth;          /* the maximum depth to print records to. */
+static int MaxShowDepth;
+static char integer[400];           /* max length of an integer */
 
 static ST_TYPE *st_type;           /* the type of an expression */
 
@@ -638,7 +639,6 @@ showParams(COMB_PHR **params,
   int              i;
   PP_COMB_WARNING  newRval;
   PP_COMB_WARNING  rval       = PP_DEPTH_OK;
-  ST_TYPE         *type       = NULL;
   BBOOL            canNotPoke = BFALSE;
 
   for (i = 0; i < numParams; i++)

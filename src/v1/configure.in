@@ -8,7 +8,8 @@ AC_ARG_ENABLE(efence, [
   EFENCE=$enableval)
 if test "$EFENCE" != ""; then
   if test -r $EFENCE; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([
+yes])
   else
     AC_MSG_ERROR([
   *** Unable to find $EFENCE])

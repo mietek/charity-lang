@@ -14,6 +14,7 @@
 
 
 #include <stdio.h> 
+#include <stdlib.h>
 #include "ioChar.h"
 #include "pmem.h"
 #include "parse.h"
@@ -29,8 +30,8 @@
  *                                                                           *
  *****************************************************************************/
 
-void SystemConstruct(void);
-void SystemDestruct(void);
+static void SystemConstruct(void);
+static void SystemDestruct(void);
 
 /*****************************************************************************
  *                                                                           *
@@ -42,8 +43,8 @@ extern FILE *yyin, *yyout;
 extern int yydebug;
 int      lineNo   = 1;
 int      userEOF = 0;
-char    *progname;
-char    *usage = "usage: %s [infile]\n";
+static char    *progname;
+static char    *usage = "usage: %s [infile]\n";
 jmp_buf  topLevelEnv;
 
 
@@ -92,9 +93,9 @@ SystemDestruct(void)
      pmDestructCTHeap();
      ge_DestructIncDirs();
 /*     MemDisplayState();*/
-     printMsg(MSG, "");
      MemDestruct();
      fclose(yyin);
+     printMsg(MSG, "");
 }
 
 

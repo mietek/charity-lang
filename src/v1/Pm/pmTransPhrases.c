@@ -16,6 +16,7 @@
  **************************************************************************/
 
 #include <stddef.h>
+#include <string.h>
 #include "ioChar.h"
 #include "lib.h"
 #include "list.h"
@@ -79,27 +80,30 @@ pmTransPhrs(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs) {
     CT_EXPR        *result = NULL;
     STR_LIST       *structs = NULL;
     char           *parent  = NULL;
-    PM_LIST_PHRASE *newPhrases = NULL;
-    BBOOL           areSibs = BTRUE;
 
     if ( !phrases ) {   /* out of phrases; put in INCOMPLETE EXPR */
         result = (CT_EXPR *)MHA(scratchHD, 1, sizeof(CT_EXPR));
         result->tag = CT_INCOMPLETE;
     }   /*  fi  */
-    else if ( CTExprListLen(rs) == 0 ) 
+    else if ( CTExprListLen(rs) == 0 ) {
         result = terminalCase(phrases);
+    }   /*  fi  */
     else {
         structs = getStructs(phrases);
-        if ( StrListLen(structs) == 0 ) 
+        if ( StrListLen(structs) == 0 ) {
             result = varUnitCase(phrases, rs);
+        }   /*  fi  */
         else {
             parent = getStructorParent(StrListHead(structs));
-            if ( isCoinductiveType(parent) == BTRUE ) 
+            if ( isCoinductiveType(parent) == BTRUE ) {
                 result = coCase(phrases, rs, structs);
-            else if ( strcmp(parent, INT_TYPENAME) == 0 ) 
+            }
+            else if ( strcmp(parent, INT_TYPENAME) == 0 ) {
                 result = intcharCase(phrases, rs, INT_CONSTRUCTOR);
-            else if ( strcmp(parent, CHAR_TYPENAME) == 0 ) 
+            }
+            else if ( strcmp(parent, CHAR_TYPENAME) == 0 ) {
                 result = intcharCase(phrases, rs, CHAR_CONSTRUCTOR);
+            }
             else
                 result = indCase(phrases, rs, parent);
         }   /*  esle  */
@@ -270,7 +274,7 @@ intcharCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs,
     char        *charRep = NULL;
     CT_EXPR     *r = CTExprListHead(rs);
     PE_PATT     *firstIntPatt = getFirstPatt(phrases, 
-                                             isIntConst == BTRUE 
+                                             isIntConst
                                                  ? P_INT: P_CHAR);
     long         i = firstIntPatt->info.intcharBI.lTag == INTX 
                        ? firstIntPatt->info.intcharBI.l 
@@ -278,7 +282,7 @@ intcharCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs,
     CT_TERM     *intcharTerm  = (CT_TERM *)MHA (ctHD, 1, sizeof (CT_TERM));
     CT_EXPR     *iExpr = ctMakeAPPExpr(ctHD,intcharTerm, ctMakeBangExpr(ctHD));
     CT_TERM     *fun  = ctMakeFunTerm(ctHD, 
-                                      isIntConst == BTRUE  ? GE_INT : GE_CHAR,
+                                      isIntConst ? GE_INT : GE_CHAR,
                                       NULL, BTRUE);
     CT_EXPR     *funInput = ctMakePairExpr(ctHD, r, iExpr);
     CT_EXPR     *appExpr  = ctMakeAPPExpr(ctHD, fun, funInput);
@@ -356,7 +360,7 @@ getStructs(PM_LIST_PHRASE *phrases) {
                     structsType = st_GetStructorNames(parentK);
                     numStructs = st_GetNumStructors(parentK);
                     posns = (int *)MHA(scratchHD, numStructs+1, sizeof(int));
-                    posns[numStructs] = NULL;
+                    posns[numStructs] = (int)NULL;
                 }   /*  fi  */
                 while ( structs ) {
                     sKey = st_NameToKey(StrListHead(structs));
@@ -464,7 +468,7 @@ getDestrPatts(PE_PATT *p, STR_LIST *structs) {
     patts = (PE_PATT **)MHA(scratchHD, numStructs+1, sizeof(PE_PATT *));
     patts[numStructs] = NULL;
 
-    while ( d = p->info.record[i++] ) {   
+    while ( (d = p->info.record[i++]) ) {   
         /* load patts with destructor patterns from the record pattern */
         sPos = getStructorPosn(d->id);
         patts[sPos] = d->arg;
@@ -543,7 +547,6 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
     PE_PATT       *p = NULL;
     PE_LIST_PATT  *ps = NULL;
     PM_PHRASE     *pmNew = NULL;
-    PE_LIST_PATT  *pattsNew = NULL;
     CT_EXPR       *rhsNew = NULL;
 
     PE_INT_TAG     lTag = NEGINF,  
@@ -623,11 +626,11 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
         break;
 
     case P_STR :
-        if ( ((trueCase == BTRUE) && (strcmp(p->info.strBI, constr) == 0)) ||
-             ((trueCase == BFALSE) && (strcmp(p->info.strBI, constr) != 0)) ) {
+        if ( (trueCase && (strcmp(p->info.strBI, constr) == 0)) ||
+             (!trueCase && (strcmp(p->info.strBI, constr) != 0)) ) {
                            /* it's a keeper */
                 pmNew = (PM_PHRASE *)MHA(scratchHD, 1, sizeof(PM_PHRASE));
-                if ( trueCase == BTRUE )
+                if ( trueCase )
                     pmNew->patts = PE_PattListAppend(makeDCList(1), ps);
                 else
                     pmNew->patts = PE_PattListCons(peCopyPatt(scratchHD,p),ps);
@@ -655,15 +658,15 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
         /* r will never match the pattern */
         l = p->info.intcharBI.l;
         u = p->info.intcharBI.u;
-        if ( ((trueCase == BFALSE) && (uTag == INTX) && (u < i)) ||
-             ((trueCase == BTRUE ) && (lTag == INTX) && (l >= i)) )
+        if ( ( !trueCase && (uTag == INTX) && (u < i)) ||
+             (trueCase && (lTag == INTX) && (l >= i)) )
                 break;   /* drop this phrase (won't match) */
 
         /* r lies between the upper & lower bounds of the pattern.
          * Therefore, one side can be increased to infinity.
          */
-        if ( ((trueCase == BFALSE) && (lTag == INTX) && (l <= i)) ||
-             ((trueCase == BTRUE)  && (uTag == INTX) && (u >= i-1)) ) {
+        if ( (!trueCase && (lTag == INTX) && (l <= i)) ||
+             (trueCase  && (uTag == INTX) && (u >= i-1)) ) {
             pmNew = (PM_PHRASE *)MHA(scratchHD, 1, sizeof(PM_PHRASE));
             pNew = peCopyPatt(scratchHD, p);
             pmNew->patts = PE_PattListCons(pNew, ps);
@@ -710,7 +713,7 @@ getDestrs(PE_PATT *p) {
         destrs = StrListCons(PROD0, destrs, scratchHD);
     }   /*  fi  */
     else {
-        while ( d = structs[i++] ) 
+        while ( (d = structs[i++]) ) 
             destrs = StrListCons(d->id, destrs, scratchHD);
     }   /*  esle  */
 
@@ -772,19 +775,19 @@ replaceHOFunCalls(CT_EXPR *rhs, char *var, CT_EXPR *r, CT_TERM *term) {
             }   /*  elihw  */
             break;
         case CT_T_FOLD :
-            while ( fld = rhsTerm->info.folds[i++] )
+            while ( (fld = rhsTerm->info.folds[i++]) )
                 fld->expr = replaceHOFunCalls(fld->expr,var, r, term);
             break;
         case CT_T_UNFOLD :
-            while ( unfld = rhsTerm->info.unfolds[i++] )
+            while ( (unfld = rhsTerm->info.unfolds[i++]) )
                unfld->expr = replaceHOFunCalls(unfld->expr,var, r, term);
             break;
         case CT_T_CASE :
-            while ( cse = rhsTerm->info.cases[i++] )
+            while ( (cse = rhsTerm->info.cases[i++]) )
                 cse->expr = replaceHOFunCalls(cse->expr,var, r, term);
             break;
         case CT_T_RECORD :
-            while ( rec = rhsTerm->info.records[i++] )
+            while ( (rec = rhsTerm->info.records[i++]) )
                 rec->expr = replaceHOFunCalls(rec->expr,var, r, term);
             break;
         case CT_T_ABS :
@@ -809,7 +812,6 @@ replaceHOFunCalls(CT_EXPR *rhs, char *var, CT_EXPR *r, CT_TERM *term) {
 
 }   /*  end replaceHOFunCalls  */
 
-
 /*********************************
  *                               *
  *    getFirstPatt               *
@@ -824,7 +826,7 @@ getFirstPatt(PM_LIST_PHRASE *phrases, PE_PATT_TAG tag) {
     PE_PATT    *result = NULL;
     PE_PATT    *patt = NULL;
 
-    while ( phrases && !result ) {
+    while ( (phrases != NULL) && (result == NULL) ) {
         patt = PE_PattListHead(PMPhraseListHead(phrases)->patts);
         if ( patt->tag == tag )
             result = patt;

@@ -136,13 +136,6 @@ static void       _CombinatorPrint(COMB_EXPR *expr);
 
 static void _CombParmsPrint (int num, COMB_PHR **parms);
 
-/* Optimiztion of combinator code */
-
-static COMB_EXPR   *_headCombExpr     (COMB_EXPR *expr);
-static COMB_EXPR   *_tailCombExpr     (COMB_EXPR *expr);
-static COMB_EXPR   *_removeHeadComb   (COMB_EXPR *expr);
-static COMB_EXPR   *_removeTailComb   (COMB_EXPR *expr);
-
 /* print term logic stuff */
 
 static int   _showCT_abs(CT_ABS *absn, int indent);

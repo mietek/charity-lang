@@ -120,9 +120,6 @@ static ST_ENTRY *buildTypeEntry (PE_DATA *dataDefn,
 
 static ST_TYPE      *st_MakeProdST_Type(ST_TYPE *left, ST_TYPE *right);
 
-static ST_TYPE_SIG  *st_DefSigsToEntrySigs(PE_TYPE_SIG *defSig, 
-					   PE_LIST_MACRO *macros);
-
 static ST_TYPE		*st_CopyType(ST_TYPE *type);
 static ST_TYPE_SIG	*st_CopyTypeSig(ST_TYPE_SIG *sig, int numParams);
 
@@ -214,7 +211,7 @@ existsStateVar(char *domainId,
       if (structor->type_sig->domain->parms)  /* stateVar takes no parms */
 	return(BFALSE);
     }   /*  esle  */
-  } while (structors = StructorListTail(structors));
+  } while ( (structors = StructorListTail(structors)) );
 
   return(BTRUE);
 
@@ -237,7 +234,6 @@ areValidStructDefns (PE_LIST_STRUCTOR *structors,
 {
   PE_STRUCTOR *structor;
   STR_LIST    *structorNames = NULL;
-  char        *ans;
 
   delayedErrorCount = 0;
 
@@ -319,7 +315,7 @@ areValidStructDefns (PE_LIST_STRUCTOR *structors,
     if (!nameClash)  /* don't repeat this check after 1 failure */
       nameClash = st_IsNameClash(structor->ident);
 
-  } while (structors = StructorListTail(structors));
+  } while ( (structors = StructorListTail(structors)) );
   MemDealloc(scratchHD);
 
   if (nameClash)
@@ -724,8 +720,6 @@ putStructorEntry(PE_STRUCTOR *structor,
 		 ST_KEY    key) {
 
   ST_ENTRY *structorEntry;
-  ST_TYPE *st_type;
-  int numParams;
 
   structorEntry = 
     (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_ENTRY));
@@ -1505,8 +1499,6 @@ StTypeListIndex (ST_LIST_TYPE *xs,
 ST_KEY
 st_AddFunction(PE_DEF *def) {
 
-  BBOOL  nameClash;
-
   if (!st_IsNameClash(def->id))
     return(_st_AddFunction(def));
   else
@@ -1523,8 +1515,7 @@ st_AddFunction(PE_DEF *def) {
 ST_KEY
 _st_AddFunction(PE_DEF *def) {
 
-  ST_ENTRY       *funEntry = (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD,1,sizeof(ST_ENTRY)),
-                 *macEntry;
+  ST_ENTRY       *funEntry = (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD,1,sizeof(ST_ENTRY));
   ST_TYPE_SIG    *fSig = st_DefSigToEntrySig(def->type_sig, def->macros);
   PE_LIST_MACRO  *macros = def->macros;
   PE_MACRO       *macro;
@@ -1578,7 +1569,6 @@ st_AddMacro(ST_KEY funKey,
 
   ST_ENTRY  *macEntry = (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_ENTRY));
   ST_ENTRY  *funEntry = st_GetEntry(funKey, NULL);
-  char      *mName  = macro->ident;
 
   macEntry->tag = ST_MACRO;
   macEntry->name = lb_BuildMacroName(symTab->scopeHD, funEntry->name, macro->ident);
@@ -1611,7 +1601,6 @@ st_DefSigToEntrySig(PE_TYPE_SIG *defSig, PE_LIST_MACRO *macros) {
   int            numMacros = MacroListLen(macros),
                  i;
   STR_LIST     *pNameList = NULL;
-  ST_TYPE      *st_type;
 
   scratchHD = MemAlloc("symtab scratch2", 100, sizeof(char *));
 
@@ -2205,8 +2194,6 @@ st_MakeUnfoldTypeSig (ST_ENTRY *combEntry,
 
   ST_ENTRY *structEntry;
   ST_TYPE  *structDomain;
-  ST_TYPE  *structDomain2;
-  ST_TYPE  *envType2;
   ST_TYPE  *structCodomain;
 
   envType->tag              = TYPE_PARAMETRIC_VAR;
@@ -2295,7 +2282,6 @@ st_MakeRecordTypeSig (ST_ENTRY *combEntry,
 
   ST_ENTRY *structEntry;
   ST_TYPE  *structDomain;
-  ST_TYPE  *structDomain2;
   ST_TYPE  *structCodomain;
 
   envType->tag            = TYPE_PARAMETRIC_VAR;

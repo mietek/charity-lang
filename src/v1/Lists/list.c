@@ -8,6 +8,7 @@
  *                                                                            *
  *****************************************************************************/
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 #include "types.h"
 #include "list.h"
@@ -128,10 +129,11 @@ else        return( NULL );
 char
 *ListHead(LIST *L)
 {
-     if (L) {
-	  return(L->item);
+     if ( L != NULL ) {
+       return(L->item);
+     } else {
+       return(0);
      }
-     return(0);
 }
 
 /*********************************
@@ -146,8 +148,8 @@ ListLen(LIST *list)
     int   count = 0;
 
     while (tmp) {
-	count++;
-	tmp = tmp->next;
+	    count++;
+	    tmp = tmp->next;
     }	
     return(count);
 }
@@ -169,9 +171,9 @@ ListRemNthElement(int n, LIST *list)
       return(list->next);
     else {
       while (count != n) {
-	prevMember = currMember;
-	currMember = currMember->next;
-	count++;
+        prevMember = currMember;
+        currMember = currMember->next;
+        count++;
       }
       prevMember->next = currMember->next;
     }   /*  esle  */
@@ -226,7 +228,7 @@ else
 STR_LIST *
 StrListCons(char *x, STR_LIST *l, MEMORY hd)
 {     
-     return((STR_LIST *) _cons((char *) x, (LIST *) l, L_STRING, hd));
+  return((STR_LIST *) _cons((char *) x, (LIST *) l, L_STRING, hd));
 }
 
 /*********************************
@@ -268,18 +270,18 @@ StrListMember(STR_LIST *pelist, char *item) {
 int
 StrListPosn(char *item, STR_LIST *list)
 {
-     STR_LIST    *tmp = list;
-     int          i   = 0;
+    STR_LIST    *tmp = list;
+    int          i   = 0;
 
-     while (tmp) {
+    while (tmp) {
 	  if (strcmp(StrListHead(tmp), item) != 0) {
-	       tmp = StrListTail(tmp);
-	       i++;
+       tmp = StrListTail(tmp);
+       i++;
 	  }
 	  else
-	       return(i);
-     }
-     return(-1);
+       return(i);
+    }
+    return(-1);
 }
 
 
@@ -348,16 +350,16 @@ StrListImplode(STR_LIST *list, MEMORY heap) {
     char       *s = NULL;
     STR_LIST   *listx = list;
 
-    while ( s = StrListHead(listx) ) {
+    while ( (s = StrListHead(listx)) ) {
         listx = StrListTail(listx);
         len += strlen(s);
     }   /*  elihw  */
 
     result = str = (char *)MemHeapAlloc(heap, len+1, sizeof(char));
 
-    while ( s = StrListHead(list) ) {
+    while ( (s = StrListHead(list)) ) {
         list = StrListTail(list);
-        while ( *str++ = *s++ )
+        while ( (*str++ = *s++) )
             ;
         *str--;
     }   /*  elihw  */

@@ -24,9 +24,9 @@ extern void    MemDisplayState(void);
 extern void    MemConstruct(int MaxTableSize);
 extern void    MemDestruct(void);
 extern void    MemDealloc(MEMORY heapDesc);                         /* deallocate a heap                          */
-extern MEMORY  MemAlloc(char *name, int len, int size);             /* Allocate a heap                            */
+extern MEMORY  MemAlloc(char *name, size_t len, size_t size);             /* Allocate a heap                            */
 
-extern char   *MemHeapAlloc(MEMORY heapDesc, int len, int size);    /* Null if failed allocation (heap exhausted) */
+extern char   *MemHeapAlloc(MEMORY heapDesc, size_t len, size_t size);    /* Null if failed allocation (heap exhausted) */
 
 extern void    MemReset(MEMORY heapDesc);                           /* Reset heap                                 */
 

@@ -9,6 +9,8 @@
  *****************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "commands.h"
 #include "ioChar.h"
 #include "parse.h"
@@ -35,7 +37,6 @@ extern BBOOL parsing;
  *                                                                           *
  *****************************************************************************/
 static CT_VAR_BASE *vb_pmTranslate(PE_VAR_BASE *vb);
-static void         initAddDatatype(PE_DATA *data);
 static void         ge_ProcessSetCommand(PE_SETCOMM setcommand);
 static int          ge_ProcessCommand(PE_COMM command);
 static void         ge_ProcessQuery(PE_QUERY query);
@@ -89,9 +90,7 @@ ProcessCmd(PARSE_RESULT *result)
      COMB_EXPR   *combExpr   = NULL;
      M_INSTR     *macroCode  = NULL;
      CT_VAR_BASE *var_base   = NULL;
-     ST_TYPE_SIG *st_type_sig;
      ST_TYPE     *st_type;
-     char         str[30];
      ST_KEY       funKey;
 
      switch (result->tag) {
@@ -212,7 +211,6 @@ void
 Readfile(char *file)
 {
      char openFile[MAX_STRING_LENGTH_DEFAULT];
-     int result;
 
      readingFile = BTRUE;
      
@@ -237,8 +235,6 @@ Readfile(char *file)
  *********************************/
 static void
 ge_ProcessSetCommand(PE_SETCOMM setcommand) {
-
-  STR_LIST *strList;
 
   switch (setcommand.tag) {
   case REPLACE :
