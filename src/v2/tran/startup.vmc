@@ -1,0 +1,132 @@
+; Execution start from here
+    goto _$startUp
+; Code for internal VMC routines
+
+; the code pointer in an evaluated closures points to one of the following entries
+_SIMPLERETB:  
+    popP 1
+    ret
+_SIMPLERETU:
+    popP 1
+    ret
+_SIMPLERETP:
+    retP 0 1
+
+; manually optimized append function for the "@" operator
+; input is P= L2.L1.ps
+_$append$B:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).L2.ps, B = cons.A.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appB$cons ; cons?
+    ret
+@appB$cons:     ; P = tail(L1).L2.ps, B = A.bs
+    swapP      ; P = L2.tail(L1).ps, B = A.bs
+    call _$append$B
+    constI 1       ; cons
+    newtuple 2 1
+    ret
+
+_$append$U:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).L2.ps, B = cons.A1.A2.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appU$cons ; cons?
+    ret
+@appU$cons:    ; P = tail(L1).L2.ps, B = A1.A2.bs
+    swapP      ; P = L2.tail(L1).ps, B = A1.A2.bs
+    call _$append$U
+    constI 1       ; cons
+    newtuple 3 1
+    ret
+
+_$append$P:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).A.L2.ps, B = cons.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appP$cons ; cons?
+    ret
+@appP$cons:    ; P = tail(L1).A.L2.ps, B = bs
+    dupP 2     ; P = L2.tail(L1).A.L2.ps
+    call _$append$P ; P = R.A.L2.ps
+    constI 1   ; cons
+    newtuple 1 2
+    retP 0 1
+
+_$dispB:
+    ; input is (x, level, codePtr), x is on B stack
+    dupB 3   ; x
+    constI 0 ; level is always 0
+    dupB 3   ; codePtr
+    xcall
+    constI 1 ; standard output
+    dupP 0   ; the string
+    strlen
+    !write
+    retB 3 0
+
+_$dispU:
+    ; input is (x1,x2, level, codePtr), all B stack
+    dupU 3   ; x1,x2
+    constI 0 ; level is always 0
+    dupB 4   ; codePtr
+    xcall
+    constI 1 ; standard output
+    dupP 0   ; the string
+    strlen
+    !write
+    retB 4 0
+     
+_$dispP:
+    ; input is an (x, level, codePtr), x is on P stack
+    constI 0 ; index
+    newstr "\nPress enter to continue, q to quit:" ; the prompt string
+_$DoDisp:
+    dupP 1 ; x
+    dupB 0 ; index
+    dupB 3 ; codePtr
+    xcall  ; toString
+    ; now the string is on top of P stack, output it
+    constI 1 ; standard output
+    dupP 0   
+    strlen   ; string length
+    !write 
+    popB 1   ; discard the result of !write
+
+    ; increment index
+    constI 1 
+    addI     ; index++
+    dupB 0 ; index
+    dupB 4 ; level
+    gtI    ; index>level ?
+    ifnonzero _$dispEnd
+    
+    constI 1; standard output
+    dupP 0  ; the prompt string
+    dupP 0  ; the prompt string
+    strlen
+    !write
+    popB 1
+    constI 0 ; standard input
+    !readchar
+    dupB 0
+    constI 81; 'Q'
+    eqB
+    ifnonzero _$dispEnd0
+    dupB 0
+    constI 113; 'q'
+    eqB
+    ifnonzero _$dispEnd0
+    constI 10; '\n'
+    eqB
+    ifnonzero _$DoDisp
+    ;read till end of line
+_$readEOL:
+    constI 0  ; standard input
+    !readchar
+    constI 10 ; '\n'
+    eqB
+    ifzero _$readEOL
+    goto _$DoDisp
+_$dispEnd0:
+    popB 1
+_$dispEnd:    
+    retB 2 2; 
+

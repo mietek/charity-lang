@@ -1,0 +1,2 @@
+g++ -o vmc -D_DEBUG parser.cpp vheap.cpp token.cpp vthread.cpp vcodebase.cpp vinstrspec.cpp extfun.cpp unixapi.cpp cmdparse.cpp
+

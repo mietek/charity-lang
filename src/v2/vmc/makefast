@@ -1,0 +1,2 @@
+g++ -o vmcfast -O parser.cpp vheap.cpp token.cpp vthread.cpp vcodebase.cpp vinstrspec.cpp extfun.cpp unixapi.cpp cmdparse.cpp
+

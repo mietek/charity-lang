@@ -1,0 +1,12 @@
+This is the new Charity system.
+
+After unpacking, go to the sub-directory "src", type "./makeall" to build all
+the executables. To save space, type "./cleanup" to clean those intermediate
+files.
+
+To play with the system, go to the "test" directory, type "./charity filename"
+to compile and run a program. For example, to run the "fundef.ch" file,
+type "./charity fundef". Don't add the ".ch" suffix as the system will add it
+automatically.
+
+ 

@@ -1,0 +1,1963 @@
+; Execution start from here
+    goto _$startUp
+; Code for internal VMC routines
+
+; the code pointer in an evaluated closures points to one of the following entries
+_SIMPLERETB:  
+    popP 1
+    ret
+_SIMPLERETU:
+    popP 1
+    ret
+_SIMPLERETP:
+    retP 0 1
+
+; manually optimized append function for the "@" operator
+; input is P= L2.L1.ps
+_$append$B:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).L2.ps, B = cons.A.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appB$cons ; cons?
+    ret
+@appB$cons:     ; P = tail(L1).L2.ps, B = A.bs
+    swapP      ; P = L2.tail(L1).ps, B = A.bs
+    call _$append$B
+    constI 1       ; cons
+    newtuple 2 1
+    ret
+
+_$append$U:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).L2.ps, B = cons.A1.A2.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appU$cons ; cons?
+    ret
+@appU$cons:    ; P = tail(L1).L2.ps, B = A1.A2.bs
+    swapP      ; P = L2.tail(L1).ps, B = A1.A2.bs
+    call _$append$U
+    constI 1       ; cons
+    newtuple 3 1
+    ret
+
+_$append$P:
+    swapP      ; P= L1.L2.ps
+    detuple    ; P = tail(L1).A.L2.ps, B = cons.bs | P = L2.ps, B=nil.bs
+    ifnonzero @appP$cons ; cons?
+    ret
+@appP$cons:    ; P = tail(L1).A.L2.ps, B = bs
+    dupP 2     ; P = L2.tail(L1).A.L2.ps
+    call _$append$P ; P = R.A.L2.ps
+    constI 1   ; cons
+    newtuple 1 2
+    retP 0 1
+
+_$dispB:
+    ; input is (x, level, codePtr), x is on B stack
+    dupB 3   ; x
+    constI 0 ; level is always 0
+    dupB 3   ; codePtr
+    xcall
+    constI 1 ; standard output
+    dupP 0   ; the string
+    strlen
+    !write
+    retB 3 0
+
+_$dispU:
+    ; input is (x1,x2, level, codePtr), all B stack
+    dupU 3   ; x1,x2
+    constI 0 ; level is always 0
+    dupB 4   ; codePtr
+    xcall
+    constI 1 ; standard output
+    dupP 0   ; the string
+    strlen
+    !write
+    retB 4 0
+     
+_$dispP:
+    ; input is an (x, level, codePtr), x is on P stack
+    constI 0 ; index
+    newstr "\nPress enter to continue, q to quit:" ; the prompt string
+_$DoDisp:
+    dupP 1 ; x
+    dupB 0 ; index
+    dupB 3 ; codePtr
+    xcall  ; toString
+    ; now the string is on top of P stack, output it
+    constI 1 ; standard output
+    dupP 0   
+    strlen   ; string length
+    !write 
+    popB 1   ; discard the result of !write
+
+    ; increment index
+    constI 1 
+    addI     ; index++
+    dupB 0 ; index
+    dupB 4 ; level
+    gtI    ; index>level ?
+    ifnonzero _$dispEnd
+    
+    constI 1; standard output
+    dupP 0  ; the prompt string
+    dupP 0  ; the prompt string
+    strlen
+    !write
+    popB 1
+    constI 0 ; standard input
+    !readchar
+    dupB 0
+    constI 81; 'Q'
+    eqB
+    ifnonzero _$dispEnd0
+    dupB 0
+    constI 113; 'q'
+    eqB
+    ifnonzero _$dispEnd0
+    constI 10; '\n'
+    eqB
+    ifnonzero _$DoDisp
+    ;read till end of line
+_$readEOL:
+    constI 0  ; standard input
+    !readchar
+    constI 10 ; '\n'
+    eqB
+    ifzero _$readEOL
+    goto _$DoDisp
+_$dispEnd0:
+    popB 1
+_$dispEnd:    
+    retB 2 2; 
+
+;
+; PEG2string
+;
+_PEG2string:
+    dupB 2
+    case @CASE377$0 @CASE377$1 @CASE377$2 @CASE377$3 @CASE377$4 @CASE377$5 @CASE377$6 @CASE377$7 @CASE377$8 @CASE377$9 @CASE377$10 @CASE377$11 @CASE377$12 @CASE377$13 @CASE377$14
+@CASE377$0:
+    newstr "a0"
+    goto @CASE377END
+@CASE377$1:
+    newstr "b0"
+    goto @CASE377END
+@CASE377$2:
+    newstr "b1"
+    goto @CASE377END
+@CASE377$3:
+    newstr "c0"
+    goto @CASE377END
+@CASE377$4:
+    newstr "c1"
+    goto @CASE377END
+@CASE377$5:
+    newstr "c2"
+    goto @CASE377END
+@CASE377$6:
+    newstr "d0"
+    goto @CASE377END
+@CASE377$7:
+    newstr "d1"
+    goto @CASE377END
+@CASE377$8:
+    newstr "d2"
+    goto @CASE377END
+@CASE377$9:
+    newstr "d3"
+    goto @CASE377END
+@CASE377$10:
+    newstr "e0"
+    goto @CASE377END
+@CASE377$11:
+    newstr "e1"
+    goto @CASE377END
+@CASE377$12:
+    newstr "e2"
+    goto @CASE377END
+@CASE377$13:
+    newstr "e3"
+    goto @CASE377END
+@CASE377$14:
+    newstr "e4"
+@CASE377END:
+    retP 2 0
+;
+; list2string$369$374
+;
+_list2string$369$374:
+    dupP 0
+    detuple
+    ifnonzero @CASE376$1
+@CASE376$0:
+    newstr "nil"
+    goto @CASE376END
+@CASE376$1:
+    newtuple 0 2
+    newstr "cons"
+    dupP 1
+    detuple
+    newstr "("
+    dupP 2
+    detuple
+    newstr "("
+    dupB 1
+    dupB 4
+    call _PEG2string
+    strcat
+    newstr ","
+    strcat
+    dupB 0
+    dupB 4
+    call _PEG2string
+    strcat
+    newstr ")"
+    strcat
+    popB 2
+    strcat
+    newstr ","
+    strcat
+    dupP 1
+    dupB 1
+    call _list2string$369$374
+    strcat
+    newstr ")"
+    strcat
+    moveP 0 2
+    popP 2
+    strcat
+    moveP 0 1
+    popP 1
+@CASE376END:
+    retP 1 1
+;
+; $tostr
+;
+_$tostr:
+    dupP 0
+    detuple
+    ifnonzero @CASE375$1
+@CASE375$0:
+    newstr "ss "
+    dupP 1
+    dupB 1
+    call _list2string$369$374
+    strcat
+    moveP 0 1
+    popP 1
+    goto @CASE375END
+@CASE375$1:
+    newstr "ff"
+@CASE375END:
+    retP 1 1
+;
+; jump
+;
+_jump:
+    dupP 0
+    detuple
+    dupB 1
+    case @CASE352$0 @CASE352$1 @CASE352$2 @CASE352$3 @CASE352$4 @CASE352$5 @CASE352$6 @CASE352$7 @CASE352$8 @CASE352$9 @CASE352$10 @CASE352$11 @CASE352$12 @CASE352$13 @CASE352$14
+@CASE352$0:
+    dupB 0
+    case @CASE353$0 @CASE353$1 @CASE353$2 @CASE353$3 @CASE353$4 @CASE353$5 @CASE353$6 @CASE353$7 @CASE353$8 @CASE353$9 @CASE353$10 @CASE353$11 @CASE353$12 @CASE353$13 @CASE353$14
+@CASE353$0:
+    newint 1
+    goto @CASE353END
+@CASE353$1:
+    constI 3
+    constI 0
+    newtuple 2 0
+    goto @CASE353END
+@CASE353$2:
+    constI 5
+    constI 0
+    newtuple 2 0
+    goto @CASE353END
+@CASE353$3:
+    newint 1
+    goto @CASE353END
+@CASE353$4:
+    newint 1
+    goto @CASE353END
+@CASE353$5:
+    newint 1
+    goto @CASE353END
+@CASE353$6:
+    newint 1
+    goto @CASE353END
+@CASE353$7:
+    newint 1
+    goto @CASE353END
+@CASE353$8:
+    newint 1
+    goto @CASE353END
+@CASE353$9:
+    newint 1
+    goto @CASE353END
+@CASE353$10:
+    newint 1
+    goto @CASE353END
+@CASE353$11:
+    newint 1
+    goto @CASE353END
+@CASE353$12:
+    newint 1
+    goto @CASE353END
+@CASE353$13:
+    newint 1
+    goto @CASE353END
+@CASE353$14:
+    newint 1
+@CASE353END:
+    goto @CASE352END
+@CASE352$1:
+    dupB 0
+    case @CASE354$0 @CASE354$1 @CASE354$2 @CASE354$3 @CASE354$4 @CASE354$5 @CASE354$6 @CASE354$7 @CASE354$8 @CASE354$9 @CASE354$10 @CASE354$11 @CASE354$12 @CASE354$13 @CASE354$14
+@CASE354$0:
+    newint 1
+    goto @CASE354END
+@CASE354$1:
+    newint 1
+    goto @CASE354END
+@CASE354$2:
+    newint 1
+    goto @CASE354END
+@CASE354$3:
+    constI 6
+    constI 0
+    newtuple 2 0
+    goto @CASE354END
+@CASE354$4:
+    constI 8
+    constI 0
+    newtuple 2 0
+    goto @CASE354END
+@CASE354$5:
+    newint 1
+    goto @CASE354END
+@CASE354$6:
+    newint 1
+    goto @CASE354END
+@CASE354$7:
+    newint 1
+    goto @CASE354END
+@CASE354$8:
+    newint 1
+    goto @CASE354END
+@CASE354$9:
+    newint 1
+    goto @CASE354END
+@CASE354$10:
+    newint 1
+    goto @CASE354END
+@CASE354$11:
+    newint 1
+    goto @CASE354END
+@CASE354$12:
+    newint 1
+    goto @CASE354END
+@CASE354$13:
+    newint 1
+    goto @CASE354END
+@CASE354$14:
+    newint 1
+@CASE354END:
+    goto @CASE352END
+@CASE352$2:
+    dupB 0
+    case @CASE355$0 @CASE355$1 @CASE355$2 @CASE355$3 @CASE355$4 @CASE355$5 @CASE355$6 @CASE355$7 @CASE355$8 @CASE355$9 @CASE355$10 @CASE355$11 @CASE355$12 @CASE355$13 @CASE355$14
+@CASE355$0:
+    newint 1
+    goto @CASE355END
+@CASE355$1:
+    newint 1
+    goto @CASE355END
+@CASE355$2:
+    newint 1
+    goto @CASE355END
+@CASE355$3:
+    newint 1
+    goto @CASE355END
+@CASE355$4:
+    constI 7
+    constI 0
+    newtuple 2 0
+    goto @CASE355END
+@CASE355$5:
+    constI 9
+    constI 0
+    newtuple 2 0
+    goto @CASE355END
+@CASE355$6:
+    newint 1
+    goto @CASE355END
+@CASE355$7:
+    newint 1
+    goto @CASE355END
+@CASE355$8:
+    newint 1
+    goto @CASE355END
+@CASE355$9:
+    newint 1
+    goto @CASE355END
+@CASE355$10:
+    newint 1
+    goto @CASE355END
+@CASE355$11:
+    newint 1
+    goto @CASE355END
+@CASE355$12:
+    newint 1
+    goto @CASE355END
+@CASE355$13:
+    newint 1
+    goto @CASE355END
+@CASE355$14:
+    newint 1
+@CASE355END:
+    goto @CASE352END
+@CASE352$3:
+    dupB 0
+    case @CASE356$0 @CASE356$1 @CASE356$2 @CASE356$3 @CASE356$4 @CASE356$5 @CASE356$6 @CASE356$7 @CASE356$8 @CASE356$9 @CASE356$10 @CASE356$11 @CASE356$12 @CASE356$13 @CASE356$14
+@CASE356$0:
+    newint 1
+    goto @CASE356END
+@CASE356$1:
+    constI 0
+    constI 0
+    newtuple 2 0
+    goto @CASE356END
+@CASE356$2:
+    newint 1
+    goto @CASE356END
+@CASE356$3:
+    newint 1
+    goto @CASE356END
+@CASE356$4:
+    constI 5
+    constI 0
+    newtuple 2 0
+    goto @CASE356END
+@CASE356$5:
+    newint 1
+    goto @CASE356END
+@CASE356$6:
+    constI 10
+    constI 0
+    newtuple 2 0
+    goto @CASE356END
+@CASE356$7:
+    constI 12
+    constI 0
+    newtuple 2 0
+    goto @CASE356END
+@CASE356$8:
+    newint 1
+    goto @CASE356END
+@CASE356$9:
+    newint 1
+    goto @CASE356END
+@CASE356$10:
+    newint 1
+    goto @CASE356END
+@CASE356$11:
+    newint 1
+    goto @CASE356END
+@CASE356$12:
+    newint 1
+    goto @CASE356END
+@CASE356$13:
+    newint 1
+    goto @CASE356END
+@CASE356$14:
+    newint 1
+@CASE356END:
+    goto @CASE352END
+@CASE352$4:
+    dupB 0
+    case @CASE357$0 @CASE357$1 @CASE357$2 @CASE357$3 @CASE357$4 @CASE357$5 @CASE357$6 @CASE357$7 @CASE357$8 @CASE357$9 @CASE357$10 @CASE357$11 @CASE357$12 @CASE357$13 @CASE357$14
+@CASE357$0:
+    newint 1
+    goto @CASE357END
+@CASE357$1:
+    newint 1
+    goto @CASE357END
+@CASE357$2:
+    newint 1
+    goto @CASE357END
+@CASE357$3:
+    newint 1
+    goto @CASE357END
+@CASE357$4:
+    newint 1
+    goto @CASE357END
+@CASE357$5:
+    newint 1
+    goto @CASE357END
+@CASE357$6:
+    newint 1
+    goto @CASE357END
+@CASE357$7:
+    constI 11
+    constI 0
+    newtuple 2 0
+    goto @CASE357END
+@CASE357$8:
+    constI 13
+    constI 0
+    newtuple 2 0
+    goto @CASE357END
+@CASE357$9:
+    newint 1
+    goto @CASE357END
+@CASE357$10:
+    newint 1
+    goto @CASE357END
+@CASE357$11:
+    newint 1
+    goto @CASE357END
+@CASE357$12:
+    newint 1
+    goto @CASE357END
+@CASE357$13:
+    newint 1
+    goto @CASE357END
+@CASE357$14:
+    newint 1
+@CASE357END:
+    goto @CASE352END
+@CASE352$5:
+    dupB 0
+    case @CASE358$0 @CASE358$1 @CASE358$2 @CASE358$3 @CASE358$4 @CASE358$5 @CASE358$6 @CASE358$7 @CASE358$8 @CASE358$9 @CASE358$10 @CASE358$11 @CASE358$12 @CASE358$13 @CASE358$14
+@CASE358$0:
+    newint 1
+    goto @CASE358END
+@CASE358$1:
+    newint 1
+    goto @CASE358END
+@CASE358$2:
+    constI 0
+    constI 0
+    newtuple 2 0
+    goto @CASE358END
+@CASE358$3:
+    newint 1
+    goto @CASE358END
+@CASE358$4:
+    constI 3
+    constI 0
+    newtuple 2 0
+    goto @CASE358END
+@CASE358$5:
+    newint 1
+    goto @CASE358END
+@CASE358$6:
+    newint 1
+    goto @CASE358END
+@CASE358$7:
+    newint 1
+    goto @CASE358END
+@CASE358$8:
+    constI 5
+    constI 0
+    newtuple 2 0
+    goto @CASE358END
+@CASE358$9:
+    constI 14
+    constI 0
+    newtuple 2 0
+    goto @CASE358END
+@CASE358$10:
+    newint 1
+    goto @CASE358END
+@CASE358$11:
+    newint 1
+    goto @CASE358END
+@CASE358$12:
+    newint 1
+    goto @CASE358END
+@CASE358$13:
+    newint 1
+    goto @CASE358END
+@CASE358$14:
+    newint 1
+@CASE358END:
+    goto @CASE352END
+@CASE352$6:
+    dupB 0
+    case @CASE359$0 @CASE359$1 @CASE359$2 @CASE359$3 @CASE359$4 @CASE359$5 @CASE359$6 @CASE359$7 @CASE359$8 @CASE359$9 @CASE359$10 @CASE359$11 @CASE359$12 @CASE359$13 @CASE359$14
+@CASE359$0:
+    newint 1
+    goto @CASE359END
+@CASE359$1:
+    newint 1
+    goto @CASE359END
+@CASE359$2:
+    newint 1
+    goto @CASE359END
+@CASE359$3:
+    constI 1
+    constI 0
+    newtuple 2 0
+    goto @CASE359END
+@CASE359$4:
+    newint 1
+    goto @CASE359END
+@CASE359$5:
+    newint 1
+    goto @CASE359END
+@CASE359$6:
+    newint 1
+    goto @CASE359END
+@CASE359$7:
+    constI 8
+    constI 0
+    newtuple 2 0
+    goto @CASE359END
+@CASE359$8:
+    newint 1
+    goto @CASE359END
+@CASE359$9:
+    newint 1
+    goto @CASE359END
+@CASE359$10:
+    newint 1
+    goto @CASE359END
+@CASE359$11:
+    newint 1
+    goto @CASE359END
+@CASE359$12:
+    newint 1
+    goto @CASE359END
+@CASE359$13:
+    newint 1
+    goto @CASE359END
+@CASE359$14:
+    newint 1
+@CASE359END:
+    goto @CASE352END
+@CASE352$7:
+    dupB 0
+    case @CASE360$0 @CASE360$1 @CASE360$2 @CASE360$3 @CASE360$4 @CASE360$5 @CASE360$6 @CASE360$7 @CASE360$8 @CASE360$9 @CASE360$10 @CASE360$11 @CASE360$12 @CASE360$13 @CASE360$14
+@CASE360$0:
+    newint 1
+    goto @CASE360END
+@CASE360$1:
+    newint 1
+    goto @CASE360END
+@CASE360$2:
+    newint 1
+    goto @CASE360END
+@CASE360$3:
+    newint 1
+    goto @CASE360END
+@CASE360$4:
+    constI 2
+    constI 0
+    newtuple 2 0
+    goto @CASE360END
+@CASE360$5:
+    newint 1
+    goto @CASE360END
+@CASE360$6:
+    newint 1
+    goto @CASE360END
+@CASE360$7:
+    newint 1
+    goto @CASE360END
+@CASE360$8:
+    constI 9
+    constI 0
+    newtuple 2 0
+    goto @CASE360END
+@CASE360$9:
+    newint 1
+    goto @CASE360END
+@CASE360$10:
+    newint 1
+    goto @CASE360END
+@CASE360$11:
+    newint 1
+    goto @CASE360END
+@CASE360$12:
+    newint 1
+    goto @CASE360END
+@CASE360$13:
+    newint 1
+    goto @CASE360END
+@CASE360$14:
+    newint 1
+@CASE360END:
+    goto @CASE352END
+@CASE352$8:
+    dupB 0
+    case @CASE361$0 @CASE361$1 @CASE361$2 @CASE361$3 @CASE361$4 @CASE361$5 @CASE361$6 @CASE361$7 @CASE361$8 @CASE361$9 @CASE361$10 @CASE361$11 @CASE361$12 @CASE361$13 @CASE361$14
+@CASE361$0:
+    newint 1
+    goto @CASE361END
+@CASE361$1:
+    newint 1
+    goto @CASE361END
+@CASE361$2:
+    newint 1
+    goto @CASE361END
+@CASE361$3:
+    newint 1
+    goto @CASE361END
+@CASE361$4:
+    constI 1
+    constI 0
+    newtuple 2 0
+    goto @CASE361END
+@CASE361$5:
+    newint 1
+    goto @CASE361END
+@CASE361$6:
+    newint 1
+    goto @CASE361END
+@CASE361$7:
+    constI 6
+    constI 0
+    newtuple 2 0
+    goto @CASE361END
+@CASE361$8:
+    newint 1
+    goto @CASE361END
+@CASE361$9:
+    newint 1
+    goto @CASE361END
+@CASE361$10:
+    newint 1
+    goto @CASE361END
+@CASE361$11:
+    newint 1
+    goto @CASE361END
+@CASE361$12:
+    newint 1
+    goto @CASE361END
+@CASE361$13:
+    newint 1
+    goto @CASE361END
+@CASE361$14:
+    newint 1
+@CASE361END:
+    goto @CASE352END
+@CASE352$9:
+    dupB 0
+    case @CASE362$0 @CASE362$1 @CASE362$2 @CASE362$3 @CASE362$4 @CASE362$5 @CASE362$6 @CASE362$7 @CASE362$8 @CASE362$9 @CASE362$10 @CASE362$11 @CASE362$12 @CASE362$13 @CASE362$14
+@CASE362$0:
+    newint 1
+    goto @CASE362END
+@CASE362$1:
+    newint 1
+    goto @CASE362END
+@CASE362$2:
+    newint 1
+    goto @CASE362END
+@CASE362$3:
+    newint 1
+    goto @CASE362END
+@CASE362$4:
+    newint 1
+    goto @CASE362END
+@CASE362$5:
+    constI 2
+    constI 0
+    newtuple 2 0
+    goto @CASE362END
+@CASE362$6:
+    newint 1
+    goto @CASE362END
+@CASE362$7:
+    newint 1
+    goto @CASE362END
+@CASE362$8:
+    constI 7
+    constI 0
+    newtuple 2 0
+    goto @CASE362END
+@CASE362$9:
+    newint 1
+    goto @CASE362END
+@CASE362$10:
+    newint 1
+    goto @CASE362END
+@CASE362$11:
+    newint 1
+    goto @CASE362END
+@CASE362$12:
+    newint 1
+    goto @CASE362END
+@CASE362$13:
+    newint 1
+    goto @CASE362END
+@CASE362$14:
+    newint 1
+@CASE362END:
+    goto @CASE352END
+@CASE352$10:
+    dupB 0
+    case @CASE363$0 @CASE363$1 @CASE363$2 @CASE363$3 @CASE363$4 @CASE363$5 @CASE363$6 @CASE363$7 @CASE363$8 @CASE363$9 @CASE363$10 @CASE363$11 @CASE363$12 @CASE363$13 @CASE363$14
+@CASE363$0:
+    newint 1
+    goto @CASE363END
+@CASE363$1:
+    newint 1
+    goto @CASE363END
+@CASE363$2:
+    newint 1
+    goto @CASE363END
+@CASE363$3:
+    newint 1
+    goto @CASE363END
+@CASE363$4:
+    newint 1
+    goto @CASE363END
+@CASE363$5:
+    newint 1
+    goto @CASE363END
+@CASE363$6:
+    constI 3
+    constI 0
+    newtuple 2 0
+    goto @CASE363END
+@CASE363$7:
+    newint 1
+    goto @CASE363END
+@CASE363$8:
+    newint 1
+    goto @CASE363END
+@CASE363$9:
+    newint 1
+    goto @CASE363END
+@CASE363$10:
+    newint 1
+    goto @CASE363END
+@CASE363$11:
+    constI 12
+    constI 0
+    newtuple 2 0
+    goto @CASE363END
+@CASE363$12:
+    newint 1
+    goto @CASE363END
+@CASE363$13:
+    newint 1
+    goto @CASE363END
+@CASE363$14:
+    newint 1
+@CASE363END:
+    goto @CASE352END
+@CASE352$11:
+    dupB 0
+    case @CASE364$0 @CASE364$1 @CASE364$2 @CASE364$3 @CASE364$4 @CASE364$5 @CASE364$6 @CASE364$7 @CASE364$8 @CASE364$9 @CASE364$10 @CASE364$11 @CASE364$12 @CASE364$13 @CASE364$14
+@CASE364$0:
+    newint 1
+    goto @CASE364END
+@CASE364$1:
+    newint 1
+    goto @CASE364END
+@CASE364$2:
+    newint 1
+    goto @CASE364END
+@CASE364$3:
+    newint 1
+    goto @CASE364END
+@CASE364$4:
+    newint 1
+    goto @CASE364END
+@CASE364$5:
+    newint 1
+    goto @CASE364END
+@CASE364$6:
+    newint 1
+    goto @CASE364END
+@CASE364$7:
+    constI 4
+    constI 0
+    newtuple 2 0
+    goto @CASE364END
+@CASE364$8:
+    newint 1
+    goto @CASE364END
+@CASE364$9:
+    newint 1
+    goto @CASE364END
+@CASE364$10:
+    newint 1
+    goto @CASE364END
+@CASE364$11:
+    newint 1
+    goto @CASE364END
+@CASE364$12:
+    constI 13
+    constI 0
+    newtuple 2 0
+    goto @CASE364END
+@CASE364$13:
+    newint 1
+    goto @CASE364END
+@CASE364$14:
+    newint 1
+@CASE364END:
+    goto @CASE352END
+@CASE352$12:
+    dupB 0
+    case @CASE365$0 @CASE365$1 @CASE365$2 @CASE365$3 @CASE365$4 @CASE365$5 @CASE365$6 @CASE365$7 @CASE365$8 @CASE365$9 @CASE365$10 @CASE365$11 @CASE365$12 @CASE365$13 @CASE365$14
+@CASE365$0:
+    newint 1
+    goto @CASE365END
+@CASE365$1:
+    newint 1
+    goto @CASE365END
+@CASE365$2:
+    newint 1
+    goto @CASE365END
+@CASE365$3:
+    newint 1
+    goto @CASE365END
+@CASE365$4:
+    newint 1
+    goto @CASE365END
+@CASE365$5:
+    newint 1
+    goto @CASE365END
+@CASE365$6:
+    newint 1
+    goto @CASE365END
+@CASE365$7:
+    constI 3
+    constI 0
+    newtuple 2 0
+    goto @CASE365END
+@CASE365$8:
+    constI 5
+    constI 0
+    newtuple 2 0
+    goto @CASE365END
+@CASE365$9:
+    newint 1
+    goto @CASE365END
+@CASE365$10:
+    newint 1
+    goto @CASE365END
+@CASE365$11:
+    constI 10
+    constI 0
+    newtuple 2 0
+    goto @CASE365END
+@CASE365$12:
+    newint 1
+    goto @CASE365END
+@CASE365$13:
+    constI 14
+    constI 0
+    newtuple 2 0
+    goto @CASE365END
+@CASE365$14:
+    newint 1
+@CASE365END:
+    goto @CASE352END
+@CASE352$13:
+    dupB 0
+    case @CASE366$0 @CASE366$1 @CASE366$2 @CASE366$3 @CASE366$4 @CASE366$5 @CASE366$6 @CASE366$7 @CASE366$8 @CASE366$9 @CASE366$10 @CASE366$11 @CASE366$12 @CASE366$13 @CASE366$14
+@CASE366$0:
+    newint 1
+    goto @CASE366END
+@CASE366$1:
+    newint 1
+    goto @CASE366END
+@CASE366$2:
+    newint 1
+    goto @CASE366END
+@CASE366$3:
+    newint 1
+    goto @CASE366END
+@CASE366$4:
+    newint 1
+    goto @CASE366END
+@CASE366$5:
+    newint 1
+    goto @CASE366END
+@CASE366$6:
+    newint 1
+    goto @CASE366END
+@CASE366$7:
+    newint 1
+    goto @CASE366END
+@CASE366$8:
+    constI 4
+    constI 0
+    newtuple 2 0
+    goto @CASE366END
+@CASE366$9:
+    newint 1
+    goto @CASE366END
+@CASE366$10:
+    newint 1
+    goto @CASE366END
+@CASE366$11:
+    newint 1
+    goto @CASE366END
+@CASE366$12:
+    constI 11
+    constI 0
+    newtuple 2 0
+    goto @CASE366END
+@CASE366$13:
+    newint 1
+    goto @CASE366END
+@CASE366$14:
+    newint 1
+@CASE366END:
+    goto @CASE352END
+@CASE352$14:
+    dupB 0
+    case @CASE367$0 @CASE367$1 @CASE367$2 @CASE367$3 @CASE367$4 @CASE367$5 @CASE367$6 @CASE367$7 @CASE367$8 @CASE367$9 @CASE367$10 @CASE367$11 @CASE367$12 @CASE367$13 @CASE367$14
+@CASE367$0:
+    newint 1
+    goto @CASE367END
+@CASE367$1:
+    newint 1
+    goto @CASE367END
+@CASE367$2:
+    newint 1
+    goto @CASE367END
+@CASE367$3:
+    newint 1
+    goto @CASE367END
+@CASE367$4:
+    newint 1
+    goto @CASE367END
+@CASE367$5:
+    newint 1
+    goto @CASE367END
+@CASE367$6:
+    newint 1
+    goto @CASE367END
+@CASE367$7:
+    newint 1
+    goto @CASE367END
+@CASE367$8:
+    newint 1
+    goto @CASE367END
+@CASE367$9:
+    constI 5
+    constI 0
+    newtuple 2 0
+    goto @CASE367END
+@CASE367$10:
+    newint 1
+    goto @CASE367END
+@CASE367$11:
+    newint 1
+    goto @CASE367END
+@CASE367$12:
+    newint 1
+    goto @CASE367END
+@CASE367$13:
+    constI 12
+    constI 0
+    newtuple 2 0
+    goto @CASE367END
+@CASE367$14:
+    newint 1
+@CASE367END:
+@CASE352END:
+    popB 2
+    retP 0 1
+;
+; member$349$B
+;
+_member$349$B:
+    dupP 0
+    detuple
+    ifnonzero @CASE350$1
+@CASE350$0:
+    constI 0
+    goto @CASE350END
+@CASE350$1:
+    dupB 2
+    dupB 1
+    eqB
+    ifnonzero @CASE351$1
+@CASE351$0:
+    dupP 0
+    dupB 2
+    call _member$349$B
+    goto @CASE351END
+@CASE351$1:
+    constI 1
+@CASE351END:
+    moveB 0 1
+    popB 1
+    popP 1
+@CASE350END:
+    retB 1 1
+;
+; inboard$B
+;
+_inboard$B:
+    dupP 0
+    dupB 1
+    call _member$349$B
+    retB 1 1
+;
+; p1$BB
+;
+_p1$BB:
+    dupB 1
+    retB 2 0
+;
+; p0$BB
+;
+_p0$BB:
+    dupB 2
+    retB 2 0
+;
+; filt$346$B
+;
+_filt$346$B:
+    dupP 0
+    detuple
+    ifnonzero @CASE347$1
+@CASE347$0:
+    newint 0
+    goto @CASE347END
+@CASE347$1:
+    dupB 0
+    dupB 4
+    eqB
+    not
+    dupB 1
+    dupB 4
+    eqB
+    not
+    and
+    ifnonzero @CASE348$1
+@CASE348$0:
+    dupP 0
+    dupB 3
+    dupB 3
+    call _filt$346$B
+    goto @CASE348END
+@CASE348$1:
+    dupB 0
+    dupP 0
+    dupB 4
+    dupB 4
+    call _filt$346$B
+    constI 1
+    newtuple 2 1
+@CASE348END:
+    moveP 0 1
+    popB 1
+    popP 1
+@CASE347END:
+    retP 2 1
+;
+; new_board$B
+;
+_new_board$B:
+    dupB 1
+    dupP 0
+    dupB 4
+    dupB 4
+    call _filt$346$B
+    constI 1
+    newtuple 2 1
+    retP 3 1
+;
+; move
+;
+_move:
+    dupP 1
+    call _jump
+    detuple
+    ifnonzero @CASE342$1
+@CASE342$0:
+    dupB 0
+    dupP 0
+    call _inboard$B
+    ifnonzero @CASE343$1
+@CASE343$0:
+    dupP 1
+    dupP 2
+    detuple
+    call _p0$BB
+    dupP 2
+    detuple
+    call _p1$BB
+    dupB 2
+    dupP 1
+    call _new_board$B
+    newtuple 0 2
+    constI 0
+    newtuple 1 1
+    goto @CASE343END
+@CASE343$1:
+    newint 1
+@CASE343END:
+    popB 1
+    goto @CASE342END
+@CASE342$1:
+    newint 1
+@CASE342END:
+    retP 0 2
+;
+; $nv324$334
+;
+_$nv324$334:
+    dupP 1
+    detuple
+    ifnonzero @CASE340$1
+@CASE340$0:
+    newint 0
+    goto @CASE340END
+@CASE340$1:
+    dupB 2
+    dupB 1
+    newtuple 2 0
+    dupP 2
+    call _move
+    detuple
+    ifnonzero @CASE341$1
+@CASE341$0:
+    dupP 0
+    newint 0
+    constI 1
+    newtuple 1 2
+    moveP 0 1
+    popP 1
+    goto @CASE341END
+@CASE341$1:
+    newint 0
+@CASE341END:
+    dupP 1
+    dupB 2
+    dupP 3
+    call _$nv324$334
+    constI 1
+    newtuple 1 2
+    moveP 0 1
+    popB 1
+    popP 1
+@CASE340END:
+    retP 1 2
+;
+; $MAP_list$316$333
+;
+_$MAP_list$316$333:
+    dupP 1
+    detuple
+    ifnonzero @CASE339$1
+@CASE339$0:
+    newint 0
+    goto @CASE339END
+@CASE339$1:
+    dupP 1
+    dupB 0
+    dupP 2
+    call _$nv324$334
+    dupP 1
+    dupP 3
+    call _$MAP_list$316$333
+    constI 1
+    newtuple 1 2
+    moveP 0 1
+    popB 1
+    popP 1
+@CASE339END:
+    retP 0 2
+;
+; app$336$P
+;
+_app$336$P:
+    dupP 1
+    detuple
+    ifnonzero @CASE338$1
+@CASE338$0:
+    dupP 0
+    call _flat$335$P
+    goto @CASE338END
+@CASE338$1:
+    dupP 1
+    dupP 1
+    dupP 4
+    call _app$336$P
+    constI 1
+    newtuple 1 2
+    moveP 0 2
+    popP 2
+@CASE338END:
+    retP 0 2
+;
+; flat$335$P
+;
+_flat$335$P:
+    dupP 0
+    detuple
+    ifnonzero @CASE337$1
+@CASE337$0:
+    newint 0
+    goto @CASE337END
+@CASE337$1:
+    dupP 1
+    dupP 1
+    call _app$336$P
+    moveP 0 2
+    popP 2
+@CASE337END:
+    retP 0 1
+;
+; flatten$P
+;
+_flatten$P:
+    dupP 0
+    call _flat$335$P
+    retP 0 1
+;
+; moves
+;
+_moves:
+    dupP 0
+    dupP 1
+    call _$MAP_list$316$333
+    call _flatten$P
+    call _flatten$P
+    retP 0 1
+;
+; $FOLD_list$307$308$P
+;
+@REC310$0:
+    dupP 0
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 2
+@REC310$1:
+    dupP 0
+    call _$FOLD_list$307$308$P
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 2
+_$FOLD_list$307$308$P:
+    dupP 0
+    detuple
+    ifnonzero @CASE309$1
+@CASE309$0:
+    newint 0
+    goto @CASE309END
+@CASE309$1:
+    dupP 0
+    constA @REC310$1
+    newtuple 1 1
+    dupP 2
+    constA @REC310$0
+    newtuple 1 1
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    moveP 0 2
+    popP 2
+@CASE309END:
+    retP 0 1
+;
+; list_2_Llist$P
+;
+_list_2_Llist$P:
+    dupP 0
+    call _$FOLD_list$307$308$P
+    retP 0 1
+;
+; $MAP_Llist$294$299$P
+;
+@REC304$0:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    detuple
+    dupP 1
+    dupP 1
+    dupB 1
+    call _$UNFOLD_ProbTree$292$298
+    newtuple 0 2
+    moveP 0 2
+    popP 2
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 1 2
+@REC304$1:
+    dupP 0
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    dupB 1
+    call _$MAP_Llist$294$299$P
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 1 2
+_$MAP_Llist$294$299$P:
+    dupP 0
+    detuple
+    ifnonzero @CASE303$1
+@CASE303$0:
+    newint 0
+    goto @CASE303END
+@CASE303$1:
+    dupP 0
+    dupB 1
+    constA @REC304$1
+    newtuple 2 1
+    dupB 1
+    dupP 1
+    constA @REC304$0
+    newtuple 2 1
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    moveP 0 1
+    popP 1
+@CASE303END:
+    retP 1 1
+;
+; $UNFOLD_ProbTree$292$298
+;
+@REC300$0:
+    dupP 0
+    call _moves
+    call _list_2_Llist$P
+    dupB 1
+    call _$MAP_Llist$294$299$P
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 1 2
+@REC300$1:
+    dupP 0
+    detuple
+    ifnonzero @CASE301$1
+@CASE301$0:
+    constI 0
+    goto @CASE301END
+@CASE301$1:
+    dupP 0
+    detuple
+    ifnonzero @CASE302$1
+@CASE302$0:
+    dupB 2
+    dupB 1
+    eqB
+    goto @CASE302END
+@CASE302$1:
+    constI 0
+    moveB 0 1
+    popB 1
+    popP 1
+@CASE302END:
+    moveB 0 1
+    popB 1
+    popP 1
+@CASE301END:
+    dupP 1
+    dupB 0
+    constA _SIMPLERETB
+    newtuple 2 0
+    setfieldP 1
+    retB 1 2
+_$UNFOLD_ProbTree$292$298:
+    dupB 1
+    dupP 0
+    constA @REC300$1
+    newtuple 2 1
+    dupP 1
+    dupB 1
+    constA @REC300$0
+    newtuple 2 1
+    newtuple 0 2
+    retP 1 1
+;
+; peg_solitaire
+;
+_peg_solitaire:
+    dupP 0
+    dupB 1
+    call _$UNFOLD_ProbTree$292$298
+    retP 1 1
+;
+; $nv262$270$PP
+;
+@REC289$0:
+    dupP 2
+    dupP 2
+    dupP 2
+    constI 1
+    newtuple 1 2
+    newtuple 0 2
+    dupP 4
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 4
+@REC289$1:
+    dupP 1
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    dupP 1
+    call _$nv262$270$PP
+    dupP 3
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 3
+_$nv262$270$PP:
+    dupP 1
+    detuple
+    ifnonzero @CASE288$1
+@CASE288$0:
+    newint 0
+    goto @CASE288END
+@CASE288$1:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    detuple
+    dupP 2
+    dupP 4
+    constA @REC289$1
+    newtuple 1 2
+    dupP 1
+    dupP 3
+    dupP 6
+    constA @REC289$0
+    newtuple 1 3
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    moveP 0 2
+    popP 2
+    moveP 0 1
+    popP 1
+@CASE288END:
+    retP 0 2
+;
+; $nv257$269$P
+;
+@REC287$0:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    detuple
+    dupP 1
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    dupP 1
+    call _$nv262$270$PP
+    moveP 0 2
+    popP 2
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 2
+@REC287$1:
+    dupP 0
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    call _$nv257$269$P
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 2
+_$nv257$269$P:
+    dupP 0
+    detuple
+    ifnonzero @CASE286$1
+@CASE286$0:
+    newint 0
+    goto @CASE286END
+@CASE286$1:
+    dupP 0
+    constA @REC287$1
+    newtuple 1 1
+    dupP 1
+    constA @REC287$0
+    newtuple 1 1
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    moveP 0 1
+    popP 1
+@CASE286END:
+    retP 0 1
+;
+; app$282$PP
+;
+@REC285$0:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 2
+@REC285$1:
+    dupP 1
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    dupP 1
+    call _app$282$PP
+    dupP 3
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 3
+_app$282$PP:
+    dupP 1
+    detuple
+    ifnonzero @CASE284$1
+@CASE284$0:
+    dupP 0
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    call _flat$281$P
+    goto @CASE284END
+@CASE284$1:
+    dupP 0
+    dupP 2
+    constA @REC285$1
+    newtuple 1 2
+    dupP 1
+    constA @REC285$0
+    newtuple 1 1
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    moveP 0 1
+    popP 1
+@CASE284END:
+    retP 0 2
+;
+; flat$281$P
+;
+_flat$281$P:
+    dupP 0
+    detuple
+    ifnonzero @CASE283$1
+@CASE283$0:
+    newint 0
+    goto @CASE283END
+@CASE283$1:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    dupP 1
+    call _app$282$PP
+    moveP 0 1
+    popP 1
+@CASE283END:
+    retP 0 1
+;
+; Lflatten$P
+;
+_Lflatten$P:
+    dupP 0
+    call _flat$281$P
+    retP 0 1
+;
+; p0$PP
+;
+_p0$PP:
+    dupP 1
+    retP 0 2
+;
+; p1$PP
+;
+_p1$PP:
+    dupP 0
+    retP 0 2
+;
+; find$268$PP
+;
+_find$268$PP:
+    dupP 0
+    detuple
+    ifnonzero @CASE278$1
+@CASE278$0:
+    newint 1
+    goto @CASE278END
+@CASE278$1:
+    dupP 0
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    dupP 0
+    detuple
+    call _p0$PP
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    ifnonzero @CASE279$1
+@CASE279$0:
+    newint 1
+    goto @CASE279END
+@CASE279$1:
+    dupP 0
+    detuple
+    call _p1$PP
+    constI 0
+    newtuple 1 1
+@CASE279END:
+    moveP 0 1
+    popP 1
+    detuple
+    ifnonzero @CASE280$1
+@CASE280$0:
+    dupP 0
+    constI 0
+    newtuple 1 1
+    moveP 0 1
+    popP 1
+    goto @CASE280END
+@CASE280$1:
+    dupP 0
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    call _find$268$PP
+@CASE280END:
+    moveP 0 1
+    popP 1
+@CASE278END:
+    retP 0 1
+;
+; $UNFOLD_inflist$256$267$P
+;
+@REC277$0:
+    dupP 0
+    call _find$268$PP
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 2
+@REC277$1:
+    dupP 0
+    call _$nv257$269$P
+    call _Lflatten$P
+    call _$UNFOLD_inflist$256$267$P
+    dupP 2
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 2
+_$UNFOLD_inflist$256$267$P:
+    dupP 0
+    constA @REC277$1
+    newtuple 1 1
+    dupP 1
+    constA @REC277$0
+    newtuple 1 1
+    newtuple 0 2
+    retP 0 1
+;
+; n13
+;
+_n13:
+    newint 0
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    constI 1
+    newtuple 1 1
+    retP 0 0
+;
+; $FOLD_nat$274$275$P
+;
+_$FOLD_nat$274$275$P:
+    dupP 1
+    detuple
+    ifnonzero @CASE276$1
+@CASE276$0:
+    dupP 0
+    goto @CASE276END
+@CASE276$1:
+    dupP 0
+    dupP 2
+    call _$FOLD_nat$274$275$P
+    dupP 0
+    getfieldP 1
+    detuple
+    xcall
+    moveP 0 1
+    popP 1
+@CASE276END:
+    retP 0 2
+;
+; get$P
+;
+_get$P:
+    dupP 1
+    dupP 1
+    call _$FOLD_nat$274$275$P
+    dupP 0
+    getfieldP 0
+    detuple
+    xcall
+    retP 0 2
+;
+; start
+;
+@REC271$0:
+    constI 1
+    constI 2
+    constI 3
+    constI 4
+    constI 5
+    constI 6
+    constI 7
+    constI 8
+    constI 9
+    constI 10
+    constI 11
+    constI 12
+    constI 13
+    constI 14
+    newint 0
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 1
+    newtuple 2 1
+    constI 2
+    call _peg_solitaire
+    newint 0
+    newtuple 0 2
+    dupP 1
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 0
+    retP 0 1
+@REC271$1:
+    newint 0
+    dupP 1
+    dupP 1
+    constA _SIMPLERETP
+    newtuple 1 1
+    setfieldP 1
+    retP 0 1
+_start:
+    call _n13
+    constA @REC271$1
+    newtuple 1 0
+    constA @REC271$0
+    newtuple 1 0
+    newtuple 0 2
+    constI 1
+    newtuple 1 1
+    call _$UNFOLD_inflist$256$267$P
+    call _get$P
+    retP 0 0
+;
+; $startUp
+;
+_$startUp:
+    call _start
+    constI 0
+    constA _$tostr
+    call _$dispP
+    popB 1
+    halt

@@ -1,0 +1,19 @@
+Group is
+   main.sml     (* main program *)
+   charity.lex  (* lex file *)
+   charity.grm  (* yacc file *)
+   AST.sml      (* abstract syntax tree *)
+   CoreTerm.sml  (* Internal representation of a Charity term *)
+   AST2CT.sml    (* Covert AST into CTerm *)
+   CTermTransformation.sml (* transformations on CTerm *)
+   Term2Code.sml  (* From CTerm to VMC code *)
+
+   TypeExpression.sml   (* representation and manipulation of a type expression *)
+   TypedTerm.sml (* a representation of term with every subterm tagged with a type *)
+   ImperativeSymbolTable.sml (* core data structure used in compilation: symbol table *)
+   utility.sml   (* Some utility functions, including Set,Map *)
+   Predefined.sml (* Predefined datatypes and operators in Charity*)
+   CharityData.sml (* Generating fold/unfold/map combinators from Charity datatype *)
+   VMCCode.sml    (* datatype representing VMC code, for convenience *)
+
+   ml-yacc-lib.cm  (* library come with SML *)

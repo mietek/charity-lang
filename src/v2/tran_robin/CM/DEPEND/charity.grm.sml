@@ -1,0 +1,2 @@
+Decl 8
+f%chLrValsFun.f-sqsToken.v$TOKEN.;-;;;sqsParserData.sqsHeader.sqovAST.;;rList.;;-;sLrTable.vToken.LrTable.;-;sToken.vToken.;-;lqovLrTable.;;;qrString.Array.Char.LrTable.;;lqovHeader.;;;qsMlyValue.sr;-;rMlyValue.;;sEC.sqovLrTable.;;lqovHeader.;;;qrMlyValue.;;;-;sActions.sqlqovHeader.;;;qrList.Int.MlyValue.Utility.LrTable.;;rMlyValue.;;-;;-;sTokens.srToken.ParserData.;+v$ch_TOKENS.;;;+sqsParserData.v$PARSER_DATA.;-;sTokens.v$ch_TOKENS.;-;;;

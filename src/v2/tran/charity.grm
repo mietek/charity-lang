@@ -1,0 +1,532 @@
+(* the yacc file for charity *)
+open AST
+
+(* code to decide whether it is a inductive or co-inductive data definition
+   why do we do it here? Because we are building an *abstract* syntax tree.
+   Conceptually, the syntax tree should differentiate these two.
+ *)
+local
+    fun matchResultType x (_, SOME (yARROW(_,yNAME(y,[])))) = x=y
+      | matchResultType x (_, NONE) = true
+      | matchResultType x _ = false
+
+    fun matchSourceType x (_, SOME (yARROW([],_))) = false
+      | matchSourceType x (_, SOME (yARROW([yNAME(y,[])],_))) = x=y
+      | matchSourceType x (_, SOME (yARROW(tl,_))) =
+            (case List.last tl
+            of yNAME(y,[]) => x=y
+            | _ => false
+            )
+      | matchSourceType x _ = false
+in
+    (* is it an inductive datatype? *)
+    fun isInductive aDef =
+            (case aDef
+               of ((aname,_), (alias, []), structorList) =>
+                           List.all (matchResultType alias) structorList
+                | _ => false
+            )
+            (* is it an coinductive datatype? *)
+    fun isCoinductive aDef =
+            (case aDef
+               of ((alias,[]),_, structorList) =>
+                           List.all (matchSourceType alias) structorList
+                | _ => false
+            )
+end
+ (*
+   The first arg is a pattern, the second is a term.
+   map (addpattern x) [(dtr1,y), (dtr2, z=>t),...] will
+   convert (| x => dtr1: y
+                 | dtr2: z=> t
+                 ...
+                 |)
+   into (| dtr1: x=> y
+         | dtr2: z,x => t
+         ...
+         |)
+   It's more consistent with the syntax of fold, also more convenient when we use patterns
+ *)
+fun addpattern aPatt (name, yPattABS(patabslst)) =
+        (name, yPattABS( map (fn (patlst,t) => (patlst @ [aPatt], t) )
+                             patabslst
+
+                       )
+        )
+  | addpattern aPatt (name,aTerm) = (name, yPattABS([([aPatt], aTerm)]))
+
+fun countRecurParams [] = 0
+  | countRecurParams ((_,1)::rps) = 1+countRecurParams rps
+  | countRecurParams (_::rps) = countRecurParams rps
+
+fun findRecurPos [] = raise Fail("findRecurPos")
+  | findRecurPos((_,1)::_) = 0
+  | findRecurPos(_::rps) = 1+(findRecurPos rps)
+
+fun buildNewBody(paramList:(string*int) list, fbody: YTerm) = 
+    (* convert <f(#p1,@p2,p3) = patterns> into <f = p1,p2,p3 => (p1,p3);patterns> *)
+    if countRecurParams paramList >1 then
+        raise YACCERR("Can not have more than one recursive parameters")
+    else
+        let fun getPatternedVars([]) = []
+              | getPatternedVars((id,0)::pl) = id::(getPatternedVars pl)
+              | getPatternedVars((id,1)::pl) = id::(getPatternedVars pl)
+              | getPatternedVars((id,2)::pl) = (getPatternedVars pl)
+            
+            val pvarlst = getPatternedVars paramList
+            fun toTerm [x] = yVAR x
+              | toTerm lst = yTUPLE(map yVAR lst)
+        in
+            yPattABS([(map ypVAR (map #1 paramList), 
+                       yAPP(fbody, toTerm pvarlst)
+                      )])
+        end
+                      
+
+
+
+(*originally I used the %pure directive, then strange things happens when there is a parsing error.
+  The lesson is that if you used exceptions or any imperative instructions, don't use the %pure
+ *)
+%%
+%name ch
+%pos int
+%verbose
+%eop EOF
+%noshift EOF
+%keyword DATA DEF EQUALS BAR STOP S_ARROW D_ARROW
+
+%nonterm
+      program of YDefinition list
+    | definitionList of YDefinition list
+    | definition of YDefinition
+    | dataDefinition of YDefinition
+    | dataName of string * string list
+    | idList of string list
+    | structorDefList of YStructorDef list
+    | structorDef of YStructorDef
+    | structorType of YTypeExp
+    | arrowType of YTypeExp
+    | termTypeList of YTypeExp list
+    | termType of YTypeExp
+    | singleTermType of YTypeExp
+    | termTypeProd of YTypeExp list
+    | aliasDefinition of YAliasDef
+    | functionDefinition of YFunDef
+    | functionMacros of YMacroDef list
+    | functionSpec of YTypeExp option
+    | macroList of YMacroDef list
+    | macroDef of YMacroDef
+    | functionBody of YTerm
+    | pattAbstraction of YTerm
+    | pattern of YPattern
+    | patternList of YPattern list
+    | casephrase of YPattern list * YTerm
+    | casephraseList of (YPattern list* YTerm) list
+    | recPattern of string * YPattern
+    | recPatternList of (string * YPattern) list
+    | functionCall of YTerm
+    | functionBodyList of YTerm list
+    | term of YTerm
+    | termList of YTerm list
+    | funterm of YTerm
+    | record of YTerm
+    | recordPhraseList of (string * YTerm) list
+    | recordPhrase of string * YTerm
+    | multipleCasePhrase of (string * YTerm) list
+    | casePhrase of string * YTerm
+    | fold of YTerm
+    | foldPhraseList of (string * YTerm) list
+    | foldPhrase of string * YTerm
+    | unfold of YTerm
+    | unfoldPatt of (string * YTerm) list
+    | unfoldPattList of (YPattern * (string * YTerm) list) list
+    | dtrPhraseList of (string *YTerm) list
+    | listItems of YTerm
+    | recursiveFunction of string * int * YTerm
+    | recursiveFunList of (string*int* YTerm) list
+    | recurParas of (string * int) list
+    | formalParams of (string * int) list
+    | fparamList of (string * int) list
+    | fpID of string * int
+    | bars0toN of unit
+    | bars1toN of unit
+
+%term
+     ID of string
+   | COMB_ID of string
+   | SHARP 
+   | AT
+   | DONTCARE
+   | RANGE
+   | NUM of string
+   | FLOAT of string    (* real is not an equality type *)
+   | STRING of string
+   | OPER of string
+   | CHAR of string
+   | BAR				(* | *)
+   | S_ARROW | D_ARROW  (* -> => *)
+   | L_PAR | R_PAR      (* () *)
+   | L_BRACKET 	| R_BRACKET 	(* [] *)
+   | L_BRACE 	| R_BRACE		(* {} *)
+   | L_FOLD 	| R_FOLD        (* {| |} *)
+   | L_UNFOLD   | R_UNFOLD      (* (| |) *)
+   | L_MACBRACE | R_MACBRACE    (* {\ \} *)
+   | L_RECUR    | R_RECUR       (* {: :} *)
+   | EQUALS | COMMA | COLON | SEMICOLON | STOP  (* = , : ; . *)
+   | HIGHERORDERCOLON                        (* :\ *)
+   | ADD  | SUB  | MUL  | DIV  | MOD  | NEG (* + - * / MOD ~*)
+   | FADD | FSUB | FMUL | FDIV | FMOD       (* for floats *)
+   | GT   | GE   | LT   | LE          (* > >= < <= *)
+   | FGT  | FGE  | FLT  | FLE         (* for floats *)
+   | EQV  | NEQV                      (* == != *)
+   | AND | OR  | XOR | NOT            (* boolean operation *)
+   | APPEND
+   | STRCAT
+   | LISTINS
+   | DATA | DEF
+   | EOF
+   | APP
+
+%left SEMICOLON
+%left OR XOR
+%left AND
+%right NOT
+%nonassoc GT GE LT LE FGT FGE FLT FLE NEQV EQV
+%right LISTINS
+%left ADD SUB FADD FSUB STRCAT
+%left MUL DIV MOD FMUL FDIV FMOD
+%right APP NEG
+
+%%
+(*********************************************
+ *                                           *
+ *         program structures                *
+ *                                           *
+ *********************************************)
+program
+    : definitionList                   ( definitionList )
+
+definitionList
+    : definition definitionList        ( definition::definitionList )
+    | definition STOP definitionList   ( definition::definitionList )
+    |                                  ( [] )
+
+definition
+    : dataDefinition                   ( dataDefinition )
+    | aliasDefinition                  ( yALIASDEF aliasDefinition )
+    | functionDefinition               ( yFUNDEF   functionDefinition )
+
+
+(*********************************************
+ *                                           *
+ *         data definitions                  *
+ *                                           *
+ *********************************************)
+dataDefinition
+    : DATA dataName S_ARROW dataName EQUALS structorDefList
+                (
+                 if isInductive (dataName1, dataName2, structorDefList) then
+                        let val (aliasname, _) = dataName2
+                            val strulist = map (fn (ctr, NONE) => (ctr, [])
+                                                 | (ctr, SOME (yARROW(x,_))) => (ctr, x)
+                                                 | _ => raise Fail("inductive data in charity.grm")
+                                               ) structorDefList
+                        in
+                            yDATADEF(dataName1, aliasname, strulist)
+                        end
+                 else if isCoinductive (dataName1, dataName2, structorDefList) then
+                        let val (aliasname, _) = dataName1
+                            val strulist = map (fn (ctr, SOME(yARROW([c],x))) => (ctr, x)
+                                                 | (ctr, SOME(yARROW(dmlst, x))) =>
+                                                        (ctr, yARROW(List.take(dmlst,length dmlst -1), x))
+                                                 | _ => raise Fail("co-inductive data in charity.grm")
+                                               ) structorDefList
+                        in
+                            yCODATADEF(dataName2, aliasname, strulist)
+                        end
+                 else
+                        raise YACCERR("Parsing error: datatype '" ^ (#1 dataName1) ^
+                                      "' is neither inductive nor co-inductive\n")
+                )
+
+dataName
+	: ID                            (ID, [])
+    | ID L_PAR idList R_PAR         (ID, idList)
+
+idList
+	: ID							( [ID] )
+	| ID COMMA idList               ( ID::idList )
+
+structorDefList
+	: structorDef                       ( [ structorDef ] )
+	| structorDef BAR structorDefList   ( structorDef::structorDefList)
+
+structorDef
+    : ID                                ( (ID, NONE) )
+    | ID COLON structorType             ( (ID, SOME structorType) )
+
+structorType
+    : arrowType                         ( arrowType )
+    (* higher order, note if we change the first termTypeList to ID or singleTermTypeList
+       then it's not working(reduce/shift conflict)
+     *)
+    | termTypeList S_ARROW termTypeList D_ARROW termType
+                                        ( yARROW(termTypeList1, yARROW(termTypeList2, termType)) )
+(* function type is in the form of:
+   -> T
+   S -> T
+   S1, ..., Sn -> T
+ *)
+arrowType
+    : termTypeList S_ARROW termType     ( yARROW(termTypeList, termType) )
+    | S_ARROW termType                  ( yARROW([], termType) )
+
+termTypeList
+    : termType                          ( [termType] )
+    | termType COMMA termTypeList       ( termType::termTypeList )
+
+termType
+    : singleTermType                    ( singleTermType )
+    | termTypeProd                      ( yPRODS termTypeProd )
+
+singleTermType
+    : NUM                               ( if NUM="1" then
+                                                yUNIT
+                                          else
+                                                raise YACCERR("syntax error:"^NUM)
+                                        )
+    | ID                                ( yNAME(ID,[]) )
+    | ID L_PAR termTypeList R_PAR       ( yNAME(ID, termTypeList) )
+    | L_PAR termTypeProd R_PAR          ( yPRODS termTypeProd )
+
+termTypeProd
+    : singleTermType MUL singleTermType       ( [singleTermType1, singleTermType2] )
+    | singleTermType MUL termTypeProd         ( singleTermType::termTypeProd )
+
+
+(*********************************************
+ *                                           *
+ *         alias definitions                 *
+ *                                           *
+ *********************************************)
+aliasDefinition
+    : DATA dataName EQUALS termType     ( (dataName, termType) )
+
+
+(************************************************
+ *                                              *
+ *         Function   definitions               *
+ *                                              *
+ ************************************************)
+
+functionDefinition
+    : DEF ID functionSpec EQUALS functionBody
+            ( (ID, functionSpec, [], functionBody) )
+    | DEF SHARP ID functionSpec EQUALS functionBody
+            ( (ID, functionSpec, [], functionBody) )
+    | DEF COMB_ID macroList R_BRACE functionSpec EQUALS functionBody
+            ( (COMB_ID, functionSpec, macroList, functionBody) )
+    | DEF ID formalParams functionSpec EQUALS functionBody
+            ( (ID, functionSpec,  [], buildNewBody(formalParams, functionBody)))
+    | DEF SHARP ID formalParams functionSpec EQUALS functionBody
+            ( (ID, functionSpec,  [], buildNewBody(formalParams, functionBody)))
+    | DEF COMB_ID macroList R_BRACE formalParams functionSpec EQUALS functionBody
+            ( (COMB_ID, functionSpec, macroList, buildNewBody(formalParams, functionBody)))
+
+formalParams
+    : L_PAR fparamList R_PAR    (fparamList)
+fparamList
+    : fpID                      ([fpID])
+    | fpID COMMA fparamList     (fpID::fparamList)
+fpID
+    : SHARP ID                  ((ID, 1))
+    | AT    ID                  ((ID, 2))
+    | ID                        ((ID, 0))
+    | SHARP DONTCARE            (("$p" ^ Utility.newName(), 1))
+    | AT    DONTCARE            (("$p" ^ Utility.newName(), 2))
+    | DONTCARE                  (("$p" ^ Utility.newName(), 0))
+
+functionSpec
+    : COLON arrowType                   ( SOME arrowType )
+    |                                   ( NONE )
+
+macroList
+    : macroDef                          ( [ macroDef ] )
+    | macroDef STOP macroList           ( macroDef::macroList )
+
+macroDef
+    : ID                                ( (ID, NONE) )
+    | ID COLON arrowType                ( (ID, SOME arrowType) )
+
+
+functionBody
+    : pattAbstraction                   ( pattAbstraction )
+    | functionCall                      ( functionCall )
+
+recursiveFunction
+    : ID formalParams EQUALS functionBody
+                                        (
+                                        if countRecurParams formalParams = 1 then
+                                            (ID, 
+                                             findRecurPos formalParams, 
+                                             buildNewBody(formalParams,functionBody)
+                                            )
+                                        else
+                                            raise YACCERR("Can only have one recursive parameters")
+                                        )
+    | SHARP ID formalParams EQUALS functionBody
+                                        (
+                                        if countRecurParams formalParams = 0 then
+                                            (ID, 
+                                             ~1, 
+                                             buildNewBody(formalParams,functionBody)
+                                            )
+                                        else
+                                            raise YACCERR("Can only have one recursive parameters")
+                                        )
+
+recursiveFunList
+    : recursiveFunction                 ( [ recursiveFunction ] )
+    | recursiveFunction COLON recursiveFunList ( recursiveFunction::recursiveFunList )
+
+pattAbstraction
+    : casephraseList                    ( yPattABS casephraseList )
+    | L_BRACE casephraseList R_BRACE    ( yPattABS casephraseList )
+
+casephraseList
+    : casephrase                         ( if casephrase=([],yNULL) then [] 
+                                                                    else [ casephrase ] )
+    | casephrase BAR  casephraseList     ( if casephrase=([],yNULL) then casephraseList 
+                                                                    else casephrase::casephraseList )
+
+casephrase
+    : patternList D_ARROW term          ( (patternList, term))
+    | D_ARROW term                      ( ( [], term) )
+    |                                   ( ( [], yNULL) )
+
+patternList
+    : pattern                           ( [pattern] )
+    | pattern COMMA patternList         ( (pattern::patternList) )
+
+pattern
+    : L_PAR R_PAR                       ( ypTUPLE [] )
+    | ID                                ( ypVAR ID)
+    | ID pattern                        ( ypCTR(ID, pattern) )
+    | L_PAR patternList R_PAR           ( ypTUPLE patternList )
+    | NUM RANGE NUM                     ( ypINTRANGE(valOf(Int.fromString(NUM1)), valOf(Int.fromString(NUM2)) ))
+    | RANGE NUM                         ( ypINTRANGE(valOf(Int.minInt), valOf(Int.fromString(NUM)) ))
+    | NUM RANGE                         ( ypINTRANGE(valOf(Int.fromString(NUM)), valOf(Int.maxInt)) )
+    | DONTCARE                          ( ypVAR "_" )
+    | L_PAR recPatternList R_PAR        ( ypRECORD recPatternList )
+
+recPatternList
+    : recPattern                        ( [ recPattern ] )
+    | recPattern COMMA recPatternList   ( recPattern::recPatternList )
+
+recPattern
+    : ID COLON pattern                  ( (ID, pattern) )
+    | ID HIGHERORDERCOLON ID            ( (ID1, ypFUN ID2) )
+
+
+functionCall
+    : ID                                   ( yCOMB(ID, []) )
+    | COMB_ID functionBodyList R_BRACE     ( yCOMB(COMB_ID, functionBodyList) )
+    | L_RECUR recursiveFunList R_RECUR     ( yLOCALFUN recursiveFunList )
+
+functionBodyList
+    : functionBody                                  ( [functionBody] )
+    | functionBody STOP functionBodyList            ( functionBody::functionBodyList )
+
+
+term
+    : ID                                ( yVAR ID )
+    | NUM                               ( yINT (valOf(Int.fromString(NUM))) )
+    | FLOAT                             ( yFLOAT FLOAT )
+    | L_PAR R_PAR                       ( yNULL )
+    | STRING                            ( ySTR STRING )
+    | L_PAR term R_PAR                  ( term )
+    | L_PAR term COMMA termList R_PAR   ( yTUPLE(term::termList) )
+    | record                            ( record )
+    | funterm term %prec APP            ( yAPP(funterm, term) )
+    | term SEMICOLON funterm            ( yAPP(funterm, term) )
+    | L_BRACKET R_BRACKET               ( yCOMB("nil",[]) )
+    | L_BRACKET listItems R_BRACKET     ( listItems )
+    | NOT term                          ( yAPP(yCOMB("not",[]),       term)                 )
+    | NEG term                          ( yAPP(yCOMB("#neg",[]),      term)                 )
+    | term ADD term                     ( yAPP(yCOMB("op+",[]),   yTUPLE[term1, term2]) )
+    | term FADD term                    ( yAPP(yCOMB("op+f",[]), yTUPLE[term1, term2]) )
+    | term SUB term                     ( yAPP(yCOMB("op-",[]),   yTUPLE[term1, term2]) )
+    | term FSUB term                    ( yAPP(yCOMB("op-f",[]), yTUPLE[term1, term2]) )
+    | term MUL term                     ( yAPP(yCOMB("op*",[]),   yTUPLE[term1, term2]) )
+    | term FMUL term                    ( yAPP(yCOMB("op*f",[]), yTUPLE[term1, term2]) )
+    | term DIV term                     ( yAPP(yCOMB("op/",[]),   yTUPLE[term1, term2]) )
+    | term FDIV term                    ( yAPP(yCOMB("op/f",[]), yTUPLE[term1, term2]) )
+    | term MOD term                     ( yAPP(yCOMB("opmod",[]),   yTUPLE[term1, term2]) )
+    | term FMOD term                    ( yAPP(yCOMB("#mod_float",[]), yTUPLE[term1, term2]) )
+    | term GT term                      ( yAPP(yCOMB("op>",[]),     yTUPLE[term1, term2]) )
+    | term GE term                      ( yAPP(yCOMB("op>=",[]),    yTUPLE[term1, term2]) )
+    | term LT term                      ( yAPP(yCOMB("op<",[]),     yTUPLE[term1, term2]) )
+    | term LE term                      ( yAPP(yCOMB("op<=",[]),    yTUPLE[term1, term2]) )
+    | term STRCAT term                  ( yAPP(yCOMB("op^",[]),     yTUPLE[term1, term2]) )
+    | term FGT term                     ( yAPP(yCOMB("#gt_float",[]), yTUPLE[term1, term2]) )
+    | term FGE term                     ( yAPP(yCOMB("#ge_float",[]), yTUPLE[term1, term2]) )
+    | term FLT term                     ( yAPP(yCOMB("#lt_float",[]), yTUPLE[term1, term2]) )
+    | term FLE term                     ( yAPP(yCOMB("#le_float",[]), yTUPLE[term1, term2]) )
+    | term EQV term                     ( yAPP(yCOMB("op==", []),     yTUPLE[term1, term2]) )
+    | term NEQV term                    ( yAPP(yCOMB("op<>",[]),      yTUPLE[term1, term2]) )
+    | term AND term                     ( yAPP(yCOMB("and",[]),       yTUPLE[term1, term2]) )
+    | term OR term                      ( yAPP(yCOMB("or",[]),        yTUPLE[term1, term2]) )
+    | term XOR term                     ( yAPP(yCOMB("#xor",[]),      yTUPLE[term1, term2]) )
+    | term LISTINS term                 ( yAPP(yCOMB("cons",[]),      yTUPLE[term1, term2]) )
+
+termList
+    : term                              ( [ term ] )
+    | term COMMA termList               ( term::termList )
+listItems
+    : term                              ( yAPP(yCOMB("cons",[]), yTUPLE[term, yCOMB("nil",[])]) )
+    | term COMMA listItems              ( yAPP(yCOMB("cons",[]), yTUPLE[term, listItems]) )
+
+funterm
+    : L_BRACE pattAbstraction R_BRACE   ( pattAbstraction )
+    | L_FOLD fold R_FOLD                ( fold )
+    | L_UNFOLD unfold R_UNFOLD          ( unfold )
+    | functionCall                      ( functionCall )
+
+record
+    : L_PAR recordPhraseList R_PAR      ( yRECORD recordPhraseList )
+
+recordPhraseList
+    : recordPhrase                          ( [recordPhrase] )
+    | recordPhrase COMMA recordPhraseList   ( recordPhrase::recordPhraseList )
+
+recordPhrase
+    : ID COLON term                         ( (ID, term) )
+    | ID HIGHERORDERCOLON pattAbstraction   ( (ID, pattAbstraction) )
+
+fold
+    : foldPhraseList                        ( yFOLD foldPhraseList )
+
+foldPhraseList
+    : foldPhrase                            ( [foldPhrase] )
+    | foldPhrase BAR foldPhraseList         ( foldPhrase::foldPhraseList )
+
+foldPhrase
+    : ID COLON casephrase                      ( (ID, yPattABS [ casephrase ]) )
+    | ID COLON L_BRACE pattAbstraction R_BRACE ( (ID, pattAbstraction) )
+
+unfold
+    : unfoldPatt                            ( yUNFOLD unfoldPatt )
+
+unfoldPatt
+    : pattern D_ARROW dtrPhraseList         ( map (addpattern pattern) dtrPhraseList )
+
+dtrPhraseList
+    : recordPhrase                          ( [ recordPhrase ] )
+    | recordPhrase BAR recordPhraseList     ( recordPhrase::recordPhraseList )
+
+
+
+
+
+

@@ -1,0 +1,2 @@
+CM.make();
+SMLofNJ.exportFn("charity2vmc", charity);
