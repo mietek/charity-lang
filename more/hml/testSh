@@ -1,0 +1,8 @@
+#/bin/csh
+
+cd /tmp
+cat - > pp$$.tex
+latex pp$$.tex
+xdvi -paper 100x100 pp$$.dvi
+rm -f pp$$.dvi pp$$.log pp$$.aux pp$$.tex
+

@@ -1,0 +1,4 @@
+(* Generate a counter example *)
+xdviProofOrCe ([P `<a>P/\Q`] |- [P `<a>P`]);
+
+xdviProofOrCe ([P `<a>P`] |- [P `<a>P/\Q`]);

@@ -1,0 +1,31 @@
+\documentclass[]{book}
+\usepackage{proof}
+\usepackage{epic}
+\usepackage{eepic}
+\textheight 100cm
+\textwidth 100cm 
+\newcommand{\Poss}[1]   {\mbox{$\langle${#1}$\rangle$}} 
+\newcommand{\Bx}[1]     {\mbox{$[${#1}$]$}} 
+\newcommand{\AND}       {\mbox{$\bigwedge$}} 
+\newcommand{\OR}        {\mbox{$\bigvee$}} 
+\begin{document} 
+\pagestyle{empty} 
+\infer[\mbox{R-\OR}]{\Poss{a}T\OR \Poss{b}\Poss{c}T \vdash \Poss{a}T\OR \Poss{b}T}{
+\infer[\mbox{L-\OR}]{\Poss{a}T\OR \Poss{b}\Poss{c}T \vdash \Poss{a}T,\Poss{b}T}{
+\infer[\mbox{weak}]{\Poss{a}T \vdash \Poss{a}T,\Poss{b}T}{
+\infer[\mbox{poss}]{\Poss{a}T \vdash \Poss{a}T}{
+\infer[\mbox{\cal T}]{T \vdash T}{
+}
+}
+}
+ & \infer[\mbox{weak}]{\Poss{b}\Poss{c}T \vdash \Poss{a}T,\Poss{b}T}{
+\infer[\mbox{poss}]{\Poss{b}\Poss{c}T \vdash \Poss{b}T}{
+\infer[\mbox{\cal T}]{\Poss{c}T \vdash T}{
+}
+}
+}
+}
+}
+
+ \section*{A nice Proof}
+\end{document}

@@ -1,0 +1,124 @@
+\documentclass[]{book}
+\usepackage{proof}
+% \usepackage{epic}
+% \usepackage{eepic}
+\textheight 100cm
+\textwidth 100cm 
+\newcommand{\Poss}[1]   {\mbox{$\langle${#1}$\rangle$}} 
+\newcommand{\Bx}[1]     {\mbox{$[${#1}$]$}} 
+\newcommand{\AND}       {\mbox{$\bigwedge$}} 
+\newcommand{\OR}        {\mbox{$\bigvee$}} 
+\newcommand{\NU}        {\mbox{$\nu$}} 
+\newcommand{\MU}        {\mbox{$\mu$}} 
+% \newcommand{\vdash}        {\mbox{$\vdash$}} 
+\newcommand{\muInfer}[3] { 
+\ensuremath{
+\begin{array}[b]{c}
+  \begin{array}[b]{|c}
+  \hline 
+  #2 \\ 
+  \hline \\ 
+  #3 \\ 
+  \hline  
+  \end{array} \\ 
+#1 \\ 
+\end{array}\\ 
+}
+}
+\newcommand{\nuInfer}[3] { 
+\ensuremath{
+\begin{array}[b]{c}
+  \begin{array}[b]{c|}
+  \hline 
+  #2 \\ 
+  \hline \\ 
+  #3 \\ 
+  \hline  
+  \end{array} \\ 
+#1 \\ 
+\end{array}\\ 
+}
+}
+
+\begin{document} 
+\pagestyle{empty} 
+\muInfer{\MU x. \NU y. \Poss{a}x\AND \Poss{b}y \vdash \NU y. \MU x. \Poss{a}x\AND \Poss{b}y}{
+x=\MU x. \NU y. \Poss{a}x\AND \Poss{b}y~\mid~x \vdash \NU y. \MU x. \Poss{a}x\AND \Poss{b}y}{ 
+\nuInfer{\NU y. \Poss{a}x\AND \Poss{b}y \vdash \NU y. \MU x. \Poss{a}x\AND \Poss{b}y}{
+y=\NU y. \MU x. \Poss{a}x\AND \Poss{b}y~\mid~\NU y. \Poss{a}x\AND \Poss{b}y \vdash y}{ 
+\infer[\MU-Cons]{\NU y. \Poss{a}x\AND \Poss{b}y \vdash \MU x. \Poss{a}x\AND \Poss{b}y}{
+\infer[\mbox{R-\AND}]{\NU y. \Poss{a}x\AND \Poss{b}y \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)\AND \Poss{b}y}{
+\infer[\NU-Cons]{\NU y. \Poss{a}x\AND \Poss{b}y \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{L-\AND}]{\Poss{a}x\AND \Poss{b}(\NU y. \Poss{a}x\AND \Poss{b}y) \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{weak}]{\Poss{a}x,\Poss{b}(\NU y. \Poss{a}x\AND \Poss{b}y) \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{poss}]{\Poss{a}x \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\muInfer{x \vdash \MU x. \Poss{a}x\AND \Poss{b}y}{
+x1=x~\mid~x1 \vdash \MU x. \Poss{a}x\AND \Poss{b}y}{ 
+\infer[\MU-Cons]{\NU y. \Poss{a}x1\AND \Poss{b}y \vdash \MU x. \Poss{a}x\AND \Poss{b}y}{
+\infer[\mbox{R-\AND}]{\NU y. \Poss{a}x1\AND \Poss{b}y \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)\AND \Poss{b}y}{
+\infer[\NU-Cons]{\NU y. \Poss{a}x1\AND \Poss{b}y \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{L-\AND}]{\Poss{a}x1\AND \Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{weak}]{\Poss{a}x1,\Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[\mbox{poss}]{\Poss{a}x1 \vdash \Poss{a}(\MU x. \Poss{a}x\AND \Poss{b}y)}{
+\infer[A(x1)]{x1 \vdash \MU x. \Poss{a}x\AND \Poss{b}y}{
+}
+}
+}
+}
+}
+ & \infer[\NU-Cons]{\NU y. \Poss{a}x1\AND \Poss{b}y \vdash \Poss{b}y}{
+\infer[\mbox{L-\AND}]{\Poss{a}x1\AND \Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash \Poss{b}y}{
+\infer[\mbox{weak}]{\Poss{a}x1,\Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash \Poss{b}y}{
+\infer[\mbox{poss}]{\Poss{a}x1 \vdash }{
+\muInfer{x1 \vdash }{
+x2=x1~\mid~x2 \vdash }{ 
+\infer[\NU-Cons]{\NU y. \Poss{a}x2\AND \Poss{b}y \vdash }{
+\infer[\mbox{L-\AND}]{\Poss{a}x2\AND \Poss{b}(\NU y. \Poss{a}x2\AND \Poss{b}y) \vdash }{
+\infer[\mbox{weak}]{\Poss{a}x2,\Poss{b}(\NU y. \Poss{a}x2\AND \Poss{b}y) \vdash }{
+\infer[\mbox{poss}]{\Poss{a}x2 \vdash }{
+\infer[A(x2)]{x2 \vdash }{
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+ & \infer[\NU-Cons]{\NU y. \Poss{a}x\AND \Poss{b}y \vdash \Poss{b}y}{
+\infer[\mbox{L-\AND}]{\Poss{a}x\AND \Poss{b}(\NU y. \Poss{a}x\AND \Poss{b}y) \vdash \Poss{b}y}{
+\infer[\mbox{weak}]{\Poss{a}x,\Poss{b}(\NU y. \Poss{a}x\AND \Poss{b}y) \vdash \Poss{b}y}{
+\infer[\mbox{poss}]{\Poss{a}x \vdash }{
+\muInfer{x \vdash }{
+x1=x~\mid~x1 \vdash }{ 
+\infer[\NU-Cons]{\NU y. \Poss{a}x1\AND \Poss{b}y \vdash }{
+\infer[\mbox{L-\AND}]{\Poss{a}x1\AND \Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash }{
+\infer[\mbox{weak}]{\Poss{a}x1,\Poss{b}(\NU y. \Poss{a}x1\AND \Poss{b}y) \vdash }{
+\infer[\mbox{poss}]{\Poss{a}x1 \vdash }{
+\infer[A(x1)]{x1 \vdash }{
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+
+ \section*{Santocanale}
+\end{document}

@@ -1,0 +1,90 @@
+
+(* A simple example of a proof *)
+xdviProofOrCe ([P `<a><b><c>T`] |- [P `<a><b>T`]);
+
+(* A simple example of a non proof *)
+xdviProofOrCe ([P `<a><b>T`] |- [P `<a><b><c>T`]);
+
+
+
+(* try using "vals" to save stuff *)
+val fred = P `<a>T \/ <b><c>T`;
+val jim  = P `<a>T \/ <b>T`;
+
+
+(* Show me the answer *)
+xdviProofOrCe ( [fred] |- [jim] );
+
+
+(* Instead of using "xdviProofOrCe", use xdvi separately *)
+val answer = dp ( [fred] |- [jim] );
+
+xdvi (ppProp.latexProlog ^ (ppProp.ppJudgement answer) ^ ppProp.latexEpilog) ;
+
+
+(* Now save the answer in answer.tex *)
+
+writeOut ("answer.tex", ppProp.latexProlog);
+appendOut ("answer.tex", ppProp.ppJudgement answer);
+(* add a caption *)
+appendOut ("answer.tex", ppProp.latexCaption "A nice Proof");
+appendOut ("answer.tex", ppProp.latexEpilog);
+
+
+val answer' = dp ( [fred] |- [P `<a>T`, P `<b>T`] );
+
+
+val sam = dp ([P `<a>T`] |- [P `<a>T`, P `<c>T`]);
+
+val cutProofs = CutHml.mkCut (P `<a>T`, answer', sam);
+
+fun show caption proof =
+	xdvi (ppProp.latexProlog ^ 
+	      (ppProp.ppJudgement proof) ^ 
+	      (ppProp.latexCaption caption)^
+	      ppProp.latexEpilog) ;
+
+show "Cut Zero" cutProofs;
+
+show "Cut Once" (CutHml.cutElimR cutProofs);
+
+show "Cut Twice" (CutHml.cutElimR (CutHml.cutElimR cutProofs));
+
+show "Cut Thrice" (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR cutProofs)));
+
+show "Cut Four" (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR cutProofs))));
+
+show "Cut Five" (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR (CutHml.cutElimR cutProofs)))));
+
+fun fpCut p =
+    let val p' = CutHml.cutElimR p
+    in
+      if p = p'
+      then p
+      else fpCut p'
+    end
+;
+
+show "FP CUT" (fpCut cutProofs);
+
+val example2 = [P `(<b>T\/<c>T\/<d>T\/<e>T\/<f>T)/\ <a>T`] |- [P `<a>T`];
+
+show "Big Example" (dp example2);
+
+val example2' = lAnd example2;
+
+show "lAnd example" example2';
+
+val example2'' = at (possRule "a" (P `T`)) [0] example2';
+
+show "At Example" example2'';
+
+show "At Example Solved" (dp example2'');
+
+(*
+show "Larger Example" (dp ([P `<a>(<b>[c]F /\ [b]<c>T)`] |-
+			   [P `[a](<b>[c]F \/ [b]<c>T) `] ));
+*)
+
+show "Larger Example" (dp ([P `[a](<b>[c]F /\ [b]<c>T)`] |-
+			   [P `[a](<b>[c]F \/ [b]<c>T) `] ));
