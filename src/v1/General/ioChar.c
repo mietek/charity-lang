@@ -80,9 +80,9 @@ initPrintBuff(void) {
  *                        *
  **************************/
 char *
-getInputLine(char *input) {
+getInputLine(char *input, int size) {
 
-  gets(input);
+  fgets(input, size, stdin);
   return(input);
 
 }

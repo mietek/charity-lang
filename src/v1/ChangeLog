@@ -1,0 +1,3 @@
+changed getInputLine( char* input ) to
+getInputLine( char* input, int size ) and changed gets to fgets in order
+to avoid buffer overruns.

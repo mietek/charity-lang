@@ -113,3 +113,12 @@ lint:
 
 tags:
 	$(CTAGS) `find $(SRCDIR) -name '*.[ch]'`
+
+SOURCES:
+	echo `find $(SRCDIR) -name '*.[ch]'` \
+	`find $(SRCDIR) -name 'Makefile.in'` \
+	$(SRCDIR)/configure.in $(SRCDIR)/AUTHORS $(SRCDIR)/BUGS \
+	$(SRCDIR)/COPYING $(SRCDIR)/ChangeLog $(SRCDIR)/INSTALL \
+	$(SRCDIR)/NEWS $(SRCDIR)/TODO $(SRCDIR)/README \
+	$(SRCDIR)/charity.spec \
+	`find $(SRCDIR) -name '*.ch'` > $@

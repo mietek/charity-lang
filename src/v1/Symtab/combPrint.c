@@ -713,13 +713,13 @@ rightDisplayMode(COMB_EXPR *combExpr, int maxShowDepth, int maxRecordDepth) {
 /* !!!! This needs to be generalized */
   char input[MAX_INPUT_LENGTH];
 
-  emptyInputLine();  getInputLine(input);  restoreInputLine();
+  emptyInputLine();  getInputLine(input,MAX_INPUT_LENGTH);  restoreInputLine();
 
 /*  if (kludge) {
-    getInputLine(input);  
+    getInputLine(input,MAX_INPUT_LENGTH);  
     kludge = 0;
   }
-  getInputLine(input);
+  getInputLine(input,MAX_INPUT_LENGTH);
 */
 
   if ((input[0] != 'q') && (input[0] != 'Q'))
@@ -737,7 +737,7 @@ leftDisplayMode(COMB_EXPR *combExpr, int maxShowDepth, int maxRecordDepth) {
 /* !!!! This needs to be generalized */
   char input[MAX_INPUT_LENGTH];
 
-  emptyInputLine();  getInputLine(input);  restoreInputLine();
+  emptyInputLine();  getInputLine(input,MAX_INPUT_LENGTH);  restoreInputLine();
 
   if ((input[0] != 'q') && (input[0] != 'Q'))
     _combExprPrint(combExpr, ++maxShowDepth, maxRecordDepth);

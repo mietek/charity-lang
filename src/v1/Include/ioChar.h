@@ -48,7 +48,7 @@ extern void         emptyInputLine(void);
 extern void         restoreInputLine(void);
 extern void         initPrintBuff(void);
 extern void         printMsg(MSG_TYPE msgType, char *msg, ...);
-extern char        *getInputLine(char *input);
+extern char        *getInputLine( char *input, int bufsize );
 extern void         appendBuff(char *str);     /* put a string in buffer */
 extern void         outputBuff(FILE *file);    /* output buffer */
 extern void         clearBuff(void);       /* reset pointer and empty buffer */

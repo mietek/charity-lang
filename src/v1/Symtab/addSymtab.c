@@ -407,7 +407,7 @@ st_HandleNameClash(ST_ENTRY *entry, char *kind) {
 
   char input[MAX_INPUT_LENGTH];
 
-  emptyInputLine();  getInputLine(input);  restoreInputLine();
+  emptyInputLine();  getInputLine(input,MAX_INPUT_LENGTH);  restoreInputLine();
 
   switch (input[0]) {
   case 'n' :

@@ -40,8 +40,8 @@
 
 /* [H-O] ALTERED THE OPENING MESSAGE, OF COURSE: */
 
-#define CHARITY_VERSION  "1.99 (beta)"
-#define CHARITY_DATE     "Sep. 1997"
+#define CHARITY_VERSION  "1.99.1 (beta)"
+#define CHARITY_DATE     "Jul. 2000"
 #define CHARITY_OPEN_MSG "\nThe Charity System, version " CHARITY_VERSION "\n" \
                          " Charity Development Group - " CHARITY_DATE "\n\n"
 
