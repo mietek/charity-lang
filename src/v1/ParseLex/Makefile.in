@@ -17,7 +17,7 @@ CPPFLAGS=@CPPFLAGS@ -I$(INC)
 # THE OBJECT FILES
 
 C_SRCS = listParse.c parse.c printParse.c
-OBJS = $(C_SRCS:.c=.o) 
+OBJS = $(C_SRCS:.c=.o) y.tab.o lex.yy.o
 
 .PHONY:	all clean distclean
 
@@ -31,11 +31,11 @@ distclean: clean
 
 -include $(C_SRCS:.c=.d)
 
-%.d : %.c
+.c.d :
 	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
 		| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
 		[ -s $@ ] || rm -f $@'
 
-%.o : %.c
+.c.o :
 	@echo "Compiling $@..."
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@

@@ -14,6 +14,7 @@ CPPFLAGS=@CPPFLAGS@ -I$(INC)
 CC=@CC@
 LEX=@LEX@
 YACC=@YACC@
+MAKE=gmake
 
 # THE MODULE DIRECTORIES:
 
@@ -58,31 +59,31 @@ C_SRCS = $(OBJ:.o=.c)
 
 all: charity
 
-charity: $(OBJ)
-	cd Compile && make all
-	cd General && make all
-	cd Lists && make all
-	cd Machine && make all
-	cd ParseLex && make all
-	cd Pm && make all
-	cd Symtab && make all
-	cd Translate && make all
-	cd TypeCheck && make all
-	cd Variance && make all
+charity:
+	cd Compile && $(MAKE) all
+	cd General && $(MAKE) all
+	cd Lists && $(MAKE) all
+	cd Machine && $(MAKE) all
+	cd ParseLex && $(MAKE) all
+	cd Pm && $(MAKE) all
+	cd Symtab && $(MAKE) all
+	cd Translate && $(MAKE) all
+	cd TypeCheck && $(MAKE) all
+	cd Variance && $(MAKE) all
 	@echo "Linking $@..."
 	$(CC) -o $@ $(OBJ) $(LFLAGS) @EFENCE@
 
 clean:
-	cd Compile && make clean
-	cd General && make clean
-	cd Lists && make clean
-	cd Machine && make clean
-	cd ParseLex && make clean
-	cd Pm && make clean
-	cd Symtab && make clean
-	cd Translate && make clean
-	cd TypeCheck && make clean
-	cd Variance && make clean
+	cd Compile && $(MAKE) clean
+	cd General && $(MAKE) clean
+	cd Lists && $(MAKE) clean
+	cd Machine && $(MAKE) clean
+	cd ParseLex && $(MAKE) clean
+	cd Pm && $(MAKE) clean
+	cd Symtab && $(MAKE) clean
+	cd Translate && $(MAKE) clean
+	cd TypeCheck && $(MAKE) clean
+	cd Variance && $(MAKE) clean
 	$(RM) charity
 
 distclean: clean

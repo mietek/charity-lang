@@ -32,11 +32,11 @@ distclean: clean
 
 -include $(C_SRCS:.c=.d)
 
-%.d : %.c
+.c.d :
 	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
 		| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
 		[ -s $@ ] || rm -f $@'
 
-%.o : %.c
+.c.o :
 	@echo "Compiling $@..."
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
