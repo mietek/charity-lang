@@ -136,6 +136,13 @@ static void       _CombinatorPrint(COMB_EXPR *expr);
 
 static void _CombParmsPrint (int num, COMB_PHR **parms);
 
+/* Optimiztion of combinator code */
+
+static COMB_EXPR   *_headCombExpr     (COMB_EXPR *expr);
+static COMB_EXPR   *_tailCombExpr     (COMB_EXPR *expr);
+static COMB_EXPR   *_removeHeadComb   (COMB_EXPR *expr);
+static COMB_EXPR   *_removeTailComb   (COMB_EXPR *expr);
+
 /* print term logic stuff */
 
 static int   _showCT_abs(CT_ABS *absn, int indent);
@@ -1290,7 +1297,8 @@ COMB_EXPR
      int         count      = 0;
      char       *parentType = NULL;
 
-     assert (BFALSE);     /* [#@] */
+     /*[-< why? */
+     /*assert (BFALSE);*/    /* [#@] */
 
      assert(folds);
      assert(var_base);
@@ -1672,7 +1680,6 @@ COMB_EXPR
 	       printMsg(WARN_MSG, "%s assumed to be a function macro, not a variable",
 			aterm->info.macro->macro_name);
 	  }
-
 	  if (isFunctionMacro(aterm->info.macro->macro_name)) {  /* Macro? */
 	       result = CombExprComposition(heapDesc,
 					    _makeEnvSigma(heapDesc, var_base, aexpr),
