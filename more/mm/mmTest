@@ -1,0 +1,216 @@
+val rolling = ([parseIt "mu (x. <a><b>x)"] |- [parseIt "<a>mu (x. <b><a>x)"]);
+
+show "Rolling" (dp [] rolling);
+
+
+val coRolling = 
+	([parseIt "<a>mu (x. <b><a>x)"] |- [parseIt "mu (x. <a><b>x)"]);
+
+show "CoRolling" (dp [] coRolling);
+
+val diag = ([parseIt "mu (x. <a>x/\\<b>x)"] |- 
+	    [parseIt "mu (x. mu (y. <a>x /\\<b>y))"]);
+
+show "Diag" (dp [] diag);
+
+val diagBox = ([parseIt "mu (x. [a]x/\\[b]x)"] |- 
+	    [parseIt "mu (x. mu (y. [a]x /\\[b]y))"]);
+
+show "DiagBox" (dp [] diagBox);
+
+val coDiag = ([parseIt "mu (x. mu (y. <a>x /\\<b>y))"] |- 
+	      [parseIt "mu (x. <a>x/\\<b>x)"]);
+
+
+show "CoDiag" (dp [] coDiag);
+
+val coDiagBox = ([parseIt "mu (x. mu (y. [a]x /\\[b]y))"] |- 
+	      [parseIt "mu (x. [a]x/\\[b]x)"]);
+
+
+show "CoDiagBox" (dp [] coDiagBox);
+
+val santocanale = ([parseIt "mu (x. nu (y. <a>x/\\<b>y)) " ]
+		  |- [parseIt "nu (y. mu (x. <a>x/\\<b>y))"]);
+
+show "Santocanale" (dp [] santocanale);
+
+
+val santocanaleBox = ([parseIt "mu (x. nu (y. [a]x/\\[b]y)) " ]
+		  |- [parseIt "nu (y. mu (x. [a]x/\\[b]y))"]);
+
+show "SantocanaleBox" (dp [] santocanaleBox);
+
+val mumu = ([parseIt "mu (x.x)"] |- [parseIt "mu (x.x)"]);
+
+show "MuMu" (dp [] mumu);
+
+val nunu = ([parseIt "nu (x.x)"] |- [parseIt "nu (x.x)"]);
+
+show "NuNu" (dp [] nunu);
+
+val numu = ([parseIt "nu (x.x)"] |- [parseIt "mu (x.x)"]);
+
+show "NuMu: Should halt with failure" (dp [] numu);
+(* show failure *)
+
+
+val muP = ([parseIt "mu (x.<a>x)"] |- [parseIt "F"]);
+
+show "muP" (dp [] muP);
+
+val nuP = ([parseIt "T"] |- [parseIt "nu (x.[a]x)"]);
+
+show "nuP" (dp [] nuP);
+
+val nuaMua = ([parseIt "nu (x.<a>x)"] |- [parseIt "mu (x.<a>x)"]);
+
+show "nuaMua" (dp [] nuaMua);
+
+xdvi (proofOrCe nuaMua);
+
+
+val diagC = parseIt "mu (x. mu (y. <a>x /\\<b>y))" ;
+val diag1 = dp [] diag;
+val diag2 = dp [] coDiag;
+
+val cutDiag = CutMM.mkCut (diagC, diag1, diag2);
+
+show "Eliminate cutDiag" (CutMM.cutElimR [] cutDiag);
+
+
+
+val diag2 = ([parseIt "mu (x. <a>(x/\\x))"] |- 
+	    [parseIt "mu (x. mu (y. <a>(x /\\y)))"]);
+
+show "Diag2" (dp [] diag2);
+
+val muF = ([parseIt "mu (x.x\\/y)"] |- [parseIt "mu (x.x) \\/y"]);
+
+show "muF" (dp [] muF);
+
+val idTest = ([parseIt "y"] |- [parseIt "y"]);
+
+show "idTest" (dp [] idTest);
+
+val idTest2 = ([parseIt "x", parseIt "y"] |- [parseIt "y", parseIt "z"]);
+
+show "idTest2" (dp [] idTest2);
+
+
+
+(*
+
+Wed Nov 15 12:20:45 MST 2000
+
+New try at cut and rolling.
+
+fun ceOnce t = 
+	tabFold (ASSUMPTION,CutMM.cutElim o JUDGEMENT) t;
+
+val rolling = ([parseIt "mu (x. [a][b]x)"] |- [parseIt "[a]mu (x. [b][a]x)"]);
+
+show "Rolling" (dp [] rolling);
+
+
+val coRolling = 
+	([parseIt "[a]mu (x. [b][a]x)"] |- [parseIt "mu (x. [a][b]x)"]);
+
+show "CoRolling" (dp [] coRolling);
+
+val rollC = parseIt "[a]mu (x. [b][a]x)";
+
+
+val cutRoll = CutMM.mkCut (rollC, dp [] rolling, dp [] coRolling);
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cutRoll);
+
+appendOut ("/tmp/cutRoll", "\\section{First Cut} \n\n\n");
+
+val cr1 = ceOnce cutRoll;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr1);
+
+appendOut ("/tmp/cutRoll", "\\section{Second Cut} \n\n\n");
+
+show "cutRoll1" cr1;
+
+val cr2 = ceOnce cr1;
+show "cutRoll2" cr2;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr2);
+appendOut ("/tmp/cutRoll", "\\section{Third Cut} \n\n\n");
+
+
+val cr3 = ceOnce cr2;
+show "cutRoll3" cr3;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr3);
+appendOut ("/tmp/cutRoll", "\\section{Fourth Cut} \n\n\n");
+
+val cr4 = ceOnce cr3;
+show "cutRoll4" cr4;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr4);
+appendOut ("/tmp/cutRoll", "\\section{Fifth Cut} \n\n\n");
+
+
+val cr5 = ceOnce cr4;
+show "cutRoll5" cr5;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr5);
+appendOut ("/tmp/cutRoll", "\\section{Sixth Cut} \n\n\n");
+
+val cr6 = ceOnce cr5;
+show "cutRoll6" cr6;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr6);
+appendOut ("/tmp/cutRoll", "\\section{Seventh Cut} \n\n\n");
+
+
+val cr7 = ceOnce cr6;
+show "cutRoll7" cr7;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr7);
+appendOut ("/tmp/cutRoll", "\\section{Eighth Cut} \n\n\n");
+
+
+val cr8 = indTst [] cr7;
+
+appendOut ("/tmp/cutRoll", ppProp.ppJudgement cr8);
+appendOut ("/tmp/cutRoll", "\\section{Induction Hypothesis} \n\n\n");
+
+
+
+val cr7 = ceOnce cr6;
+show "cutRoll7" cr7;
+
+val cr7' = CutMM.cutElimR [] cr6;
+
+
+fun indTst history (ASSUMPTION a) = ASSUMPTION a
+  | indTst history (JUDGEMENT (r,s,p)) =
+        if not (List.exists (fn (CUT _,_) => true | _ => false) history)
+        then
+        (case muInduct history (nuInduct history (ASSUMPTION(s))) of
+          (JUDGEMENT j) => JUDGEMENT j
+        | ASSUMPTION _ => JUDGEMENT(r,s, map (indTst ((r,s)::history)) p)
+        )
+        else JUDGEMENT (r,s,p)
+;
+
+show "IT" (indTst []  cr6);
+
+show "celimR6" (CutMM.cutElimR [] cr6);
+
+
+show "celimR5" (CutMM.cutElimR [] cr5);
+
+show "celimR4" (CutMM.cutElimR [] cr4);
+(* Although it works, it works too quickly.  *)
+
+
+appendOut ("/tmp/cycle", ppProp.ppJudgement (dp [] coRolling));
+
+*)
+

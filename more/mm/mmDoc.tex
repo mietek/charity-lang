@@ -1,0 +1,245 @@
+\documentclass[12pt]{article}
+
+\begin{document}
+
+\section{MM Proof tool}
+There are three versions of the modal proof tool.
+\begin{enumerate}
+\item One finds proofs in Hennessy Milner Logic, (no recursion)
+\item one finds proofs in Modal Mu (with recursion)
+\item one finds proofs in Modal Mu with ``types'' (independence of actions)
+\end{enumerate}
+
+To run the proof tool use the following command:
+
+``proveIt mmExample''
+
+The files ``testSh, hmlSml.sparc-solaris'' must be in the current directory.
+
+Create your own script from the hmlExample file.
+
+
+
+
+\section{Commands}
+The commonly used commands in the MM tool are:
+
+\begin{itemize}
+\item[P] parses a back quoted string and returns an HML proposition
+\item[$\vdash$] uses the characters ``$\mid$'' and ``-'' to 
+      turn a pair of lists of propositions into an assumption
+\item[xdviProofOrCe] takes an assumption (or judgement) and returns
+     either a proof (displayed on xdvi) or an agent (a counter example
+     in the form of a tree) which satisfies the antecedent
+     and does not satisfy the succedent.
+\end{itemize}
+
+Examples:
+
+\begin{verbatim}
+xdviProofOrCe ([P `<a><b><c>T`] |- [P `<a><b>T`]);
+\end{verbatim}
+
+Displays a proof that, being able to perform an ``a'' action followed by
+a ``b'' action, followed by a ``c'' action implies that it is possible to
+perform an ``a'' action followed by a ``b'' action.
+
+\begin{verbatim}
+xdviProofOrCe ([P `<a><b>T`] |- [P `<a><b><c>T`]);
+\end{verbatim}
+
+Displays an agent which can perform an ``a'' action followed by a ``b'' action
+but can't subsequently perform a ``c'' action.
+
+\begin{verbatim}
+xdviProofOrCe ([P `<a>T \/ <b><c>T`] |- [P `<a>T`, P `<b>T`]);
+\end{verbatim}
+
+Displays another proof.  What this really shows is how to use
+lists; the succedent is a list of propositions.
+
+These commands are the only ones which I expect that a casual user
+might use.  A more complete set follows.
+
+\section{More commands, for the cognescenti}
+A Proposition is a HML proposition (And's, Or's, Boxes, Posses, Variables)
+(e.g. \begin{verbatim} \Poss{a}\Bx{b}F\AND\Bx{c}F \end{verbatim})
+A Sequent is a pair of lists of Propositions.
+
+\begin{verbatim}
+(\Poss{a}\Bx{b}F,\Bx{c}F$\vdash$ \Poss{a}\Bx{b}F,\Bx{c}F)
+\end{verbatim}
+
+A Rule is one of the lAnd,rOr, ... proof rules.
+
+A Tableau is a proof tree (possibly closed) built 
+up from a sequent and rules.
+
+\subsection{dp}
+The function ``dp'' will perform the decision procedure
+on the (cut free) tableau.  It will return a tableau.
+It needs a history list; your best bet is to give it an empty list.
+
+
+\subsection{Rule functions}
+Some commands:
+\begin{itemize}
+\item antecedent : JUDGEMENT $\mapsto$ hml list
+\item succedent : JUDGEMENT $\mapsto$ hml list
+\item proofFold : (JUDGEMENT $\mapsto$ JUDGEMENT) $\mapsto$ JUDGEMENT $\mapsto$ JUDGEMENT
+\item isAProof : JUDGEMENT $\mapsto$ bool
+\end{itemize}
+
+
+The following functions apply the rules to a Judgement.
+They only make sense at Assumptions, and at Judgements
+they are the identity function.  To be useful
+the proofFold function should be applied to them.  
+
+\begin{itemize}
+\item lAnd
+\item rOr
+\item lFalse
+\item rTrue
+\item lOr
+\item rAnd
+\item boxRule
+\item possRule
+\item idRule
+\end{itemize}
+
+
+Example:
+
+\begin{verbatim}
+lAnd ([P /\ Q, <a>T, [b]F] |- DELTA) 
+\end{verbatim}
+will return
+\begin{verbatim}
+lAnd ([P, Q, <a>T, [b]F] |- DELTA) 
+\end{verbatim}
+
+A more sensible example would be:
+$$ proofFold lAnd tableau; $$
+
+or $proofFold (lAnd o rOr) tableau;$
+where ``o'' is the composition operator.
+
+This returns a TABLEAU, and does not print out anything.
+
+The preceeding list of commands either do too little or too much.
+Without the proofFold the commands do too little, and with
+the proof fold the commands work over every assumption.
+To regain a little more control, use the ``at'' function.
+
+
+$$at : (Tableau \mapsto Tableau) \mapsto int list \mapsto Tableau$$
+
+The function $$at : (proofFold lOr) (0::0::2::nil) tableau$$
+
+will take the left most child (the zero), its leftmost child (the second zero)
+and its ``third'' child (the 2) and apply the function (proofFold lOr)
+to that.  Thus, only a part of the tree have the subsequent explosion
+due to distribution.  
+
+\subsection{dualising functions}
+
+\begin{itemize}
+\item dualJudgement (TABLEAU $\mapsto$ TABLEAU)
+\item dualProp : (PROP $\mapsto$ PROP)
+\item dualSeq 
+\item dualRule	(RULE $\mapsto$ RULE)
+\end{itemize}
+
+The function ``dualJudgement'' will take a tableau and return the
+dual of it (i.e. flip antecedent and seccedent, flip props to dual props)
+
+
+\subsection{Cuts}
+exception UN\_CUTABLE
+
+\begin{description}
+\item[upL]  TABLEAU $\mapsto$  TABLEAU
+	tries to push the cut up the left branch.  If the rule isn't a
+	cut, then it does nothing.
+
+\item[upR]  TABLEAU $\mapsto$  TABLEAU
+	tries to push the cut up the right branch.  If the rule isn't a
+	cut, then it does nothing.
+
+\item[upBoth]  TABLEAU $\mapsto$  TABLEAU
+	tries to push the cut up both branches (works only for a few rules)
+	If the rule isn't a cut (or of the right form) then does nothing.
+
+\item[cutElim]  TABLEAU $\mapsto$  TABLEAU
+	Tries upL; if it is unsuccessful tries upR; if it is unsuccessful 
+	tries upBoth.
+\item[cutElimR]  TABLEAU $\mapsto$  TABLEAU
+	Tries cutElim with ``fold''; thus, cutElimR at the root of a proof
+	tree could affect internal nodes of the tree.  
+\item[mkCut] PROP *  TABLEAU * TABLEAU $\mapsto$ TABLEAU
+	Allows the user to take two proofs and ``cut'' them together.
+	e.g. (mkCut (P Q, dp proof1, dp proof2)
+	where proof1 and proof2 have Q in the succedent and antecedent
+	respectively.  Otherwise raises the exception UN\_CUTTABLE
+\end{description}
+
+
+\subsection{Pretty Print Proofs}
+
+\begin{description}
+\item[ppPropText] prop $\mapsto$  string
+		takes a prop and pretty prints in in TEXT (not latex)
+
+\item[ppPropLatex] prop $\mapsto$  string
+		takes a prop and returns a string, which when 
+		run through latex will pretty print a proposition
+\item[ppJudgement] TABLEAU $\mapsto$ string
+		takes a tableau, and return a string, which when
+		run through latex will pretty print a proof.
+
+\item[latexProlog] string	used as a prolog for latex and the proof
+
+\item[latexEpilog] string	used as a epilog for latex and the proof
+
+val latexCaption] string $\mapsto$ string
+\end{description}
+
+Example:
+
+The following string is a fine latex program:
+
+print (ppProp.latexProlog \^ (ppProp.ppJudgement proof) \^ ppProp.latexEpilog);
+
+So is the following, but it has a caption on the picture.
+
+print (ppProp.latexProlog \^ (ppProp.ppJudgement proof) \^ 
+		(ppProp.caption "A Fine caption") \^ ppProp.latexEpilog);
+
+
+
+\subsection{States}
+
+\begin{description}
+\item[oops]  exception HAS\_A\_PROOF
+\item[counter] TABLEAU $\mapsto$ state
+	Finds a counter example for the failed proof;
+	returns an agent (state) which satisfies the antecedent and doesn't
+	satisfy the succedent.  If there is a proof, it raises an exception.
+\item[ppStateText] state $\mapsto$ string
+\item[ppStateLatex] state $\mapsto$ string
+		Given a counter example (an agent, a state) returns
+		some latex which draws the darned thing.
+\item[latexProlog] string
+\item[latexEpilog] string
+\end{description}
+
+
+Example:
+print (State.latexProlog \^ (State.ppStateLatex (State.counter failedProof))
+	\^ (State.latexEpilog));
+
+will print out a latex program which will draw the agent.
+
+\end{document}
+
