@@ -41,7 +41,7 @@ extern CT_EXPR            *pmTranslate(PE_EXPR  *peExpr, int kill_a_def);
 extern BBOOL               ct_isVarBase(PE_PATT *patt);
 extern CT_VAR_BASE        *ctMakeVarBase(MEMORY heap,char *var, BBOOL copyVar);
 
-extern CT_TERM            *ctMakeStructTerm(MEMORY heap, char *structName, 
+extern CT_TERM            *ctMakeStructTerm(MEMORY heap, char *structName,
                                             BBOOL copyStruct);
 extern CT_EXPR            *ctMakeVarExpr(MEMORY heap,char *var, BBOOL copyVar);
 extern CT_EXPR            *ctMakeBangExpr(MEMORY heap);
@@ -49,9 +49,9 @@ extern CT_EXPR            *ctMakeAPPExpr(MEMORY heap,
                                          CT_TERM *term, CT_EXPR *expr);
 extern CT_EXPR            *ctMakePairExpr(MEMORY heap,
                                          CT_EXPR *exprL, CT_EXPR *exprR);
-extern CT_TERM            *ctMakeAbsTerm(MEMORY heap, CT_VAR_BASE *vb, 
+extern CT_TERM            *ctMakeAbsTerm(MEMORY heap, CT_VAR_BASE *vb,
                                          CT_EXPR *rhs);
-extern CT_TERM            *ctMakeFunTerm(MEMORY heap, char *funName, 
+extern CT_TERM            *ctMakeFunTerm(MEMORY heap, char *funName,
                                          CT_PHRASE **macros,BBOOL copyFunName);
 
 extern CT_LIST_EXPRADDR *ctExprExpr(MEMORY heap,CT_EXPR **expr1,

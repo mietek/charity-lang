@@ -78,7 +78,7 @@ showString(char *str) { appendBuff(str); }
 void
 printType(PE_TYPE *type)
 {
-     assert(type); 
+     assert(type);
 
      printf("%s(", type->ident);
      printList((LIST *) type->parms);
@@ -99,7 +99,7 @@ printTypeSig(PE_TYPE_SIG *type_sig)
 
      printType(type_sig->domain);
      printf(" -> ");
-     printType(type_sig->codomain);     
+     printType(type_sig->codomain);
 }
 
 /*********************************
@@ -193,8 +193,8 @@ printMacro(PE_MACRO *macro)
      printf("%s", macro->ident);
 
      if (macro->type_sig) {
-	 printf(": ");
-	 printTypeSig(macro->type_sig);
+         printf(": ");
+         printTypeSig(macro->type_sig);
      }
 }
 
@@ -212,8 +212,8 @@ peShowMacro(PE_MACRO *macro) {
 #if 0
 Not implemented yet
      if (macro->type_sig) {
-	 appendBuff(": ");
-	 showPETypeSig(macro->type_sig);
+         appendBuff(": ");
+         showPETypeSig(macro->type_sig);
      }
 #endif
 
@@ -231,8 +231,8 @@ printPStructor(P_STRUCTOR *structor)
      assert(structor);
 
      printf("%s:", structor->id);
-     if (structor->arg) 
-	  printPatt(structor->arg);
+     if (structor->arg)
+          printPatt(structor->arg);
 }
 
 /*********************************
@@ -253,12 +253,12 @@ printRecArr(P_STRUCTOR **rec)
 
      printf("(");
      for (count = 0; count < num; count++) {
-	  if (rec[count]) {
-	       if (count != 0)
-		    printf(", ");
+          if (rec[count]) {
+               if (count != 0)
+                    printf(", ");
 
-	       printPStructor(rec[count]);
-	  }
+               printPStructor(rec[count]);
+          }
      }
      printf(")");
 }
@@ -273,36 +273,36 @@ void
 printPatt(PE_PATT *patt)
 {
      if (patt) {
-	  switch (patt->tag) {
-	    case P_BANG:
-	      printf("()");
-	      break;
-	     case P_VAR:
-	       printf("%s", patt->info.var);
-	       break;
-	     case P_HOVAR:
-	       printf("%s", patt->info.hovar.hovar);
-	       break;
-	     case P_PAIR:
-	       printf("(");
-	       printPatt(patt->info.ppair.l);
-	       printf(",");	       
-	       printPatt(patt->info.ppair.r);
-	       printf(")");	       
-	       break;
-	     case P_RECORD:
-	       printf("RECORD{");
-	       printRecArr(patt->info.record);
-	       printf("}");
-	       break;
-	     case P_CONSTR:
-	       printPStructor(patt->info.constr);
-	       break;
-	     default:
-	       printf("Error in printPatt\n");
-	       exit(-1);
-	       break;
-	  }
+          switch (patt->tag) {
+            case P_BANG:
+              printf("()");
+              break;
+             case P_VAR:
+               printf("%s", patt->info.var);
+               break;
+             case P_HOVAR:
+               printf("%s", patt->info.hovar.hovar);
+               break;
+             case P_PAIR:
+               printf("(");
+               printPatt(patt->info.ppair.l);
+               printf(",");
+               printPatt(patt->info.ppair.r);
+               printf(")");
+               break;
+             case P_RECORD:
+               printf("RECORD{");
+               printRecArr(patt->info.record);
+               printf("}");
+               break;
+             case P_CONSTR:
+               printPStructor(patt->info.constr);
+               break;
+             default:
+               printf("Error in printPatt\n");
+               exit(-1);
+               break;
+          }
      }
 }
 
@@ -347,25 +347,25 @@ printRecord(PE_RECORD **record)
      char *parent       = NULL;
      int   numStructors = 0;
      assert(record);
-     
+
      parent = getStructorParent(record[0]->destr);
      numStructors = getNumStructors(parent);
 
      printf("(");
-     
+
      for (count = 0; count < numStructors; count++) {
-	  if (record[count]) {
-	       if (count != 0)
-		    printf(", ");
-	       printf("%s:", record[0]->destr);
-	       printExpr(record[0]->expr);
-	  }
-	  else {
-	       printMsg(WARN_MSG, "printRecord - incomplete number of destructors");
-	       /* !!!! set parse error flag */
-	  }
+          if (record[count]) {
+               if (count != 0)
+                    printf(", ");
+               printf("%s:", record[0]->destr);
+               printExpr(record[0]->expr);
+          }
+          else {
+               printMsg(WARN_MSG, "printRecord - incomplete number of destructors");
+               /* !!!! set parse error flag */
+          }
      }
-     printf(")");     
+     printf(")");
 }
 
 /*********************************
@@ -381,21 +381,21 @@ printFold(PE_FOLD **fold)
      char *parent       = NULL;
 
      assert(fold);
-     
+
      parent = getStructorParent(fold[0]->constr);
      numStructors = getNumStructors(parent);
 
      printf("{| ");
      for (count = 0; count < numStructors; count++) {
-	  if (fold[count]) {
-	       if (count) printf(" | ");
-	       printf("%s:", fold[count]->constr);
-	       printList((LIST *) fold[count]->phrases);
-	  }
-	  else {
-	       printMsg(WARN_MSG, "printFold - incomplete number of contructors");
-	       /* !!!! set parse error flag */
-	  }
+          if (fold[count]) {
+               if (count) printf(" | ");
+               printf("%s:", fold[count]->constr);
+               printList((LIST *) fold[count]->phrases);
+          }
+          else {
+               printMsg(WARN_MSG, "printFold - incomplete number of contructors");
+               /* !!!! set parse error flag */
+          }
      }
      printf("|}");
 }
@@ -412,7 +412,7 @@ printFold(PE_FOLD **fold)
 static
 void
 printPhraseArr (PE_MAP_PHRASE *phrases,
-		int            numParams)
+                int            numParams)
 {
   int index = 0;
 
@@ -422,21 +422,21 @@ printPhraseArr (PE_MAP_PHRASE *phrases,
   for (index = 0; index < numParams; index++)
     {
       if (phrases[index].positive)
-	{
-	  printList ((LIST *)phrases[index].positive);
+        {
+          printList ((LIST *)phrases[index].positive);
 
-	  if (phrases[index].negative)
-	    printf (" & ");
-	}
+          if (phrases[index].negative)
+            printf (" & ");
+        }
 
       if (phrases[index].negative)
-	printList ((LIST *)phrases[index].negative);
+        printList ((LIST *)phrases[index].negative);
 
       if (!phrases[index].positive && !phrases[index].negative)
-	printf ("_");
+        printf ("_");
 
       if (index < numParams - 1)
-	printf (", ");
+        printf (", ");
     }
 }
 
@@ -478,11 +478,11 @@ printUnfold(PE_UNFOLD **unfold)
 
      printf("(| ");
      for (count = 0; count < numStructors; count++) {
-	  if (unfold[count]) {
-	       if (count) printf("\n | ");
-	       printf("%s:", unfold[count]->destr);
-	       printList((LIST *) unfold[count]->phrases);
-	  }
+          if (unfold[count]) {
+               if (count) printf("\n | ");
+               printf("%s:", unfold[count]->destr);
+               printList((LIST *) unfold[count]->phrases);
+          }
      }
 
      printf("|) ");
@@ -500,34 +500,34 @@ printTerm(PE_TERM *term)
      assert(term);
 
      switch (term->tag) {
-	case T_STRUCTOR:
-	  printf("%s", term->info.struct_name);
-	  break;
-	case T_MACRO:
-	  printf("%s", term->info.macro->macro_name);
-	  break;
-	case T_FUNCTION:
-	  printf("%s", term->info.function->fun_name);
-	  break;
-	case T_CASE:
-	  printCase(term->info.cases);
-	  break;
-	case T_RECORD:
-	  printRecord(term->info.records);
-	  break;
-	case T_FOLD:
-	  printFold(term->info.folds);
-	  break;
-	case T_MAP:
-	  printMap(term->info.maps);
-	  break;
-	case T_UNFOLD:
-	  printUnfold(term->info.unfolds);
-	  break; 
-	default:
-	  printf("printTerm(): term not recognized\n");
-	  exit(-1);
-	  break;
+        case T_STRUCTOR:
+          printf("%s", term->info.struct_name);
+          break;
+        case T_MACRO:
+          printf("%s", term->info.macro->macro_name);
+          break;
+        case T_FUNCTION:
+          printf("%s", term->info.function->fun_name);
+          break;
+        case T_CASE:
+          printCase(term->info.cases);
+          break;
+        case T_RECORD:
+          printRecord(term->info.records);
+          break;
+        case T_FOLD:
+          printFold(term->info.folds);
+          break;
+        case T_MAP:
+          printMap(term->info.maps);
+          break;
+        case T_UNFOLD:
+          printUnfold(term->info.unfolds);
+          break;
+        default:
+          printf("printTerm(): term not recognized\n");
+          exit(-1);
+          break;
      }
 }
 
@@ -540,33 +540,33 @@ printTerm(PE_TERM *term)
 void
 printExpr(PE_EXPR *expr)
 {
-     if (expr) { 
-	  switch (expr->tag) {
-	     case E_VAR:
-	       printf("VAR(%s)", expr->info.var);
-	       break;
-	     case E_APP:
-	       printf("APP(");
-	       printTerm(expr->info.app.term); 
-	       printf(", ");
-	       printExpr(expr->info.app.expr);
-	       printf(")");
-	       break;
-	     case E_PAIR:
-	       printf("PAIR(");
-	       printExpr(expr->info.epair.l);
-	       printf(", ");
-	       printExpr(expr->info.epair.r);
-	       printf(")");
-	       break;
-	     case E_BANG:
-	       printf("()");
-	       break;
-	     default:
-	       printf("printExpr: Error\n");
-	       exit(-1);
-	       break;
-	  }
+     if (expr) {
+          switch (expr->tag) {
+             case E_VAR:
+               printf("VAR(%s)", expr->info.var);
+               break;
+             case E_APP:
+               printf("APP(");
+               printTerm(expr->info.app.term);
+               printf(", ");
+               printExpr(expr->info.app.expr);
+               printf(")");
+               break;
+             case E_PAIR:
+               printf("PAIR(");
+               printExpr(expr->info.epair.l);
+               printf(", ");
+               printExpr(expr->info.epair.r);
+               printf(")");
+               break;
+             case E_BANG:
+               printf("()");
+               break;
+             default:
+               printf("printExpr: Error\n");
+               exit(-1);
+               break;
+          }
      }
 }
 
@@ -580,25 +580,25 @@ void
 printVarBase(PE_VAR_BASE *var_base)
 {
      if (var_base) {
-	  switch (var_base->tag) {
-	     case VB_BANG:
-	       printf("()");
-	       break;
-	     case VB_VAR:
-	       printf("%s", var_base->info.var);
-	       break;
-	     case VB_PAIR:
-	       printf("(");
-	       printVarBase(var_base->info.vbpair.l);
-	       printf(",");
-	       printVarBase(var_base->info.vbpair.r);
-	       printf(")");
-	       break;
-	     default:
-	       printf("printExpr: Error\n");
-	       exit(-1);
-	       break;
-	  }
+          switch (var_base->tag) {
+             case VB_BANG:
+               printf("()");
+               break;
+             case VB_VAR:
+               printf("%s", var_base->info.var);
+               break;
+             case VB_PAIR:
+               printf("(");
+               printVarBase(var_base->info.vbpair.l);
+               printf(",");
+               printVarBase(var_base->info.vbpair.r);
+               printf(")");
+               break;
+             default:
+               printf("printExpr: Error\n");
+               exit(-1);
+               break;
+          }
      }
 }
 
@@ -619,15 +619,15 @@ displayDef(PE_DEF *def)
      printf("} ");
 
      if (def->type_sig) {
-	  printf(": ");
-	  printTypeSig(def->type_sig);
+          printf(": ");
+          printTypeSig(def->type_sig);
      }
 
      printf(" (");
      printVarBase(def->var_base);
      printf(") = \n");
 
-     printExpr(def->expr); 
+     printExpr(def->expr);
      printf("\n");
 }
 

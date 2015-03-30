@@ -99,22 +99,22 @@ typedef struct _ST_TYPE     /* THE CHARITY TYPES THEMSELVES */
   union
     {
       struct
-	{
-	  ST_KEY           key;
-	  struct _ST_TYPE *l;
-	  struct _ST_TYPE *r;
-	}
+    {
+      ST_KEY           key;
+      struct _ST_TYPE *l;
+      struct _ST_TYPE *r;
+    }
       prod;
 
       int     parametric_var;     /* OBSOLETE...         */
       ST_PVAR param_var;          /* ...USE THIS INSTEAD */
 
       struct
-	{
-	  char             *name;     /* OBSOLETE...         */
-	  ST_KEY            key;      /* ...USE THIS INSTEAD */
-	  struct _ST_TYPE **args;
-	}
+    {
+      char             *name;     /* OBSOLETE...         */
+      ST_KEY            key;      /* ...USE THIS INSTEAD */
+      struct _ST_TYPE **args;
+    }
       user_data;
     }
   info;
@@ -154,7 +154,7 @@ typedef struct _ST_TYPE_SIG     /* THE CHARITY TYPE SIGNATURES */
 
   struct _ST_TYPE_SIG **params;            /* NULL TERMINATED              */
 
-  BBOOL			userspecified;     /* FOR MACROS AND FUNCTIONS     */
+  BBOOL         userspecified;     /* FOR MACROS AND FUNCTIONS     */
                                            /* TYPECHECKER NEEDS TO KNOW IF */
                                            /* TYPE WAS SPECIFIED BY USER   */
 }
@@ -275,18 +275,18 @@ extern void st_ShowDatatypeCombinators (ST_KEY dataKey);
 /* MISC: */
 
 extern void st_UpdateTypeSig               (ST_KEY       key,
-					    ST_TYPE_SIG *newsig);
+                        ST_TYPE_SIG *newsig);
 extern void st_LinkMacroTypeSigsToFunction (ST_KEY       fnkey);
 
 extern ST_TYPE *st_SubstType (MEMORY    heap,       /* MAP OVER THE TYPE */
-			      ST_TYPE  *type,
-			      ST_TYPE  *state,
-			      ST_TYPE **parms);
+                  ST_TYPE  *type,
+                  ST_TYPE  *state,
+                  ST_TYPE **parms);
 
 extern BBOOL st_KeysEqual   (ST_KEY  k1,
-			     ST_KEY  k2);
+                 ST_KEY  k2);
 extern BBOOL st_ParamsEqual (ST_PVAR p1,
-			     ST_PVAR p2);
+                 ST_PVAR p2);
 
 
 /*********************************

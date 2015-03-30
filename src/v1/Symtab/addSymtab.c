@@ -30,80 +30,80 @@ MEMORY scratchHD;                        /* must be created & cleaned up */
  *****************************************************************************/
 
 /* prototypes */
-static BBOOL      existsStateVar(char *domainId,  
-				  STR_LIST *domainVars, 
-				  char *codomainId,
-				  STR_LIST *codomainVars, 
-				  PE_LIST_STRUCTOR *structors, 
-				  ST_DT_KIND kind);
+static BBOOL      existsStateVar(char *domainId,
+                                  STR_LIST *domainVars,
+                                  char *codomainId,
+                                  STR_LIST *codomainVars,
+                                  PE_LIST_STRUCTOR *structors,
+                                  ST_DT_KIND kind);
 
 /* [H-O] ADDED THE LAST PARAMETER (SEE BELOW): */
 
-static BBOOL      areValidStructDefns(PE_LIST_STRUCTOR *structors, 
-				      char             *name,
-				      STR_LIST         *paramList, 
-				      char             *stateVar,
-				      BBOOL             nameClash,
-				      ST_DT_KIND        class);
+static BBOOL      areValidStructDefns(PE_LIST_STRUCTOR *structors,
+                                      char             *name,
+                                      STR_LIST         *paramList,
+                                      char             *stateVar,
+                                      BBOOL             nameClash,
+                                      ST_DT_KIND        class);
 
 /* [H-O] ADDED THE LAST PARAMETER (SEE BELOW): */
 
-static void       domainOK (PE_TYPE  *domain, 
-			    STR_LIST *paramList, 
-			    char     *stateVar,
-			    char     *main,
-			    char     *structName,
-			    char     *name,
-			    BBOOL     allowStateVar);
+static void       domainOK (PE_TYPE  *domain,
+                            STR_LIST *paramList,
+                            char     *stateVar,
+                            char     *main,
+                            char     *structName,
+                            char     *name,
+                            BBOOL     allowStateVar);
 
-static void       putTypeSig(ST_TYPE *main, 
-			      PE_TYPE *peMain, 
-			      STR_LIST *paramList);
+static void       putTypeSig(ST_TYPE *main,
+                              PE_TYPE *peMain,
+                              STR_LIST *paramList);
 
 /* [H-O] ADDED THESE FUNCTIONS (SEE BELOW): */
 
 static BBOOL      VarCheck  (ST_ENTRY *typeEntry);
 static void       CheckType (V_VARIANCE  v,
-			     ST_TYPE    *type,
-			     V_VARIANCE *varity,
-			     V_VARIANCE *stateVariance);
+                             ST_TYPE    *type,
+                             V_VARIANCE *varity,
+                             V_VARIANCE *stateVariance);
 
 /* [H-O] ALTERED THE TYPE OF THE SECOND PARAMETER (SEE parse.h): */
 
 static void       addTypeSigToEntry (ST_TYPE_SIG          *typeSig,
-				     PE_STRUCTOR_TYPE_SIG *peTypeSig,
-				     STR_LIST             *paramList);
+                                     PE_STRUCTOR_TYPE_SIG *peTypeSig,
+                                     STR_LIST             *paramList);
 
-static void       putStructorEntry(PE_STRUCTOR *structor, 
-				    STR_LIST *paramList, 
-				    int i,
-				    ST_ENTRY *parent,
-				   ST_KEY key);
+static void       putStructorEntry(PE_STRUCTOR *structor,
+                                    STR_LIST *paramList,
+                                    int i,
+                                    ST_ENTRY *parent,
+                                   ST_KEY key);
 static ST_ENTRY  *st_MakeOpComb(char *combName, char *name, ST_ENTRY *parent, int posn);
-static ST_TYPE_SIG *st_MakeCaseTypeSig(ST_ENTRY *combName, 
-				     ST_KEY *structKeys, 
-				     int numStructs);
-static ST_TYPE_SIG *st_MakeFoldTypeSig(ST_ENTRY *combEntry, 
-				       ST_KEY *structKeys, 
-				       int numStructs);
+static ST_TYPE_SIG *st_MakeCaseTypeSig(ST_ENTRY *combName,
+                                     ST_KEY *structKeys,
+                                     int numStructs);
+static ST_TYPE_SIG *st_MakeFoldTypeSig(ST_ENTRY *combEntry,
+                                       ST_KEY *structKeys,
+                                       int numStructs);
 
 /* [H-O] ADDED THE THIRD PARAMETER TO THE PROTOTYPE (SEE BELOW): */
 
 static ST_TYPE_SIG *st_MakeMapTypeSig (ST_ENTRY   *combEntry,
-				       int         numParams,
-				       V_VARIANCE *varity);
+                                       int         numParams,
+                                       V_VARIANCE *varity);
 
-static ST_TYPE_SIG *st_MakeUnfoldTypeSig(ST_ENTRY *combEntry, 
-					 ST_KEY *structKeys, 
-					 int numStructs);
-static ST_TYPE_SIG *st_MakeRecordTypeSig(ST_ENTRY *combEntry, 
-					 ST_KEY *structKeys, 
-					 int numStructs);
+static ST_TYPE_SIG *st_MakeUnfoldTypeSig(ST_ENTRY *combEntry,
+                                         ST_KEY *structKeys,
+                                         int numStructs);
+static ST_TYPE_SIG *st_MakeRecordTypeSig(ST_ENTRY *combEntry,
+                                         ST_KEY *structKeys,
+                                         int numStructs);
 static ST_TYPE_SIG *st_MakeGenCombTypeSig(ST_KEY *structKeys,
-					  int numStructs,
-					  ST_TYPE *rplcmnt,
-					  ST_PVAR env,
-					  ST_PVAR cod);
+                                          int numStructs,
+                                          ST_TYPE *rplcmnt,
+                                          ST_PVAR env,
+                                          ST_PVAR cod);
 
 static BBOOL      st_ContainsStateVar(ST_TYPE *type);
 static ST_TYPE   *st_ReplaceStateVar(ST_TYPE *type, ST_TYPE *rplcmnt);
@@ -113,35 +113,35 @@ static BBOOL       st_IsNameClash(char *name);
 static BBOOL       st_HandleNameClash(ST_ENTRY *entry, char *kind);
 
 static ST_DT_KIND     checkDatatype(PE_DATA *dataDefn);
-static ST_ENTRY *buildTypeEntry (PE_DATA *dataDefn, 
-				      ST_DT_KIND class, 
-				      char *name, 
-				      STR_LIST *paramList);
+static ST_ENTRY *buildTypeEntry (PE_DATA *dataDefn,
+                                      ST_DT_KIND class,
+                                      char *name,
+                                      STR_LIST *paramList);
 
 static ST_TYPE      *st_MakeProdST_Type(ST_TYPE *left, ST_TYPE *right);
 
-static ST_TYPE		*st_CopyType(ST_TYPE *type);
-static ST_TYPE_SIG	*st_CopyTypeSig(ST_TYPE_SIG *sig, int numParams);
+static ST_TYPE          *st_CopyType(ST_TYPE *type);
+static ST_TYPE_SIG      *st_CopyTypeSig(ST_TYPE_SIG *sig, int numParams);
 
-static ST_KEY        st_AddMacro(ST_KEY funKey, 
-				 PE_MACRO *macro, 
-				 ST_TYPE_SIG *mSig, 
-				 int i);
+static ST_KEY        st_AddMacro(ST_KEY funKey,
+                                 PE_MACRO *macro,
+                                 ST_TYPE_SIG *mSig,
+                                 int i);
 
 static ST_KEY        _st_AddFunction(PE_DEF *def);
 
-static ST_TYPE_SIG *st_DefSigToEntrySig(PE_TYPE_SIG *defSig, 
-					PE_LIST_MACRO *macros);
-static ST_TYPE_SIG *st_PESigToEntrySig(PE_TYPE_SIG *PESig, 
-				       STR_LIST **pNameList);
-static ST_TYPE     *st_PETypeToEntryType(PE_TYPE *PEMain, 
-					 STR_LIST **pNameList);
-static ST_TYPE     *st_HandleDatatype(PE_LIST_TYPE *parms, 
-				      ST_ENTRY *entry, 
-				      STR_LIST **pNameList);
+static ST_TYPE_SIG *st_DefSigToEntrySig(PE_TYPE_SIG *defSig,
+                                        PE_LIST_MACRO *macros);
+static ST_TYPE_SIG *st_PESigToEntrySig(PE_TYPE_SIG *PESig,
+                                       STR_LIST **pNameList);
+static ST_TYPE     *st_PETypeToEntryType(PE_TYPE *PEMain,
+                                         STR_LIST **pNameList);
+static ST_TYPE     *st_HandleDatatype(PE_LIST_TYPE *parms,
+                                      ST_ENTRY *entry,
+                                      STR_LIST **pNameList);
 
 static ST_TYPE *st_HandleParamType (char      *ident,
-				    STR_LIST **pNameList);
+                                    STR_LIST **pNameList);
 
 static ST_TYPE_SIG *st_NullSigToEntrySig(ST_PVAR *lastParam);
 static void         st_TranslateCleanup(void);
@@ -153,26 +153,26 @@ static void         st_TranslateCleanup(void);
  */
 
 static void     CheckBindings          (STR_LIST      *variables,
-					PE_TYPE       *type);
+                                        PE_TYPE       *type);
 static ST_TYPE *ExpandAlias            (PE_TYPE       *alias,
-					ST_ENTRY      *aliasEntry,
-					STR_LIST     **pNameList);
+                                        ST_ENTRY      *aliasEntry,
+                                        STR_LIST     **pNameList);
 static void     ExpansionSubstitution  (PE_TYPE       *alias,
-					ST_TYPE      **expansion,
-					int            numParams,
-					STR_LIST     **pNameList);
+                                        ST_TYPE      **expansion,
+                                        int            numParams,
+                                        STR_LIST     **pNameList);
 static void     ExpansionSubstitution2 (ST_LIST_TYPE  *types,
-					ST_TYPE      **expansion,
-					int            numParams);
+                                        ST_TYPE      **expansion,
+                                        int            numParams);
 
 
 static ST_LIST_TYPE *StTypeListCons  (ST_TYPE      *x,
-				      ST_LIST_TYPE *xs,
-				      MEMORY        hd);
+                                      ST_LIST_TYPE *xs,
+                                      MEMORY        hd);
 static ST_TYPE      *StTypeListHead  (ST_LIST_TYPE *xs);
 static ST_LIST_TYPE *StTypeListTail  (ST_LIST_TYPE *xs);
 static ST_TYPE      *StTypeListIndex (ST_LIST_TYPE *xs,
-				      int           index);
+                                      int           index);
 
 /*********************************
  *                               *
@@ -180,12 +180,12 @@ static ST_TYPE      *StTypeListIndex (ST_LIST_TYPE *xs,
  *                               *
  *********************************/
 static BBOOL
-existsStateVar(char *domainId,  
-	       STR_LIST *domainVars, 
-	       char *codomainId,
-	       STR_LIST *codomainVars, 
-	       PE_LIST_STRUCTOR *structors, 
-	       ST_DT_KIND kind) {
+existsStateVar(char *domainId,
+               STR_LIST *domainVars,
+               char *codomainId,
+               STR_LIST *codomainVars,
+               PE_LIST_STRUCTOR *structors,
+               ST_DT_KIND kind) {
 
   PE_STRUCTOR *structor;
 
@@ -201,15 +201,15 @@ existsStateVar(char *domainId,
     structor = StructorListHead(structors);
     if (kind == DT_INDUCTIVE) {
       if (strcmp(structor->type_sig->codomain->ident, domainId) != 0)
-	return(BFALSE);
+        return(BFALSE);
       if (structor->type_sig->codomain->parms)  /* stateVar takes no parms */
-	return(BFALSE);
+        return(BFALSE);
     }   /*  fi  */
     else {
       if (strcmp(structor->type_sig->domain->ident, domainId) != 0)
-	return(BFALSE);
+        return(BFALSE);
       if (structor->type_sig->domain->parms)  /* stateVar takes no parms */
-	return(BFALSE);
+        return(BFALSE);
     }   /*  esle  */
   } while ( (structors = StructorListTail(structors)) );
 
@@ -226,11 +226,11 @@ existsStateVar(char *domainId,
 
 BBOOL
 areValidStructDefns (PE_LIST_STRUCTOR *structors,
-		     char             *name,
-		     STR_LIST         *paramList,
-		     char             *stateVar,
-		     BBOOL             nameClash,
-		     ST_DT_KIND        class)     /* [H-O] ADDED (SEE BELOW) */
+                     char             *name,
+                     STR_LIST         *paramList,
+                     char             *stateVar,
+                     BBOOL             nameClash,
+                     ST_DT_KIND        class)     /* [H-O] ADDED (SEE BELOW) */
 {
   PE_STRUCTOR *structor;
   STR_LIST    *structorNames = NULL;
@@ -241,21 +241,21 @@ areValidStructDefns (PE_LIST_STRUCTOR *structors,
   do {
     structor = StructorListHead(structors);
     if (strcmp(name, structor->ident) == 0)  /* must not be type name */
-      printMsg(DELAYEDERROR_MSG, 
-	       "Datatype: %s - Structor name same as parent datatype name", 
-	       structor->ident);
-    if (StrListMember(structorNames, structor->ident)) 
+      printMsg(DELAYEDERROR_MSG,
+               "Datatype: %s - Structor name same as parent datatype name",
+               structor->ident);
+    if (StrListMember(structorNames, structor->ident))
       /* structor name can't be repeated */
-      printMsg(DELAYEDERROR_MSG, 
-	       "Datatype: %s - Structor name is repeated (%s).", 
-	       name,structor->ident);
+      printMsg(DELAYEDERROR_MSG,
+               "Datatype: %s - Structor name is repeated (%s).",
+               name,structor->ident);
     structorNames = StrListCons(structor->ident, structorNames, scratchHD);
 
-    if (StrListMember(paramList, structor->ident)) 
+    if (StrListMember(paramList, structor->ident))
       /* structor name shouldn't be a parameter name */
-      printMsg(WARN_MSG, 
-              "Datatype: %s - Structor name \"%s\" is a parameter identifier", 
-	       name,structor->ident);
+      printMsg(WARN_MSG,
+              "Datatype: %s - Structor name \"%s\" is a parameter identifier",
+               name,structor->ident);
 
     /*
      * [FIXED] ADDED A SECOND STRUCTOR NAME WARNING, WHEN IT'S THE STATE VARIABLE
@@ -265,9 +265,9 @@ areValidStructDefns (PE_LIST_STRUCTOR *structors,
 
     if (strcmp (stateVar, structor->ident) == 0)
       printMsg (WARN_MSG,
-		"Datatype: %s - Structor name \"%s\" is the state variable identifier",
-		name,
-		structor->ident);
+                "Datatype: %s - Structor name \"%s\" is the state variable identifier",
+                name,
+                structor->ident);
 
     /*
      * [H-O] THREE CHANGES:
@@ -282,35 +282,35 @@ areValidStructDefns (PE_LIST_STRUCTOR *structors,
      *
      */
 
-    domainOK (structor->type_sig->domain, 
-	      paramList, 
-	      stateVar, 
-	      "domain", 
-	      structor->ident,
-	      name,
-	      BTRUE);
+    domainOK (structor->type_sig->domain,
+              paramList,
+              stateVar,
+              "domain",
+              structor->ident,
+              name,
+              BTRUE);
 
     if (structor->type_sig->param)
       if (class == DT_INDUCTIVE)
-	printMsg (DELAYEDERROR_MSG,
-		  "Constructor %s: Invalid constructor syntax",
-		  structor->ident);
+        printMsg (DELAYEDERROR_MSG,
+                  "Constructor %s: Invalid constructor syntax",
+                  structor->ident);
       else
-	domainOK (structor->type_sig->param,
-		  paramList,
-		  stateVar,
-		  "parameter",
-		  structor->ident,
-		  name,
-		  BFALSE);
+        domainOK (structor->type_sig->param,
+                  paramList,
+                  stateVar,
+                  "parameter",
+                  structor->ident,
+                  name,
+                  BFALSE);
 
-    domainOK (structor->type_sig->codomain, 
-	      paramList, 
-	      stateVar, 
-	      "codomain", 
-	      structor->ident,
-	      name,
-	      BTRUE);
+    domainOK (structor->type_sig->codomain,
+              paramList,
+              stateVar,
+              "codomain",
+              structor->ident,
+              name,
+              BTRUE);
 
     if (!nameClash)  /* don't repeat this check after 1 failure */
       nameClash = st_IsNameClash(structor->ident);
@@ -346,33 +346,33 @@ st_IsNameClash(char *name) {
     switch (entry->tag) {
     case ST_FUNCTION :
       if (!gb_ReplaceFunctions) {
-	printMsg(PROMPT_MSG, 
-		 "Name Clash - Replace function \"%s\" definition? [y] ",
-		 entry->name);
-	nameClash = st_HandleNameClash(entry, "Function");
+        printMsg(PROMPT_MSG,
+                 "Name Clash - Replace function \"%s\" definition? [y] ",
+                 entry->name);
+        nameClash = st_HandleNameClash(entry, "Function");
       }
       else
-	nameClash = BFALSE;
-      if (!nameClash) 
-	printMsg(WARN_MSG, 
-		   "Function \"%s\" has been removed. Reload dependent functions.", entry->name);
+        nameClash = BFALSE;
+      if (!nameClash)
+        printMsg(WARN_MSG,
+                   "Function \"%s\" has been removed. Reload dependent functions.", entry->name);
       break;
     case ST_STRUCTOR :
-/*      printMsg(MSG, 
-	       "Name Clash - Structor %s already defined under datatype %s.\n",
-	       name, entry->info.structor.parent->name);
-      printMsg(PROMPT_MSG, 
-	       "Name Clash - Replace datatype \"%s\" definition? [y] ",
-	       entry->info.structor.parent->name);
+/*      printMsg(MSG,
+               "Name Clash - Structor %s already defined under datatype %s.\n",
+               name, entry->info.structor.parent->name);
+      printMsg(PROMPT_MSG,
+               "Name Clash - Replace datatype \"%s\" definition? [y] ",
+               entry->info.structor.parent->name);
 
       nameClash = st_HandleNameClash(entry, "Datatype");
 */
       nameClash = BTRUE;
       break;
     case ST_DATATYPE :
-/*      printMsg(PROMPT_MSG, 
-	       "Name Clash - Replace datatype \"%s\" definition? [y] ",
-	       entry->name);
+/*      printMsg(PROMPT_MSG,
+               "Name Clash - Replace datatype \"%s\" definition? [y] ",
+               entry->name);
       nameClash = st_HandleNameClash(entry, "Datatype");
 */
       nameClash = BTRUE;
@@ -437,40 +437,40 @@ st_HandleNameClash(ST_ENTRY *entry, char *kind) {
 static
 void
 domainOK (PE_TYPE  *domain,           /* (co)domain of structor being tested */
-	  STR_LIST *paramList,        /* datatype parameters                 */
-	  char     *stateVar,         /* datatype state variable             */
-	  char     *main,             /* "domain", "codomain", or "param"    */
-	  char     *structName,       /* name of structor being tested       */
-	  char     *name,             /* name of datatype being tested       */
-	  BBOOL     allowStateVar)    /* is the state var allowed?           */
+          STR_LIST *paramList,        /* datatype parameters                 */
+          char     *stateVar,         /* datatype state variable             */
+          char     *main,             /* "domain", "codomain", or "param"    */
+          char     *structName,       /* name of structor being tested       */
+          char     *name,             /* name of datatype being tested       */
+          BBOOL     allowStateVar)    /* is the state var allowed?           */
 {
   PE_LIST_TYPE *parms = domain->parms;
   PE_TYPE      *parm;
 
   if (strcmp(domain->ident, stateVar)==0) {
-    if (parms) 
-      printMsg(DELAYEDERROR_MSG, 
-	       "Datatype: %s - State variable has parameters "
-	       "(%s in %s of structor %s)",
-	       name, stateVar, main, structName);
+    if (parms)
+      printMsg(DELAYEDERROR_MSG,
+               "Datatype: %s - State variable has parameters "
+               "(%s in %s of structor %s)",
+               name, stateVar, main, structName);
 
     /* [H-O] ADDED THE CHECK FOR STATE VARIABLE ALLOWANCE: */
 
     if (!allowStateVar)
       printMsg (DELAYEDERROR_MSG,
-		"Datatype: %s - State variable not allowed in parameter "
-		"(%s in %s of structor %s)",
-		name,
-		stateVar,
-		main,
-		structName);
+                "Datatype: %s - State variable not allowed in parameter "
+                "(%s in %s of structor %s)",
+                name,
+                stateVar,
+                main,
+                structName);
   }
   else if (isDatatype(domain->ident)) {
-    if (TypeListLen(parms) != getNumParams(domain->ident)) 
-      printMsg(DELAYEDERROR_MSG, 
-	       "Datatype: %s - Incorrect number of parameters" 
-	       "(%s in the %s of structor %s).", 
-	       name, domain->ident, main, structName);
+    if (TypeListLen(parms) != getNumParams(domain->ident))
+      printMsg(DELAYEDERROR_MSG,
+               "Datatype: %s - Incorrect number of parameters"
+               "(%s in the %s of structor %s).",
+               name, domain->ident, main, structName);
     while (parms) {
       parm = TypeListHead(parms);
       parms = TypeListTail(parms);
@@ -484,37 +484,37 @@ domainOK (PE_TYPE  *domain,           /* (co)domain of structor being tested */
   else if (isAlias (domain->ident))
     {
       if (TypeListLen (parms) != getNumParams (domain->ident))
-	printMsg (DELAYEDERROR_MSG,
-		  "Type Alias %s: invalid number of parameters",
-		  domain->ident);
+        printMsg (DELAYEDERROR_MSG,
+                  "Type Alias %s: invalid number of parameters",
+                  domain->ident);
 
       while (parms)
-	{
-	  parm  = TypeListHead (parms);
-	  parms = TypeListTail (parms);
+        {
+          parm  = TypeListHead (parms);
+          parms = TypeListTail (parms);
 
-	  domainOK (parm,
-		    paramList,
-		    stateVar,
-		    main,
-		    structName,
-		    name,
-		    allowStateVar);
-	}
+          domainOK (parm,
+                    paramList,
+                    stateVar,
+                    main,
+                    structName,
+                    name,
+                    allowStateVar);
+        }
     }
 
   else if (StrListMember(paramList, domain->ident)) {
-    if (domain->parms) 
-      printMsg(DELAYEDERROR_MSG, 
-	       "Datatype: %s - Parameter has parameters. "
-	       "(%s in %s of structor %s).",
-	       name,domain->ident, main, structName);
+    if (domain->parms)
+      printMsg(DELAYEDERROR_MSG,
+               "Datatype: %s - Parameter has parameters. "
+               "(%s in %s of structor %s).",
+               name,domain->ident, main, structName);
   }   /*  esle fi  */
 
   else
-    printMsg(DELAYEDERROR_MSG, 
-	     "Datatype: %s - Unknown identifier (%s in %s of structor %s).", 
-	     name, domain->ident, main, structName);
+    printMsg(DELAYEDERROR_MSG,
+             "Datatype: %s - Unknown identifier (%s in %s of structor %s).",
+             name, domain->ident, main, structName);
 }
 
 
@@ -550,9 +550,9 @@ putTypeSig(ST_TYPE *main, PE_TYPE *peMain, STR_LIST *paramList)
    main->info.prod.l = (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
    putTypeSig(main->info.prod.l, TypeListHead(peMain->parms), paramList);
    main->info.prod.r = (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-   putTypeSig(main->info.prod.r, 
-	      TypeListHead( TypeListTail( peMain->parms) ), 
-	      paramList);
+   putTypeSig(main->info.prod.r,
+              TypeListHead( TypeListTail( peMain->parms) ),
+              paramList);
  }
 
  /* [BI] HANDLE BUILTINS: */
@@ -571,22 +571,22 @@ putTypeSig(ST_TYPE *main, PE_TYPE *peMain, STR_LIST *paramList)
  else if (isDatatype(ident)) {
 /*   entry = st_GetEntry(st_NameToKey(ident), NULL); */
    main->tag = TYPE_USER_DATA;
-   main->info.user_data.name = 
+   main->info.user_data.name =
      MemHeapAlloc(symTab->scopeHD, strlen(ident)+1, sizeof(char));
    strcpy(main->info.user_data.name, ident);
    main->info.user_data.key = entry->key;
 
    numParams = getNumParams(ident);
    if (numParams) {
-     main->info.user_data.args = 
+     main->info.user_data.args =
        (ST_TYPE **)MemHeapAlloc(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
      peParms = peMain->parms;
      for (i=0; i<numParams; i++) {
-       main->info.user_data.args[i] = 
-	 (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-       putTypeSig(main->info.user_data.args[i], 
-		  TypeListHead(peParms), 
-		  paramList);
+       main->info.user_data.args[i] =
+         (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
+       putTypeSig(main->info.user_data.args[i],
+                  TypeListHead(peParms),
+                  paramList);
        peParms = TypeListTail(peParms);
      }   /*  rof  */
    }   /*  fi  */
@@ -617,20 +617,20 @@ putTypeSig(ST_TYPE *main, PE_TYPE *peMain, STR_LIST *paramList)
       scratch = MemAlloc ("symtab scratch", 10000, sizeof (char *));
 
       for (i = 0; i < numParams; i++)
-	{
-	  newType = (ST_TYPE *)MemHeapAlloc (symTab->scopeHD,
-					     1,
-					     sizeof (ST_TYPE));
+        {
+          newType = (ST_TYPE *)MemHeapAlloc (symTab->scopeHD,
+                                             1,
+                                             sizeof (ST_TYPE));
 
-	  assert (newType);
-	  assert (peParms);
+          assert (newType);
+          assert (peParms);
 
-	  putTypeSig (newType, TypeListHead (peParms), paramList);
+          putTypeSig (newType, TypeListHead (peParms), paramList);
 
-	  newTypes = StTypeListCons (newType, newTypes, scratch);
+          newTypes = StTypeListCons (newType, newTypes, scratch);
 
-	  peParms = TypeListTail (peParms);
-	}
+          peParms = TypeListTail (peParms);
+        }
 
       ExpansionSubstitution2 (newTypes, &expansion, numParams);
 
@@ -659,8 +659,8 @@ putTypeSig(ST_TYPE *main, PE_TYPE *peMain, STR_LIST *paramList)
 static
 void
 addTypeSigToEntry (ST_TYPE_SIG          *typeSig,
-		   PE_STRUCTOR_TYPE_SIG *peTypeSig,
-		   STR_LIST             *paramList)
+                   PE_STRUCTOR_TYPE_SIG *peTypeSig,
+                   STR_LIST             *paramList)
 {
   typeSig->params   = NULL;
   typeSig->domain   = (ST_TYPE *)MemHeapAlloc (symTab->scopeHD, 1, sizeof (ST_TYPE));
@@ -692,11 +692,11 @@ addTypeSigToEntry (ST_TYPE_SIG          *typeSig,
       typeSig->domain->info.prod.key = PROD_KEY;
 
       typeSig->domain->info.prod.r =
-	(ST_TYPE *)MemHeapAlloc (symTab->scopeHD, 1, sizeof (ST_TYPE));
+        (ST_TYPE *)MemHeapAlloc (symTab->scopeHD, 1, sizeof (ST_TYPE));
       putTypeSig (typeSig->domain->info.prod.r, peTypeSig->domain, paramList);
 
       typeSig->domain->info.prod.l =
-	(ST_TYPE *)MemHeapAlloc (symTab->scopeHD, 1, sizeof (ST_TYPE));
+        (ST_TYPE *)MemHeapAlloc (symTab->scopeHD, 1, sizeof (ST_TYPE));
       putTypeSig (typeSig->domain->info.prod.l, peTypeSig->param, paramList);
     }
   else
@@ -714,19 +714,19 @@ addTypeSigToEntry (ST_TYPE_SIG          *typeSig,
 static
 void
 putStructorEntry(PE_STRUCTOR *structor,
-		 STR_LIST *paramList,
-		 int i,
-		 ST_ENTRY *parent,
-		 ST_KEY    key) {
+                 STR_LIST *paramList,
+                 int i,
+                 ST_ENTRY *parent,
+                 ST_KEY    key) {
 
   ST_ENTRY *structorEntry;
 
-  structorEntry = 
+  structorEntry =
     (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_ENTRY));
   structorEntry->tag = ST_STRUCTOR;
-  structorEntry->name = MemHeapAlloc(symTab->scopeHD, strlen(structor->ident)+1, 
-				     sizeof(char));
-  strcpy(structorEntry->name, structor->ident);  
+  structorEntry->name = MemHeapAlloc(symTab->scopeHD, strlen(structor->ident)+1,
+                                     sizeof(char));
+  strcpy(structorEntry->name, structor->ident);
   structorEntry->key = key;
 
   structorEntry->info.structor.posn = i;
@@ -735,8 +735,8 @@ putStructorEntry(PE_STRUCTOR *structor,
   structorEntry->info.structor.type_sig =
     (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
   addTypeSigToEntry(structorEntry->info.structor.type_sig,
-		    structor->type_sig,
-		    paramList);
+                    structor->type_sig,
+                    paramList);
 
   /* [H-O] ADDED (SEE symtabI.h): */
 
@@ -763,24 +763,24 @@ checkDatatype(PE_DATA *dataDefn) {
 
   /* Is the data defn inductive or coinductive or undefined? */
   /* Ambiguous defns are not allowed. They are useless. */
-  coinductive = existsStateVar(dataDefn->domainId,   dataDefn->domainVars, 
-			       dataDefn->codomainId, dataDefn->codomainVars, 
-			       dataDefn->structors,  DT_COINDUCTIVE);
-  inductive = existsStateVar(dataDefn->codomainId,  dataDefn->codomainVars, 
-			       dataDefn->domainId,  dataDefn->domainVars, 
-			       dataDefn->structors, DT_INDUCTIVE);
-  if (inductive && coinductive) 
-    printMsg(ERROR_MSG, 
-	   "Datatype: %s or %s - Ambiguous (may be inductive or coinductive).",
-	     dataDefn->domainId, dataDefn->codomainId);
-  else if (inductive) 
+  coinductive = existsStateVar(dataDefn->domainId,   dataDefn->domainVars,
+                               dataDefn->codomainId, dataDefn->codomainVars,
+                               dataDefn->structors,  DT_COINDUCTIVE);
+  inductive = existsStateVar(dataDefn->codomainId,  dataDefn->codomainVars,
+                               dataDefn->domainId,  dataDefn->domainVars,
+                               dataDefn->structors, DT_INDUCTIVE);
+  if (inductive && coinductive)
+    printMsg(ERROR_MSG,
+           "Datatype: %s or %s - Ambiguous (may be inductive or coinductive).",
+             dataDefn->domainId, dataDefn->codomainId);
+  else if (inductive)
     return DT_INDUCTIVE;
-  else if (coinductive) 
+  else if (coinductive)
     return DT_COINDUCTIVE;
-  else 
-    printMsg(ERROR_MSG, 
-	     "Datatype: %s or %s - No state variable.", 
-	     dataDefn->domainId, dataDefn->codomainId);
+  else
+    printMsg(ERROR_MSG,
+             "Datatype: %s or %s - No state variable.",
+             dataDefn->domainId, dataDefn->codomainId);
 
 }   /*  end checkDatatype  */
 
@@ -791,10 +791,10 @@ checkDatatype(PE_DATA *dataDefn) {
  *                               *
  *********************************/
 static ST_ENTRY *
-buildTypeEntry (PE_DATA *dataDefn, 
-		ST_DT_KIND class, 
-		char *name, 
-		STR_LIST *paramList) {
+buildTypeEntry (PE_DATA *dataDefn,
+                ST_DT_KIND class,
+                char *name,
+                STR_LIST *paramList) {
 
   int                 numStructors   = StructorListLen(dataDefn->structors),
                       i = 0;
@@ -804,7 +804,7 @@ buildTypeEntry (PE_DATA *dataDefn,
   ST_KEY              key;
 
   typeEntry = (ST_ENTRY *)MHA(symTab->scopeHD,1, sizeof(ST_ENTRY));
-  
+
   typeEntry->tag = ST_DATATYPE;
   typeEntry->name = libStrdup(symTab->scopeHD, name);
   typeEntry->key = st_MakeKey();
@@ -812,21 +812,21 @@ buildTypeEntry (PE_DATA *dataDefn,
   typeEntry->info.datatype.class = class;
   typeEntry->info.datatype.numParams = StrListLen(paramList);
   typeEntry->info.datatype.numStructors = numStructors;
-  typeEntry->info.datatype.structorNames = 
+  typeEntry->info.datatype.structorNames =
     (char **)MemHeapAlloc(symTab->scopeHD, numStructors+1, sizeof(char *));
-  typeEntry->info.datatype.structorKeys = 
+  typeEntry->info.datatype.structorKeys =
     (ST_KEY *)MemHeapAlloc(symTab->scopeHD, numStructors+1, sizeof(ST_KEY));
 
   while (structorList) {
     structor = StructorListHead(structorList);
-    typeEntry->info.datatype.structorNames[i] = libStrdup(symTab->scopeHD, 
+    typeEntry->info.datatype.structorNames[i] = libStrdup(symTab->scopeHD,
                                                           structor->ident);
     key = st_MakeKey();
     typeEntry->info.datatype.structorKeys[i] = key;
 
     /* add structor to the symbol table */
     putStructorEntry(structor, paramList, i, typeEntry, key);
-    
+
     i++;
     structorList = StructorListTail(structorList);
   }   /*  elihw  */
@@ -879,28 +879,28 @@ VarCheck (ST_ENTRY *typeEntry)
   if (typeEntry->info.datatype.class == DT_INDUCTIVE)
     for (i = 0; i < n; i++)
       {
-	typeSig = st_GetTypeSig (typeEntry->info.datatype.structorKeys[i]);
+        typeSig = st_GetTypeSig (typeEntry->info.datatype.structorKeys[i]);
 
-	CheckType (V_POSITIVE, typeSig->domain, varity, &stateVariance);
+        CheckType (V_POSITIVE, typeSig->domain, varity, &stateVariance);
       }
   else
     for (i = 0; i < n; i++)
       {
-	typeSig = st_GetTypeSig (typeEntry->info.datatype.structorKeys[i]);
+        typeSig = st_GetTypeSig (typeEntry->info.datatype.structorKeys[i]);
 
-	if (typeSig->domain->tag == TYPE_PROD)
-	  {
-	    CheckType (V_NEGATIVE,
-		       typeSig->domain->info.prod.l,
-		       varity,
-		       &stateVariance);
-	    CheckType (V_POSITIVE,
-		       typeSig->codomain,
-		       varity,
-		       &stateVariance);
-	  }
-	else
-	  CheckType (V_POSITIVE, typeSig->codomain, varity, &stateVariance);
+        if (typeSig->domain->tag == TYPE_PROD)
+          {
+            CheckType (V_NEGATIVE,
+                       typeSig->domain->info.prod.l,
+                       varity,
+                       &stateVariance);
+            CheckType (V_POSITIVE,
+                       typeSig->codomain,
+                       varity,
+                       &stateVariance);
+          }
+        else
+          CheckType (V_POSITIVE, typeSig->codomain, varity, &stateVariance);
       }
 
   if ((stateVariance != V_NEITHER) && (stateVariance != V_POSITIVE))
@@ -908,8 +908,8 @@ VarCheck (ST_ENTRY *typeEntry)
       result = BFALSE;
 
       printMsg (DELAYEDERROR_MSG,
-		"Datatype: %s - Illegal variance",
-		typeEntry->name);
+                "Datatype: %s - Illegal variance",
+                typeEntry->name);
     }
   else
     result = BTRUE;
@@ -917,10 +917,10 @@ VarCheck (ST_ENTRY *typeEntry)
   if (m > 0)
     {
       typeEntry->info.datatype.varity
-	= (V_VARIANCE *)MemHeapAlloc (symTab->scopeHD, m, sizeof (V_VARIANCE));
+        = (V_VARIANCE *)MemHeapAlloc (symTab->scopeHD, m, sizeof (V_VARIANCE));
       memcpy (typeEntry->info.datatype.varity,
-	      varity,
-	      sizeof (V_VARIANCE) * m);
+              varity,
+              sizeof (V_VARIANCE) * m);
 
       MemDealloc (scratch);
     }
@@ -935,9 +935,9 @@ VarCheck (ST_ENTRY *typeEntry)
 static
 void
 CheckType (V_VARIANCE  v,
-	   ST_TYPE    *type,
-	   V_VARIANCE *varity,
-	   V_VARIANCE *stateVariance)     /* MAY BE NULL */
+           ST_TYPE    *type,
+           V_VARIANCE *varity,
+           V_VARIANCE *stateVariance)     /* MAY BE NULL */
 {
   switch (type->tag)
     {
@@ -954,24 +954,24 @@ CheckType (V_VARIANCE  v,
 
     case TYPE_STATE_VAR:
       if (stateVariance)
-	*stateVariance = Meet (v, *stateVariance);
+        *stateVariance = Meet (v, *stateVariance);
       else
-	assert (BFALSE);
+        assert (BFALSE);
 
       break;
 
     case TYPE_USER_DATA:
       {
-	int         m       = st_GetNumParams (type->info.user_data.key);
-	V_VARIANCE *varity2 = st_GetVarity    (type->info.user_data.key);
+        int         m       = st_GetNumParams (type->info.user_data.key);
+        V_VARIANCE *varity2 = st_GetVarity    (type->info.user_data.key);
 
-	int k;
+        int k;
 
-	for (k = 0; k < m; k++)
-	  CheckType (Subst (v, varity2[k]),
-		     type->info.user_data.args[k],
-		     varity,
-		     stateVariance);
+        for (k = 0; k < m; k++)
+          CheckType (Subst (v, varity2[k]),
+                     type->info.user_data.args[k],
+                     varity,
+                     stateVariance);
       }
 
       break;
@@ -1006,13 +1006,13 @@ stAddVar(char *var, BBOOL isHO) {
  ********************/
 ST_KEY
 stAddMacro(char *name) {
- 
+
   ST_ENTRY *entry = (ST_ENTRY *) MHA(symTab->scopeHD, 1, sizeof(ST_ENTRY));
 
   entry->tag = ST_MACRO;
   entry->name = libStrdup(symTab->scopeHD, name);
   entry->key = st_MakeKey();
-  
+
   return addEntryToSymTab(entry);
 }
 
@@ -1041,7 +1041,7 @@ addDatatype(PE_DATA *dataDefn) {
   else {
     stateVar = dataDefn->domainId;
     name = dataDefn->codomainId;
-    paramList = dataDefn->codomainVars; 
+    paramList = dataDefn->codomainVars;
   }
 
   /* Are the structor type signatures valid? */
@@ -1049,11 +1049,11 @@ addDatatype(PE_DATA *dataDefn) {
   /* [H-O] ADDED THE LAST PARAMETER (SEE ABOVE): */
 
   if (areValidStructDefns (dataDefn->structors,
-			   name,
-			   paramList,
-			   stateVar,
-			   st_IsNameClash (name),
-			   class)) {
+                           name,
+                           paramList,
+                           stateVar,
+                           st_IsNameClash (name),
+                           class)) {
     typeEntry = buildTypeEntry(dataDefn, class, name, paramList);
 
     /* [H-O] ADDED THIS CALL TO THE VARIANCE CHECKER (SEE ABOVE): */
@@ -1062,50 +1062,50 @@ addDatatype(PE_DATA *dataDefn) {
 
     if (VarCheck (typeEntry))
       {
-	typeKey = addEntryToSymTab(typeEntry);
+        typeKey = addEntryToSymTab(typeEntry);
 
-	typeEntry->info.datatype.opCombKeys =
-	  (ST_KEY *)MHA(symTab->scopeHD, NUM_OPCOMBS, sizeof(ST_KEY));
-	st_AddOpCombs(typeKey);
+        typeEntry->info.datatype.opCombKeys =
+          (ST_KEY *)MHA(symTab->scopeHD, NUM_OPCOMBS, sizeof(ST_KEY));
+        st_AddOpCombs(typeKey);
 
-	/* [H-O] [CLEAN] PRINTING SHOULD BE THROUGH THE I/O MODULE: */
+        /* [H-O] [CLEAN] PRINTING SHOULD BE THROUGH THE I/O MODULE: */
 
-	printf ("\nDatatype added: %s", typeEntry->name);
+        printf ("\nDatatype added: %s", typeEntry->name);
 
-	if (typeEntry->info.datatype.numParams > 0)
-	  {
-	    int i;
+        if (typeEntry->info.datatype.numParams > 0)
+          {
+            int i;
 
-	    printf (" [ ");
+            printf (" [ ");
 
-	    for (i = 0; i < typeEntry->info.datatype.numParams; i++)
-	      switch (typeEntry->info.datatype.varity[i])
-		{
-		case V_NEITHER:
-		  printf ("? ");
+            for (i = 0; i < typeEntry->info.datatype.numParams; i++)
+              switch (typeEntry->info.datatype.varity[i])
+                {
+                case V_NEITHER:
+                  printf ("? ");
 
-		  break;
+                  break;
 
-		case V_POSITIVE:
-		  printf ("+ ");
+                case V_POSITIVE:
+                  printf ("+ ");
 
-		  break;
+                  break;
 
-		case V_NEGATIVE:
-		  printf ("- ");
+                case V_NEGATIVE:
+                  printf ("- ");
 
-		  break;
+                  break;
 
-		case V_BOTH:
-		  printf ("* ");
+                case V_BOTH:
+                  printf ("* ");
 
-		  break;
-		}
+                  break;
+                }
 
-	    printf ("]\n\n");
-	  }
-	else
-	  printf (" []\n\n");
+            printf ("]\n\n");
+          }
+        else
+          printf (" []\n\n");
       }
     else
       delayedErrorCount = 0;
@@ -1144,8 +1144,8 @@ addAlias (PE_ALIAS *alias)
   assert (entry);
 
   entry->name = (char *)MemHeapAlloc (symTab->scopeHD,
-				      strlen (alias->name) + 1,
-				      sizeof (char));
+                                      strlen (alias->name) + 1,
+                                      sizeof (char));
 
   assert (entry->name);
 
@@ -1157,24 +1157,24 @@ addAlias (PE_ALIAS *alias)
 
   numParams = entry->info.alias.numParams = StrListLen (alias->variables);
   entry->info.alias.expansion = st_PETypeToEntryType (alias->type,
-						      &alias->variables);
+                                                      &alias->variables);
 
   if (numParams > 0)
     {
       entry->info.alias.varity =
-	(V_VARIANCE *)MemHeapAlloc (symTab->scopeHD,
-				    numParams,
-				    sizeof (V_VARIANCE));
+        (V_VARIANCE *)MemHeapAlloc (symTab->scopeHD,
+                                    numParams,
+                                    sizeof (V_VARIANCE));
 
       assert (entry->info.alias.varity);
 
       for (i = 0; i < numParams; i++)
-	entry->info.alias.varity[i] = V_NEITHER;
+        entry->info.alias.varity[i] = V_NEITHER;
 
       CheckType (V_POSITIVE,
-		 entry->info.alias.expansion,
-		 entry->info.alias.varity,
-		 NULL);
+                 entry->info.alias.expansion,
+                 entry->info.alias.varity,
+                 NULL);
     }
   else
     entry->info.alias.varity = NULL;
@@ -1188,28 +1188,28 @@ addAlias (PE_ALIAS *alias)
       printf (" [ ");
 
       for (i = 0; i < numParams; i++)
-	switch (entry->info.alias.varity[i])
-	  {
-	  case V_NEITHER:
-	    printf ("? ");
+        switch (entry->info.alias.varity[i])
+          {
+          case V_NEITHER:
+            printf ("? ");
 
-	    break;
+            break;
 
-	  case V_POSITIVE:
-	    printf ("+ ");
+          case V_POSITIVE:
+            printf ("+ ");
 
-	    break;
+            break;
 
-	  case V_NEGATIVE:
-	    printf ("- ");
+          case V_NEGATIVE:
+            printf ("- ");
 
-	    break;
+            break;
 
-	  case V_BOTH:
-	    printf ("* ");
+          case V_BOTH:
+            printf ("* ");
 
-	    break;
-	  }
+            break;
+          }
 
       printf ("]\n\n");
     }
@@ -1227,7 +1227,7 @@ addAlias (PE_ALIAS *alias)
 static
 void
 CheckBindings (STR_LIST *variables,
-	       PE_TYPE  *type)
+               PE_TYPE  *type)
 {
   ST_KEY    key   = st_NameToKey (type->ident);
   ST_ENTRY *entry = NULL;
@@ -1240,36 +1240,36 @@ CheckBindings (STR_LIST *variables,
       entry = st_GetEntry (key, NULL);
 
       switch (entry->tag)
-	{
-	case ST_DATATYPE:
-	case ST_ALIAS:
-	  if (type->parms)
-	    {
-	      PE_LIST_TYPE *types = type->parms;
+        {
+        case ST_DATATYPE:
+        case ST_ALIAS:
+          if (type->parms)
+            {
+              PE_LIST_TYPE *types = type->parms;
 
-	      do
-		{
-		  CheckBindings (variables, TypeListHead (types));
+              do
+                {
+                  CheckBindings (variables, TypeListHead (types));
 
-		  types = TypeListTail (types);
-		}
-	      while (types);
-	    }
+                  types = TypeListTail (types);
+                }
+              while (types);
+            }
 
-	  break;
+          break;
 
-	case ST_FUNCTION:
-	case ST_MACRO:
-	case ST_STRUCTOR:
-	case ST_OPCOMB:
+        case ST_FUNCTION:
+        case ST_MACRO:
+        case ST_STRUCTOR:
+        case ST_OPCOMB:
         case ST_VAR:
-	  check = BTRUE;
+          check = BTRUE;
 
-	  break;
+          break;
 
-	default:
-	  assert (BFALSE);
-	}
+        default:
+          assert (BFALSE);
+        }
     }
   else
     check = BTRUE;
@@ -1288,8 +1288,8 @@ CheckBindings (STR_LIST *variables,
 static
 ST_TYPE *
 ExpandAlias (PE_TYPE   *alias,
-	     ST_ENTRY  *aliasEntry,
-	     STR_LIST **pNameList)
+             ST_ENTRY  *aliasEntry,
+             STR_LIST **pNameList)
 {
   ST_TYPE *expansion = NULL;
   int      numParams = 0;
@@ -1329,52 +1329,52 @@ ExpandAlias (PE_TYPE   *alias,
 static
 void
 ExpansionSubstitution (PE_TYPE   *alias,
-		       ST_TYPE  **expansion,
-		       int        numParams,
-		       STR_LIST **pNameList)
+                       ST_TYPE  **expansion,
+                       int        numParams,
+                       STR_LIST **pNameList)
 {
   switch ((*expansion)->tag)
     {
     case TYPE_PARAMETRIC_VAR:
       {
 /*
-	int position =
-	  (numParams - (int)(*expansion)->info.param_var) - 1;
+        int position =
+          (numParams - (int)(*expansion)->info.param_var) - 1;
 */
 
-	int position = (int)(*expansion)->info.param_var;
+        int position = (int)(*expansion)->info.param_var;
 
-	/* [FIX] MEMORY LEAK */
+        /* [FIX] MEMORY LEAK */
 
-	*expansion =
-	  st_PETypeToEntryType (TypeListIndex (alias->parms, position),
-				pNameList);
+        *expansion =
+          st_PETypeToEntryType (TypeListIndex (alias->parms, position),
+                                pNameList);
       }
 
       break;
 
     case TYPE_PROD:
       ExpansionSubstitution (alias,
-			     &(*expansion)->info.prod.l,
-			     numParams,
-			     pNameList);
+                             &(*expansion)->info.prod.l,
+                             numParams,
+                             pNameList);
       ExpansionSubstitution (alias,
-			     &(*expansion)->info.prod.r,
-			     numParams,
-			     pNameList);
+                             &(*expansion)->info.prod.r,
+                             numParams,
+                             pNameList);
 
       break;
 
     case TYPE_USER_DATA:
       {
-	int numDataParams = st_GetNumParams ((*expansion)->info.user_data.key);
-	int index         = 0;
+        int numDataParams = st_GetNumParams ((*expansion)->info.user_data.key);
+        int index         = 0;
 
-	for (index = 0; index < numDataParams; index++)
-	  ExpansionSubstitution (alias,
-				 &(*expansion)->info.user_data.args[index],
-				 numParams,
-				 pNameList);
+        for (index = 0; index < numDataParams; index++)
+          ExpansionSubstitution (alias,
+                                 &(*expansion)->info.user_data.args[index],
+                                 numParams,
+                                 pNameList);
       }
 
       break;
@@ -1397,8 +1397,8 @@ ExpansionSubstitution (PE_TYPE   *alias,
 static
 void
 ExpansionSubstitution2 (ST_LIST_TYPE  *types,
-			ST_TYPE      **expansion,
-			int            numParams)
+                        ST_TYPE      **expansion,
+                        int            numParams)
 {
   switch ((*expansion)->tag)
     {
@@ -1406,9 +1406,9 @@ ExpansionSubstitution2 (ST_LIST_TYPE  *types,
       /* [FIX] MEMORY LEAK */
 
       memcpy (*expansion,
-	      StTypeListIndex (types,
-			       (numParams - (int)(*expansion)->info.param_var) - 1),
-	      sizeof (ST_TYPE));
+              StTypeListIndex (types,
+                               (numParams - (int)(*expansion)->info.param_var) - 1),
+              sizeof (ST_TYPE));
 
       break;
 
@@ -1420,13 +1420,13 @@ ExpansionSubstitution2 (ST_LIST_TYPE  *types,
 
     case TYPE_USER_DATA:
       {
-	int numParams = st_GetNumParams ((*expansion)->info.user_data.key);
-	int index     = 0;
+        int numParams = st_GetNumParams ((*expansion)->info.user_data.key);
+        int index     = 0;
 
-	for (index = 0; index < numParams; index++)
-	  ExpansionSubstitution2 (types,
-				  &(*expansion)->info.user_data.args[index],
-				  numParams);
+        for (index = 0; index < numParams; index++)
+          ExpansionSubstitution2 (types,
+                                  &(*expansion)->info.user_data.args[index],
+                                  numParams);
       }
 
       break;
@@ -1445,8 +1445,8 @@ ExpansionSubstitution2 (ST_LIST_TYPE  *types,
 static
 ST_LIST_TYPE *
 StTypeListCons (ST_TYPE      *x,
-		ST_LIST_TYPE *xs,
-		MEMORY        hd)
+                ST_LIST_TYPE *xs,
+                MEMORY        hd)
 {
   assert (x);
 
@@ -1474,7 +1474,7 @@ StTypeListTail (ST_LIST_TYPE *xs)
 static
 ST_TYPE *
 StTypeListIndex (ST_LIST_TYPE *xs,
-		 int           index)
+                 int           index)
 {
   assert (xs);
   assert (index >= 0);
@@ -1528,30 +1528,30 @@ _st_AddFunction(PE_DEF *def) {
   strcpy(funEntry->name, fName);
   funEntry->key  = st_MakeKey();
   funEntry->nextEntry = NULL;
-  
+
   addEntryToSymTab(funEntry);
 
   funEntry->info.function.instr = MCinvalid;     /* [BI] ADDED (SEE miscSymtab.c) */
 
   funEntry->info.function.type_sig  = fSig;
   funEntry->info.function.numMacros = numMacros;
-  funEntry->info.function.macroNames = 
+  funEntry->info.function.macroNames =
     (char **)MHA(symTab->scopeHD, numMacros+1, sizeof(char *));
   funEntry->info.function.macroNames[numMacros] = NULL;
-  funEntry->info.function.macroKeys = 
+  funEntry->info.function.macroKeys =
     (ST_KEY *)MHA(symTab->scopeHD, numMacros+1, sizeof(ST_KEY));
   funEntry->info.function.macroKeys[numMacros] = 0;
 
   for (i=0; i<numMacros; i++) {
     macro = MacroListHead(macros);
     macros = MacroListTail(macros);
-    funEntry->info.function.macroNames[i] = 
+    funEntry->info.function.macroNames[i] =
       lb_BuildMacroName(symTab->scopeHD, fName, macro->ident);
-    funEntry->info.function.macroKeys[i] = 
+    funEntry->info.function.macroKeys[i] =
       st_AddMacro(funEntry->key, macro, fSig->params[i], i);
   }
 
-  return(funEntry->key);  
+  return(funEntry->key);
 
 }
 
@@ -1562,10 +1562,10 @@ _st_AddFunction(PE_DEF *def) {
  *                               *
  *********************************/
 static ST_KEY
-st_AddMacro(ST_KEY funKey, 
-	    PE_MACRO *macro, 
-	    ST_TYPE_SIG *mSig, 
-	    int i) {
+st_AddMacro(ST_KEY funKey,
+            PE_MACRO *macro,
+            ST_TYPE_SIG *mSig,
+            int i) {
 
   ST_ENTRY  *macEntry = (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_ENTRY));
   ST_ENTRY  *funEntry = st_GetEntry(funKey, NULL);
@@ -1574,7 +1574,7 @@ st_AddMacro(ST_KEY funKey,
   macEntry->name = lb_BuildMacroName(symTab->scopeHD, funEntry->name, macro->ident);
   macEntry->key  = st_MakeKey();
   macEntry->nextEntry = NULL;
-  
+
   macEntry->info.macros.posn = i;
   macEntry->info.macros.parent_type = funEntry;
   macEntry->info.macros.type_sig = mSig;
@@ -1597,7 +1597,7 @@ st_DefSigToEntrySig(PE_TYPE_SIG *defSig, PE_LIST_MACRO *macros) {
   ST_TYPE_SIG   *sig = (ST_TYPE_SIG *)MHA(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
   PE_MACRO      *macro;
   ST_PVAR        lastParam = 0;
-  ST_PVAR	 contextParam;
+  ST_PVAR        contextParam;
   int            numMacros = MacroListLen(macros),
                  i;
   STR_LIST     *pNameList = NULL;
@@ -1658,8 +1658,8 @@ not needed for term logic typechecking
 
   for (i=0; i<numMacros; i++) {
     if (sig->params[i]->userspecified == BFALSE) {
-	sig->params[i]->domain->info.param_var = lastParam++;
-	sig->params[i]->codomain->info.param_var = lastParam++;
+        sig->params[i]->domain->info.param_var = lastParam++;
+        sig->params[i]->codomain->info.param_var = lastParam++;
     }
 }
 #if 0
@@ -1726,7 +1726,7 @@ st_PETypeToEntryType(PE_TYPE *PEMain, STR_LIST **pNameList) {
 
     case ST_ALIAS:
       if (TypeListLen (PEMain->parms) != entry->info.alias.numParams)
-	printMsg (ERROR_MSG, "Invalid number of parameters");
+        printMsg (ERROR_MSG, "Invalid number of parameters");
 
       main = ExpandAlias (PEMain, entry, pNameList);
 
@@ -1744,9 +1744,9 @@ st_PETypeToEntryType(PE_TYPE *PEMain, STR_LIST **pNameList) {
      printMsg(FATAL_MSG,"st_PETypeToEntryType() - invalid tag %d", entry->tag);
     }
   }
-  else 
+  else
     main = st_HandleParamType(PEMain->ident, pNameList);
-  
+
   return(main);
 
 }
@@ -1776,16 +1776,16 @@ st_HandleDatatype (PE_LIST_TYPE *parms, ST_ENTRY *entry, STR_LIST **pNameList)
     }
     else {
       st_TranslateCleanup();
-      printMsg(ERROR_MSG, "In use defined type, " PROD_TYPE 
-	       " has %d arguments (should be 2).", len);
+      printMsg(ERROR_MSG, "In use defined type, " PROD_TYPE
+               " has %d arguments (should be 2).", len);
     }
   }
   else if (entry->key == TERM_KEY) {
     type->tag = TYPE_1;
     if (len != 0) {
       st_TranslateCleanup();
-      printMsg(ERROR_MSG, "In user defined type, " TERMINAL_TYPE 
-	       " has %d arguments (should be 0).", len);
+      printMsg(ERROR_MSG, "In user defined type, " TERMINAL_TYPE
+               " has %d arguments (should be 0).", len);
     }
   }
 
@@ -1796,20 +1796,20 @@ st_HandleDatatype (PE_LIST_TYPE *parms, ST_ENTRY *entry, STR_LIST **pNameList)
       type->tag = TYPE_BUILTIN_CHAR;
 
       if (len != 0)
-	{
-	  st_TranslateCleanup ();
-	  printMsg (ERROR_MSG, "Type " CHAR_TYPENAME " has 0 parameters");
-	}
+        {
+          st_TranslateCleanup ();
+          printMsg (ERROR_MSG, "Type " CHAR_TYPENAME " has 0 parameters");
+        }
     }
   else if (entry->key == INT_KEY)
     {
       type->tag = TYPE_BUILTIN_INT;
 
       if (len != 0)
-	{
-	  st_TranslateCleanup ();
-	  printMsg (ERROR_MSG, "Type " INT_TYPENAME " has 0 parameters");
-	}
+        {
+          st_TranslateCleanup ();
+          printMsg (ERROR_MSG, "Type " INT_TYPENAME " has 0 parameters");
+        }
     }
 
   else {
@@ -1817,19 +1817,19 @@ st_HandleDatatype (PE_LIST_TYPE *parms, ST_ENTRY *entry, STR_LIST **pNameList)
     if (len == entry->info.datatype.numParams) {
       type->info.user_data.name = entry->name;
       type->info.user_data.key = entry->key;
-      type->info.user_data.args = 
-	(ST_TYPE **)MHA(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
+      type->info.user_data.args =
+        (ST_TYPE **)MHA(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
       type->info.user_data.args[numParams] = NULL;
       for (i=0; i<numParams; i++) {
-	type->info.user_data.args[i] = 
-	  st_PETypeToEntryType(TypeListHead(parms), pNameList);
-	parms = TypeListTail(parms);
+        type->info.user_data.args[i] =
+          st_PETypeToEntryType(TypeListHead(parms), pNameList);
+        parms = TypeListTail(parms);
       }
     }   /*  fi  */
     else {
       st_TranslateCleanup();
       printMsg(ERROR_MSG, "In user defined type, %s has %d arguments (should "
-	       "be %d).", entry->name, len, entry->info.datatype.numParams);
+               "be %d).", entry->name, len, entry->info.datatype.numParams);
     }   /*  esle  */
   }   /*  esle  */
 
@@ -1847,7 +1847,7 @@ st_HandleDatatype (PE_LIST_TYPE *parms, ST_ENTRY *entry, STR_LIST **pNameList)
 static
 ST_TYPE *
 st_HandleParamType (char      *ident,
-		    STR_LIST **pNameList)
+                    STR_LIST **pNameList)
 {
   ST_TYPE *type = (ST_TYPE *)MHA(symTab->scopeHD, 1, sizeof(ST_TYPE));
   int      posn = StrListPosn(ident, *pNameList),
@@ -1860,7 +1860,7 @@ st_HandleParamType (char      *ident,
       *pNameList = StrListCons(ident, *pNameList, scratchHD);
       type->info.param_var = (ST_PVAR)len;
     }
-  else 
+  else
     /* need to normalize the posn to a PVAR value */
     type->info.param_var = (ST_PVAR)(len - (1 + posn));
 
@@ -1961,7 +1961,7 @@ st_AddOpCombs(ST_KEY typeKey) {
 
     combEntry = st_MakeOpComb("unfold", name, typeEntry, 1);
     combEntry->info.opcomb.numParams = numStructs;
-    combEntry->info.opcomb.type_sig = 
+    combEntry->info.opcomb.type_sig =
       st_MakeUnfoldTypeSig(combEntry, structKeys, numStructs);
   }
   combEntry = st_MakeOpComb("map", name, typeEntry, 2);
@@ -2051,8 +2051,8 @@ st_MakeFoldTypeSig(ST_ENTRY *combEntry, ST_KEY *structKeys, int numStructs) {
 static
 ST_TYPE_SIG *
 st_MakeMapTypeSig (ST_ENTRY   *combEntry,
-		   int         numParams,
-		   V_VARIANCE *varity)        /* MAY BE NULL */
+                   int         numParams,
+                   V_VARIANCE *varity)        /* MAY BE NULL */
 {
   ST_TYPE_SIG  *sig    = (ST_TYPE_SIG *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE_SIG));
   ST_TYPE_SIG **params = NULL;
@@ -2076,8 +2076,8 @@ st_MakeMapTypeSig (ST_ENTRY   *combEntry,
   if (numParams)
     {
       params = (ST_TYPE_SIG **)MHA (symTab->scopeHD,
-				    numParams + 1,
-				    sizeof (ST_TYPE_SIG *));
+                                    numParams + 1,
+                                    sizeof (ST_TYPE_SIG *));
 
       assert (params);
 
@@ -2091,41 +2091,41 @@ st_MakeMapTypeSig (ST_ENTRY   *combEntry,
       assert (params[index]);
 
       if (varity[index] != V_NEITHER)
-	{
-	  first  = (ST_TYPE *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE));
-	  second = (ST_TYPE *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE));
+        {
+          first  = (ST_TYPE *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE));
+          second = (ST_TYPE *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE));
 
-	  assert (first);
-	  assert (second);
+          assert (first);
+          assert (second);
 
-	  first->tag             = TYPE_PARAMETRIC_VAR;
-	  first->info.param_var  = index;
+          first->tag             = TYPE_PARAMETRIC_VAR;
+          first->info.param_var  = index;
 
-	  second->tag            = TYPE_PARAMETRIC_VAR;
-	  second->info.param_var = index + numParams;
-	}
+          second->tag            = TYPE_PARAMETRIC_VAR;
+          second->info.param_var = index + numParams;
+        }
 
       if (varity[index] == V_POSITIVE || varity[index] == V_BOTH)
-	{
-	  params[index]->domain   = st_MakeProdST_Type (first, envType);
-	  params[index]->codomain = second;
-	}
+        {
+          params[index]->domain   = st_MakeProdST_Type (first, envType);
+          params[index]->codomain = second;
+        }
       else
-	{
-	  params[index]->domain   = NULL;
-	  params[index]->codomain = NULL;
-	}
+        {
+          params[index]->domain   = NULL;
+          params[index]->codomain = NULL;
+        }
 
       if (varity[index] == V_NEGATIVE || varity[index] == V_BOTH)
-	{
-	  params[index]->negDomain   = st_MakeProdST_Type (second, envType);
-	  params[index]->negCodomain = first;
-	}
+        {
+          params[index]->negDomain   = st_MakeProdST_Type (second, envType);
+          params[index]->negCodomain = first;
+        }
       else
-	{
-	  params[index]->negDomain   = NULL;
-	  params[index]->negCodomain = NULL;
-	}
+        {
+          params[index]->negDomain   = NULL;
+          params[index]->negCodomain = NULL;
+        }
 
       params[index]->params        = NULL;
       params[index]->userspecified = BFALSE;
@@ -2172,13 +2172,13 @@ st_MakeMapTypeSig (ST_ENTRY   *combEntry,
 static
 ST_TYPE_SIG *
 st_MakeUnfoldTypeSig (ST_ENTRY *combEntry,
-		      ST_KEY   *structKeys,
-		      int       numStructs)
+                      ST_KEY   *structKeys,
+                      int       numStructs)
 {
   ST_TYPE_SIG  *sig    = (ST_TYPE_SIG *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE_SIG));
   ST_TYPE_SIG **params = (ST_TYPE_SIG **) MHA (symTab->scopeHD,
-					       numStructs + 1,
-					       sizeof (ST_TYPE_SIG *));
+                                               numStructs + 1,
+                                               sizeof (ST_TYPE_SIG *));
 
   int i;
 
@@ -2263,13 +2263,13 @@ st_MakeUnfoldTypeSig (ST_ENTRY *combEntry,
 static
 ST_TYPE_SIG *
 st_MakeRecordTypeSig (ST_ENTRY *combEntry,
-		      ST_KEY   *structKeys,
-		      int       numStructs)
+                      ST_KEY   *structKeys,
+                      int       numStructs)
 {
   ST_TYPE_SIG  *sig    = (ST_TYPE_SIG *)MHA (symTab->scopeHD, 1, sizeof (ST_TYPE_SIG));
   ST_TYPE_SIG **params = (ST_TYPE_SIG **)MHA (symTab->scopeHD,
-					      numStructs + 1,
-					      sizeof (ST_TYPE_SIG *));
+                                              numStructs + 1,
+                                              sizeof (ST_TYPE_SIG *));
 
   int i;
 
@@ -2304,13 +2304,13 @@ st_MakeRecordTypeSig (ST_ENTRY *combEntry,
       structDomain2 = st_ReplaceStateVar (structDomain, envType);
 
       if (structDomain2->tag == TYPE_PROD)
-	{
-	  ST_TYPE *temp;
+        {
+          ST_TYPE *temp;
 
-	  temp                       = structDomain2->info.prod.l;
-	  structDomain2->info.prod.l = structDomain2->info.prod.r;
-	  structDomain2->info.prod.r = temp;
-	}
+          temp                       = structDomain2->info.prod.l;
+          structDomain2->info.prod.l = structDomain2->info.prod.r;
+          structDomain2->info.prod.r = temp;
+        }
 
       params[i]->domain = structDomain2;
 */
@@ -2335,13 +2335,13 @@ st_MakeRecordTypeSig (ST_ENTRY *combEntry,
  *********************************/
 static ST_TYPE_SIG *
 st_MakeGenCombTypeSig(ST_KEY *structKeys,
-		      int numStructs,
-		      ST_TYPE *rplcmnt,
-		      ST_PVAR env,
-		      ST_PVAR cod) {
+                      int numStructs,
+                      ST_TYPE *rplcmnt,
+                      ST_PVAR env,
+                      ST_PVAR cod) {
 
   ST_TYPE_SIG  *sig = (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD,1, sizeof(ST_TYPE_SIG));
-  ST_TYPE_SIG **params = 
+  ST_TYPE_SIG **params =
     (ST_TYPE_SIG **)MemHeapAlloc(symTab->scopeHD, numStructs+1, sizeof(ST_TYPE_SIG *));
   ST_TYPE      *left,
                *right;
@@ -2397,11 +2397,11 @@ st_MakeGenericStateType(ST_ENTRY *dTypeEntry) {
   gst->tag = TYPE_USER_DATA;
   gst->info.user_data.name = dTypeEntry->name;
   gst->info.user_data.key = dTypeEntry->key;
-  gst->info.user_data.args = 
+  gst->info.user_data.args =
     (ST_TYPE **) MemHeapAlloc(symTab->scopeHD, numParams+1, sizeof(ST_ENTRY *));
 
   for (i=0; i<numParams; i++) {
-    gst->info.user_data.args[i] = 
+    gst->info.user_data.args[i] =
       (ST_TYPE *) MemHeapAlloc(symTab->scopeHD,1,sizeof(ST_TYPE));
     gst->info.user_data.args[i]->tag = TYPE_PARAMETRIC_VAR;
     gst->info.user_data.args[i]->info.param_var = i;
@@ -2454,7 +2454,7 @@ st_ReplaceStateVar(ST_TYPE *type, ST_TYPE *rplcmnt) {
 
   case TYPE_PARAMETRIC_VAR : newtype = type;    break;
   case TYPE_STATE_VAR      : newtype = rplcmnt; break;
-  case TYPE_PROD           : 
+  case TYPE_PROD           :
     if (st_ContainsStateVar(type)) {
       newtype = (ST_TYPE *)MHA(symTab->scopeHD, 1, sizeof(ST_TYPE));
       newtype->tag = TYPE_PROD;
@@ -2471,11 +2471,11 @@ st_ReplaceStateVar(ST_TYPE *type, ST_TYPE *rplcmnt) {
       newtype = (ST_TYPE *)MHA(symTab->scopeHD, 1, sizeof(ST_TYPE));
       newtype->tag = TYPE_USER_DATA;
       newtype->info.user_data.key = type->info.user_data.key;
-      newtype->info.user_data.args = 
-	(ST_TYPE **)MHA(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
-      for (i=0; i<numParams; i++) 
-	newtype->info.user_data.args[i] = 
-	  st_ReplaceStateVar(type->info.user_data.args[i], rplcmnt);
+      newtype->info.user_data.args =
+        (ST_TYPE **)MHA(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
+      for (i=0; i<numParams; i++)
+        newtype->info.user_data.args[i] =
+          st_ReplaceStateVar(type->info.user_data.args[i], rplcmnt);
     }
     else
       newtype = type;
@@ -2509,13 +2509,13 @@ st_ContainsStateVar(ST_TYPE *type) {
 
   case TYPE_PARAMETRIC_VAR : result =  BFALSE;   break;
   case TYPE_STATE_VAR      : result =  BTRUE;    break;
-  case TYPE_PROD           : 
+  case TYPE_PROD           :
     result = (st_ContainsStateVar(type->info.prod.l) ||
-	      st_ContainsStateVar(type->info.prod.r));
+              st_ContainsStateVar(type->info.prod.r));
     break;
-  case TYPE_USER_DATA      : 
+  case TYPE_USER_DATA      :
     numParams = st_GetNumParams(type->info.user_data.key);
-    for (i=0; i<numParams; i++) 
+    for (i=0; i<numParams; i++)
       result = st_ContainsStateVar(type->info.user_data.args[i]) || result;
     break;
   default :
@@ -2539,30 +2539,30 @@ st_ChangeParamVars(ST_TYPE *type, int numParams) {
   ST_TYPE *newT;
   int      i;
 
-  if (numParams == 0) 
+  if (numParams == 0)
     return(type);
 
   newT = (ST_TYPE *)MHA(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  newT->tag = type->tag;    
+  newT->tag = type->tag;
   switch (type->tag) {
-  case TYPE_1              : 
-  case TYPE_STATE_VAR      : 
+  case TYPE_1              :
+  case TYPE_STATE_VAR      :
     break;
-  case TYPE_PARAMETRIC_VAR : 
+  case TYPE_PARAMETRIC_VAR :
     newT->info.param_var = type->info.param_var+numParams;   break;
-  case TYPE_PROD           : 
+  case TYPE_PROD           :
     newT->info.prod.key = type->info.prod.key;
     newT->info.prod.l = st_ChangeParamVars(type->info.prod.l, numParams);
     newT->info.prod.r = st_ChangeParamVars(type->info.prod.r, numParams);
     break;
-  case TYPE_USER_DATA      : 
+  case TYPE_USER_DATA      :
     newT->info.user_data.name = type->info.user_data.name;
     newT->info.user_data.key  = type->info.user_data.key;
-    newT->info.user_data.args = 
+    newT->info.user_data.args =
       (ST_TYPE **)MHA(symTab->scopeHD, numParams+1, sizeof(ST_TYPE *));
-    for (i=0; i<numParams; i++) 
-	newT->info.user_data.args[i] = 
-	  st_ChangeParamVars(type->info.user_data.args[i], numParams);
+    for (i=0; i<numParams; i++)
+        newT->info.user_data.args[i] =
+          st_ChangeParamVars(type->info.user_data.args[i], numParams);
     break;
   default :
     printMsg(FATAL_MSG, "st_ChangeParamVars() - invalid type tag %d.", type->tag);
@@ -2585,13 +2585,13 @@ void st_LinkMacroTypeSigsToFunction(ST_KEY fnkey) {
     entry = st_GetEntry(fnkey, NULL);
 
     if (entry->tag == ST_FUNCTION) {
-	numMacros = entry->info.function.numMacros;
-	if (numMacros > 0) {
-	    for (i=0; i<numMacros; i++) {
-		macentry = st_GetEntry(entry->info.function.macroKeys[i],NULL);
-		entry->info.function.type_sig->params[i] = macentry->info.macros.type_sig;
-	    }
-	}
+        numMacros = entry->info.function.numMacros;
+        if (numMacros > 0) {
+            for (i=0; i<numMacros; i++) {
+                macentry = st_GetEntry(entry->info.function.macroKeys[i],NULL);
+                entry->info.function.type_sig->params[i] = macentry->info.macros.type_sig;
+            }
+        }
     }
     else printMsg(FATAL_MSG,"st_LinkMacroTypeSigsToFunction: not a function key");
 }
@@ -2612,13 +2612,13 @@ void st_UpdateTypeSig(ST_KEY key, ST_TYPE_SIG *newsig) {
     assert(entry);
     switch (entry->tag) {
     case ST_FUNCTION:
-	entry->info.function.type_sig = st_CopyTypeSig(newsig,entry->info.function.numMacros);
-	break;
+        entry->info.function.type_sig = st_CopyTypeSig(newsig,entry->info.function.numMacros);
+        break;
     case ST_MACRO:
-	entry->info.macros.type_sig = st_CopyTypeSig(newsig,0);  /* macros have 0 params */
-	break;
+        entry->info.macros.type_sig = st_CopyTypeSig(newsig,0);  /* macros have 0 params */
+        break;
     default:
-	printMsg(FATAL_MSG,"st_UpdateTypeSig: key is not for function or macro");
+        printMsg(FATAL_MSG,"st_UpdateTypeSig: key is not for function or macro");
     }
 }
 
@@ -2641,10 +2641,10 @@ ST_TYPE_SIG *st_CopyTypeSig(ST_TYPE_SIG *sig, int numParams) {
     newsig->codomain = st_CopyType(sig->codomain);
     if (numParams == 0) newsig->params = 0;
     else {
-	newsig->params = (ST_TYPE_SIG **) MHA(symTab->scopeHD,numParams+1,sizeof(ST_TYPE_SIG *));
-	for (i=0; i<numParams; i++) {
-	    newsig->params[i] = st_CopyTypeSig(sig->params[i],0);
-	}
+        newsig->params = (ST_TYPE_SIG **) MHA(symTab->scopeHD,numParams+1,sizeof(ST_TYPE_SIG *));
+        for (i=0; i<numParams; i++) {
+            newsig->params[i] = st_CopyTypeSig(sig->params[i],0);
+        }
     }
     return newsig;
 }
@@ -2665,38 +2665,38 @@ ST_TYPE *st_CopyType(ST_TYPE *type) {
     newtype->tag = type->tag;
     switch (type->tag) {
     case TYPE_1:
-	break;
+        break;
     case TYPE_PROD:
-	newtype->info.prod.key = type->info.prod.key;
-	newtype->info.prod.l = st_CopyType(type->info.prod.l);
-	newtype->info.prod.r = st_CopyType(type->info.prod.r);
-	break;
+        newtype->info.prod.key = type->info.prod.key;
+        newtype->info.prod.l = st_CopyType(type->info.prod.l);
+        newtype->info.prod.r = st_CopyType(type->info.prod.r);
+        break;
     case TYPE_PARAMETRIC_VAR:
-	newtype->info.param_var = type->info.param_var;
-	break;
+        newtype->info.param_var = type->info.param_var;
+        break;
     case TYPE_STATE_VAR:
-	break;
+        break;
     case TYPE_USER_DATA:
-	newtype->info.user_data.name = type->info.user_data.name;
-	newtype->info.user_data.key = type->info.user_data.key;
+        newtype->info.user_data.name = type->info.user_data.name;
+        newtype->info.user_data.key = type->info.user_data.key;
         numParams = st_GetNumParams(type->info.user_data.key);
-	if (numParams == 0) newtype->info.user_data.args = 0;
-	else {
-	    newtype->info.user_data.args = (ST_TYPE **) MemHeapAlloc(symTab->scopeHD,
-								     numParams+1,
-								     sizeof(ST_TYPE *));
-	    for (i=0; i<numParams; i++) {
-		newtype->info.user_data.args[i] = st_CopyType(type->info.user_data.args[i]);
-	    }
-	}
-	break;
+        if (numParams == 0) newtype->info.user_data.args = 0;
+        else {
+            newtype->info.user_data.args = (ST_TYPE **) MemHeapAlloc(symTab->scopeHD,
+                                                                     numParams+1,
+                                                                     sizeof(ST_TYPE *));
+            for (i=0; i<numParams; i++) {
+                newtype->info.user_data.args[i] = st_CopyType(type->info.user_data.args[i]);
+            }
+        }
+        break;
 
       case TYPE_BUILTIN_INT:      /* [BI] COPY BUILTINS */
       case TYPE_BUILTIN_CHAR:
-	break;
+        break;
 
     default:
-	printMsg(FATAL_MSG,"st_CopyType: unknown tag field in st type");
+        printMsg(FATAL_MSG,"st_CopyType: unknown tag field in st type");
     }
     return newtype;
 }

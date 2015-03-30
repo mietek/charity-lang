@@ -48,7 +48,7 @@ typedef struct {
 
 typedef struct {
   PE_PATT *patt;
-  TYPE_EXPR **type;		/* FOpatt : type[0] , HOpatt : type[0]->type[1] */
+  TYPE_EXPR **type;     /* FOpatt : type[0] , HOpatt : type[0]->type[1] */
 } TYPED_PATT;
 
 typedef LIST TYPE_ASMT_LIST;
@@ -59,9 +59,9 @@ typedef LIST TYPED_PATT_LIST;
 /************************************/
 /*  global variables:  (tc_main.c)  */
 /************************************/
-extern MEMORY tc_memory;			/* local memory */
+extern MEMORY tc_memory;            /* local memory */
 
-extern TC_TYPE_VARIABLE next_new_var;		/* for renaming type vars */
+extern TC_TYPE_VARIABLE next_new_var;       /* for renaming type vars */
 #define new_type_var() next_new_var++
 
 extern TYPE_ASMT_LIST *SubstList;

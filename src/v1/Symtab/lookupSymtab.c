@@ -22,9 +22,9 @@
  *************************************************/
 
 /* lookup functions */
-static char   *makeMacroName(char *funName, 
-			     char *macroName, 
-			     char *fullMacroName);
+static char   *makeMacroName(char *funName,
+                             char *macroName,
+                             char *fullMacroName);
 
 /****************************************************************************
  *                                                                          *
@@ -56,13 +56,13 @@ st_DumpTable (void)
       case ST_STRUCTOR:
       case ST_OPCOMB:
       case ST_VAR:
-	st_PrintEntryInfo(nextEntry->key);
-	break;
+        st_PrintEntryInfo(nextEntry->key);
+        break;
       case ST_MACRO:
-	/* don't show these, already in function printout */
-	break;
+        /* don't show these, already in function printout */
+        break;
       default:
-	printMsg(FATAL_MSG, "st_DumpTable() - invalid tag %d.",nextEntry->tag);
+        printMsg(FATAL_MSG, "st_DumpTable() - invalid tag %d.",nextEntry->tag);
       }   /*  hctiws  */
       nextEntry = nextEntry->nextEntry;
     }   /*  elihw  */
@@ -82,7 +82,7 @@ st_ShowDatatypeCombinators(ST_KEY dataKey) {
   ST_ENTRY *dataEntry = st_GetEntry(dataKey, NULL);
   int i;
 
-  for (i=0;i<3;i++) 
+  for (i=0;i<3;i++)
     st_PrintEntryInfo(dataEntry->info.datatype.opCombKeys[i]);
 
 }
@@ -112,7 +112,7 @@ getStructorNames(char *typeName) {
  *********************************/
 char **
 st_GetStructorNames(ST_KEY typeKey) {
- 
+
   ST_ENTRY  *entry;
 
   entry = st_GetEntry(typeKey, NULL);
@@ -690,7 +690,7 @@ st_GetTypeSig (ST_KEY key)
     case ST_STRUCTOR : return entry->info.structor.type_sig;
     case ST_OPCOMB   : return entry->info.opcomb.type_sig;
 
-    case ST_VAR      : 
+    case ST_VAR      :
     case ST_DATATYPE :
         printMsg(ERROR_MSG, "Can't get type signature for variables or datatypes.");
         break;
@@ -778,7 +778,7 @@ getStructorType (char *structorName)
 ST_TYPE
 *st_SubstType(MEMORY heap, ST_TYPE *type, ST_TYPE *state, ST_TYPE **parms)
 {
-/* Given a type, substitute the state variables and parametric variables 
+/* Given a type, substitute the state variables and parametric variables
  * eg: list(A * C), where A is a parametric variable and C is a state variable,
  *                  and we want to replace A with bool and C with bush(bool)
  * --> list(bool * bush(bool))
@@ -796,25 +796,25 @@ ST_TYPE
           result->tag = TYPE_1;
           break;
 
-	/* [BI] ADDED: */
+        /* [BI] ADDED: */
 
-	case TYPE_BUILTIN_CHAR:
-	  result = (ST_TYPE *)MHA (heap, 1, sizeof (ST_TYPE));
+        case TYPE_BUILTIN_CHAR:
+          result = (ST_TYPE *)MHA (heap, 1, sizeof (ST_TYPE));
 
-	  assert (result);
+          assert (result);
 
-	  result->tag = TYPE_BUILTIN_CHAR;
+          result->tag = TYPE_BUILTIN_CHAR;
 
-	  break;
+          break;
 
-	case TYPE_BUILTIN_INT:
-	  result = (ST_TYPE *)MHA (heap, 1, sizeof (ST_TYPE));
+        case TYPE_BUILTIN_INT:
+          result = (ST_TYPE *)MHA (heap, 1, sizeof (ST_TYPE));
 
-	  assert (result);
+          assert (result);
 
-	  result->tag = TYPE_BUILTIN_INT;
+          result->tag = TYPE_BUILTIN_INT;
 
-	  break;
+          break;
 
         case TYPE_PROD:
           result = (ST_TYPE *) MemHeapAlloc(heap, 1, sizeof(ST_TYPE));
@@ -837,7 +837,7 @@ ST_TYPE
           result->info.user_data.name = type->info.user_data.name;
           result->info.user_data.key  = type->info.user_data.key;
           num = st_GetNumParams(type->info.user_data.key);
-          result->info.user_data.args = (ST_TYPE **) MemHeapAlloc(heap, 
+          result->info.user_data.args = (ST_TYPE **) MemHeapAlloc(heap,
                                                                   num+1, sizeof(ST_TYPE *));
           assert(result->info.user_data.args);
           for (count = 0; count < num; count++) {
@@ -950,7 +950,7 @@ st_IsStructor(ST_KEY key) {
 
   ST_ENTRY *entry = st_GetEntry(key, NULL);
 
-  if (entry->tag == ST_STRUCTOR) 
+  if (entry->tag == ST_STRUCTOR)
     return(BTRUE);
   else
     return(BFALSE);
@@ -1003,7 +1003,7 @@ st_IsMacroByName (char *macroName)
 
 BBOOL
 isMacro (char *funName,
-	 char *name)
+         char *name)
 {
   int       totLen = strlen (funName) + strlen (name) + strlen (RES_PREFIX);
 
@@ -1062,7 +1062,7 @@ st_GetParamPosn(ST_PVAR param) {
  *     st_NameToKey             *
  *                              *
 /********************************/
-ST_KEY     
+ST_KEY
 st_NameToKey(char *name) {
 
   ST_ENTRY *entry = getEntry(name);
@@ -1102,7 +1102,7 @@ st_KeyToName(ST_KEY key)  {
 ST_TYPE *
 st_GetGenericStateType(ST_KEY key) {
 
-  ST_ENTRY *entry	= st_GetEntry(key, NULL);
+  ST_ENTRY *entry       = st_GetEntry(key, NULL);
 
   assert(entry);
 
@@ -1119,7 +1119,7 @@ st_GetGenericStateType(ST_KEY key) {
  *     st_GetDatatypeTag        *
  *                              *
 /********************************/
-ST_TYPE_TAG    
+ST_TYPE_TAG
 st_GetDatatypeTag(ST_KEY typeKey) {
 
   if (typeKey == PROD_KEY)
@@ -1144,7 +1144,7 @@ st_IsCombinator(ST_KEY key) {
 
   entry = st_GetEntry(key, NULL);
   if (!(entry)) return(BFALSE);
-  if (entry->tag == ST_OPCOMB) 
+  if (entry->tag == ST_OPCOMB)
     return(BTRUE);
   else
     return(BFALSE);
@@ -1164,7 +1164,7 @@ st_IsFunction(ST_KEY key) {
 
   entry = st_GetEntry(key, NULL);
   if (!(entry)) return(BFALSE);
-  if (entry->tag == ST_FUNCTION) 
+  if (entry->tag == ST_FUNCTION)
     return(BTRUE);
   else
     return(BFALSE);
@@ -1184,7 +1184,7 @@ st_IsDatatype(ST_KEY key) {
 
   entry = st_GetEntry(key, NULL);
   if (!(entry)) return(BFALSE);
-  if (entry->tag == ST_DATATYPE) 
+  if (entry->tag == ST_DATATYPE)
     return(BTRUE);
   else
     return(BFALSE);

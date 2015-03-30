@@ -79,10 +79,10 @@ MEM_LIST_PAGE
 *MemPageListCons(char *mem, MEM_LIST_PAGE *pages)
 {
      MEM_LIST_PAGE *result = (MEM_LIST_PAGE *) calloc(1, sizeof(MEM_LIST_PAGE));
-     
+
      assert(result);
      if (pages) {
-	  assert(pages->lt == L_MEM_PAGE);
+          assert(pages->lt == L_MEM_PAGE);
      }
 
      result->item = mem;
@@ -118,13 +118,13 @@ char
 
      assert(heapDesc >= 0);
      assert(page > 0);
-     
+
      curr = MemTable[heapDesc]->pageList;
      tmp = MemPageListTail(curr);
-     
+
      for (count = 1; count < page; count++) {
-	  curr = tmp;
-	  tmp = MemPageListTail(curr);
+          curr = tmp;
+          tmp = MemPageListTail(curr);
      }
      return(MemPageListHead(curr));
 }
@@ -148,15 +148,15 @@ MemConstruct(int maxTableSize)
  *        MemDestruct                  *
  *                                     *
  ***************************************/
-void  
+void
 MemDestruct(void)
 {
      int count = 0;
 
      for (count = 0; count < MemTableSize; count++) {
-	  if (MemTable[count]) {
-	       MemDealloc((MEMORY) count);
-	  }
+          if (MemTable[count]) {
+               MemDealloc((MEMORY) count);
+          }
      }
 }
 
@@ -173,8 +173,8 @@ MemDealloc(MEMORY heapDesc)
 
 #if DEBUG
      printMsg(MSG, "MemDealloc %-25s: %d/%d bytes used\n", MemTable[heapDesc]->name,
-	      ((MemTable[heapDesc]->numPages-1) * MemTable[heapDesc]->currentSize) + MemTable[heapDesc]->currentIdx,
-	      MemTable[heapDesc]->numPages * MemTable[heapDesc]->currentSize);
+              ((MemTable[heapDesc]->numPages-1) * MemTable[heapDesc]->currentSize) + MemTable[heapDesc]->currentIdx,
+              MemTable[heapDesc]->numPages * MemTable[heapDesc]->currentSize);
 #endif
 
      MemReset(heapDesc);
@@ -205,17 +205,17 @@ MemDisplayState(void)
      printMsg(MSG, "Summary of Memory Usage:\n");
      printMsg(MSG, "------------------------\n");
      for (count = 0; count < MemTableSize; count++) {
-	  if (MemTable[count]) {
-	       currBytes = ((MemTable[count]->numPages-1) * MemTable[count]->currentSize) 
-  		           + MemTable[count]->currentIdx;
-	       
-	       printMsg(MSG, "%s: %d/%d bytes used\n", 
-		      MemTable[count]->name,
-		      currBytes,
-		      MemTable[count]->numPages * MemTable[count]->currentSize);
-	       
-	       totalBytes += currBytes;
-	  }
+          if (MemTable[count]) {
+               currBytes = ((MemTable[count]->numPages-1) * MemTable[count]->currentSize)
+                           + MemTable[count]->currentIdx;
+
+               printMsg(MSG, "%s: %d/%d bytes used\n",
+                      MemTable[count]->name,
+                      currBytes,
+                      MemTable[count]->numPages * MemTable[count]->currentSize);
+
+               totalBytes += currBytes;
+          }
      }
      printMsg(MSG, "\nTotal Memory used:  %d bytes.\n", totalBytes);
 }
@@ -237,25 +237,25 @@ MemAlloc(char *name, size_t len, size_t size)
      assert(MemTable);
 
      /* search for a free memory heap location */
-     while ((count < MemTableSize) && (MemTable[count] != NULL) ) { 
-	     count++;
+     while ((count < MemTableSize) && (MemTable[count] != NULL) ) {
+             count++;
      }
 
      if (count >= MemTableSize) {
-	  printMsg(FATAL_MSG, "pmem(%s): Max number of heap stores (%d) exhausted", 
-		   name, MemTableSize);
+          printMsg(FATAL_MSG, "pmem(%s): Max number of heap stores (%d) exhausted",
+                   name, MemTableSize);
      }
 
      MemTable[count] = (MEM_TABLE *) calloc(1, sizeof(MEM_TABLE));
 
      if (!MemTable[count]) {
-	  printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted", name);
+          printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted", name);
      }
 
      MemTable[count]->currentPage = (char *) calloc(len, size);
 
      if (!MemTable[count]->currentPage) {
-	  printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted", name);
+          printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted", name);
      }
 
      MemTable[count]->currentIdx  = 0;
@@ -301,47 +301,47 @@ char
      align = (ptrBytes - ((size * len) % ptrBytes)) % ptrBytes;
      amount = (size * len) + align;
 
-     if ((MemTable[heapDesc]->currentIdx + amount) 
-	 <=
-	  MemTable[heapDesc]->currentSize) {
+     if ((MemTable[heapDesc]->currentIdx + amount)
+         <=
+          MemTable[heapDesc]->currentSize) {
 #if DEBUG
        printf("More memory for heap: %s,   ", MemTable[heapDesc]->name);
        printf("Old index: %d,  ", MemTable[heapDesc]->currentIdx);
 #endif
-	  mem = MemTable[heapDesc]->currentPage + MemTable[heapDesc]->currentIdx;
-	  assert(mem);
-	  MemTable[heapDesc]->currentIdx += amount;
+          mem = MemTable[heapDesc]->currentPage + MemTable[heapDesc]->currentIdx;
+          assert(mem);
+          MemTable[heapDesc]->currentIdx += amount;
 
-	  for (count = 0; count < amount; count++) {
-	       mem[count] = '\0';
-	  }
+          for (count = 0; count < amount; count++) {
+               mem[count] = '\0';
+          }
 #if DEBUG
-	  printf("Amount: %d, ", amount);
+          printf("Amount: %d, ", amount);
           printf("New index: %d\n", MemTable[heapDesc]->currentIdx);
 #endif
      }
      else {
-	  if (amount > MemTable[heapDesc]->currentSize) {
-	       printMsg(FATAL_MSG, "pmem:(%s) amount of memory requested is greater than page size",
-			MemTable[heapDesc]->name);
-	  }
+          if (amount > MemTable[heapDesc]->currentSize) {
+               printMsg(FATAL_MSG, "pmem:(%s) amount of memory requested is greater than page size",
+                        MemTable[heapDesc]->name);
+          }
 
-	  mem = (char *) calloc(MemTable[heapDesc]->currentSize, sizeof(char));
+          mem = (char *) calloc(MemTable[heapDesc]->currentSize, sizeof(char));
 
-	  if (!mem) {
-	       printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted",
-			MemTable[heapDesc]->name);
-	  }
+          if (!mem) {
+               printMsg(FATAL_MSG, "pmem(%s): Internal memory exhausted",
+                        MemTable[heapDesc]->name);
+          }
 
-	  MemTable[heapDesc]->currentPage = mem;
-	  MemTable[heapDesc]->currentIdx  = amount;
+          MemTable[heapDesc]->currentPage = mem;
+          MemTable[heapDesc]->currentIdx  = amount;
 
-	  MemTable[heapDesc]->pageList    = MemPageListCons(mem,
-							    MemTable[heapDesc]->pageList);
+          MemTable[heapDesc]->pageList    = MemPageListCons(mem,
+                                                            MemTable[heapDesc]->pageList);
 
-	  MemTable[heapDesc]->numPages++;
+          MemTable[heapDesc]->numPages++;
 #if DEBUG
-	  printf("\nNew page for heap %s\n", MemTable[heapDesc]->name);
+          printf("\nNew page for heap %s\n", MemTable[heapDesc]->name);
      printf("Pointers: %p   %p\n", MemTable[heapDesc]->currentPage, MemTable[heapDesc]->currentPage + MemTable[heapDesc]->currentSize - 1);
        printf("Memory for heap: %s,   ", MemTable[heapDesc]->name);
        printf("New index: %d\n", MemTable[heapDesc]->currentIdx);
@@ -379,18 +379,18 @@ MemReset(MEMORY heapDesc)
      }
 /*
      while (tmp != NULL) {
-	  if (tmp->next == curr) {
-	       printMsg(FATAL_MSG, "cyclic pmem\n");
-	  }
-	  free(MemPageListHead(curr));
-	  free(curr);
-	  curr = tmp;
-	  tmp = MemPageListTail(curr);
+          if (tmp->next == curr) {
+               printMsg(FATAL_MSG, "cyclic pmem\n");
+          }
+          free(MemPageListHead(curr));
+          free(curr);
+          curr = tmp;
+          tmp = MemPageListTail(curr);
      }
 */
      MemTable[heapDesc]->currentPage = MemPageListHead(curr);
      MemTable[heapDesc]->currentIdx  = 0;
      MemTable[heapDesc]->numPages    = 1;
      MemTable[heapDesc]->pageList    = curr;
-     assert(MemPageListTail(curr) == NULL); 
+     assert(MemPageListTail(curr) == NULL);
 }

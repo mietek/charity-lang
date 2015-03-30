@@ -24,7 +24,7 @@
  *********************************/
 PE_LIST_TYPE
 *TypeListCons(PE_TYPE *x, PE_LIST_TYPE *l)
-{     
+{
      return((PE_LIST_TYPE *) _cons((char *) x, (LIST *) l, L_TYPE, parseHeapDesc));
 }
 
@@ -35,7 +35,7 @@ PE_LIST_TYPE
  *********************************/
 PE_LIST_STRUCTOR
 *StructorListCons(PE_STRUCTOR *x, PE_LIST_STRUCTOR *l)
-{     
+{
      return((PE_LIST_STRUCTOR *) _cons((char *) x, (LIST *) l, L_STRUCTOR, parseHeapDesc));
 }
 
@@ -96,7 +96,7 @@ MacroListMember(PE_LIST_MACRO *macrolist, char *item) {
 
   if (list) {
     macro = MacroListHead(list);
-    if (strcmp(macro->ident, item)) 
+    if (strcmp(macro->ident, item))
       return(MacroListMember(MacroListTail(list), item));
     else
       return(BTRUE);
@@ -119,13 +119,13 @@ MacroListPosn(char *item, PE_LIST_MACRO *list)
      int          i     = 0;
 
      while (tmp) {
-	  macro = MacroListHead(tmp);
-	  if (strcmp(macro->ident, item) != 0) {
-	       tmp = MacroListTail(tmp);
-	       i++;
-	  }
-	  else
-	       return(i);
+          macro = MacroListHead(tmp);
+          if (strcmp(macro->ident, item) != 0) {
+               tmp = MacroListTail(tmp);
+               i++;
+          }
+          else
+               return(i);
      }
      return(-1);
 }
@@ -205,7 +205,7 @@ PE_LIST_T_PHRASE
  *    T_PhraseListLen            *
  *                               *
  *********************************/
-int 
+int
 T_PhraseListLen(PE_LIST_T_PHRASE *list) {
 
   return( ListLen( (LIST *)list ) );
@@ -313,7 +313,7 @@ TermListLen(PE_LIST_TERM *list) {
 
 PE_FUN_PHRASE *
 FunPhraseListIndex (PE_LIST_FUN_PHRASE *list,
-		    int                 i)
+                    int                 i)
 {
   assert (list);
   assert (i >= 0);
@@ -340,14 +340,14 @@ FunPhraseListIndex (PE_LIST_FUN_PHRASE *list,
 
 PE_LIST_FUN_PHRASE *
 FunPhraseListCons (PE_FUN_PHRASE      *x,
-		   PE_LIST_FUN_PHRASE *list)     /* MAY BE NULL */
+                   PE_LIST_FUN_PHRASE *list)     /* MAY BE NULL */
 {
   assert (x);
 
   return ((PE_LIST_FUN_PHRASE *)_cons ((char *)x,
-				       (LIST *)list,
-				       L_FUN_PHRASE,
-				       parseHeapDesc));
+                                       (LIST *)list,
+                                       L_FUN_PHRASE,
+                                       parseHeapDesc));
 }
 
 
@@ -403,7 +403,7 @@ FunPhraseListLen (PE_LIST_FUN_PHRASE *list)
  *********************************/
 STR_LIST
 *pe_StrListCons(char *x, STR_LIST *l)
-{     
+{
      return(StrListCons(x, l, parseHeapDesc));
 }
 
@@ -415,7 +415,7 @@ STR_LIST
  *********************************/
 char *
 pe_StrListImplode(STR_LIST *l)
-{     
+{
      return(StrListImplode(l, parseHeapDesc));
 }
 
@@ -480,7 +480,7 @@ TypeListHead(PE_LIST_TYPE *list) {
 
 PE_TYPE *
 TypeListIndex (PE_LIST_TYPE *list,
-	       int           index)
+               int           index)
 {
   assert (list);
   assert (index >= 0);
@@ -689,39 +689,39 @@ printList(LIST *list)
 
     printf("[");
     while (ptr) {
-	if (!flag) {
-	    printf(", ");
-	}
-	flag = BFALSE;
+        if (!flag) {
+            printf(", ");
+        }
+        flag = BFALSE;
 
-	switch (ptr->lt) {
-	   case L_TYPE:
-	     printType((PE_TYPE *) ptr->item);
-	     break;
-	   case L_STRUCTOR:
-	     printStructor((PE_STRUCTOR *) ptr->item);
-	     break;
-	   case L_STRING:
-	     printString((char *) ptr->item);
-	     break;
-	   case L_MACRO:
- 	     printMacro((PE_MACRO *) ptr->item);
-	     break;
-	   case L_T_PHRASE:
- 	     printT_Phrase((PE_T_PHRASE *) ptr->item);
-	     break;
-	   case L_RECORD:
- 	     printRecord((PE_RECORD **) ptr->item);
-	     break;
-	   case L_FOLD:
- 	     printFold((PE_FOLD **) ptr->item);
-	     break;
-	   default:
-	     perror("printList(): unknown list type\n");
-	     exit(-1);
-	    break;
-	}
-	ptr = ptr->next;
+        switch (ptr->lt) {
+           case L_TYPE:
+             printType((PE_TYPE *) ptr->item);
+             break;
+           case L_STRUCTOR:
+             printStructor((PE_STRUCTOR *) ptr->item);
+             break;
+           case L_STRING:
+             printString((char *) ptr->item);
+             break;
+           case L_MACRO:
+             printMacro((PE_MACRO *) ptr->item);
+             break;
+           case L_T_PHRASE:
+             printT_Phrase((PE_T_PHRASE *) ptr->item);
+             break;
+           case L_RECORD:
+             printRecord((PE_RECORD **) ptr->item);
+             break;
+           case L_FOLD:
+             printFold((PE_FOLD **) ptr->item);
+             break;
+           default:
+             perror("printList(): unknown list type\n");
+             exit(-1);
+            break;
+        }
+        ptr = ptr->next;
     }
     printf("]");
 }
@@ -740,41 +740,41 @@ showList(LIST *list, BBOOL showBrackets)
 
     if ( showBrackets ) appendBuff("[");
     while (ptr) {
-	if (!flag) {
-	    appendBuff(", ");
-	}
-	flag = BFALSE;
+        if (!flag) {
+            appendBuff(", ");
+        }
+        flag = BFALSE;
 
-	switch (ptr->lt) {
-/*	   case L_TYPE:
-	     printType((PE_TYPE *) ptr->item);
-	     break;
-	   case L_STRUCTOR:
-	     printStructor((PE_STRUCTOR *) ptr->item);
-	     break;
+        switch (ptr->lt) {
+/*         case L_TYPE:
+             printType((PE_TYPE *) ptr->item);
+             break;
+           case L_STRUCTOR:
+             printStructor((PE_STRUCTOR *) ptr->item);
+             break;
 */
-	   case L_STRING:
-	     showString((char *) ptr->item);
-	     break;
-	   case L_MACRO:
- 	     peShowMacro((PE_MACRO *) ptr->item);
-	     break;
-/*	   case L_T_PHRASE:
- 	     printT_Phrase((PE_T_PHRASE *) ptr->item);
-	     break;
-	   case L_RECORD:
- 	     printRecord((PE_RECORD **) ptr->item);
-	     break;
-	   case L_FOLD:
- 	     printFold((PE_FOLD **) ptr->item);
-	     break;
+           case L_STRING:
+             showString((char *) ptr->item);
+             break;
+           case L_MACRO:
+             peShowMacro((PE_MACRO *) ptr->item);
+             break;
+/*         case L_T_PHRASE:
+             printT_Phrase((PE_T_PHRASE *) ptr->item);
+             break;
+           case L_RECORD:
+             printRecord((PE_RECORD **) ptr->item);
+             break;
+           case L_FOLD:
+             printFold((PE_FOLD **) ptr->item);
+             break;
 */
-	   default:
-	     perror("printList(): unknown list type\n");
-	     exit(-1);
-	    break;
-	}
-	ptr = ptr->next;
+           default:
+             perror("printList(): unknown list type\n");
+             exit(-1);
+            break;
+        }
+        ptr = ptr->next;
     }
     if ( showBrackets ) appendBuff("]");
 }

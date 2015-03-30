@@ -55,7 +55,7 @@ def mult: nat * nat -> nat
                 |}(n).
 
 %
-%  The list datatype 
+%  The list datatype
 %
 
 def lhead: list(A) -> SF(A)

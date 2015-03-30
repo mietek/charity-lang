@@ -49,12 +49,12 @@ static CT_TERM         *transBI     (CT_TERM *result, PE_TERM *peTerm);
 static CT_EXPR *transPhrs(PE_LIST_T_PHRASE *phrases, CT_LIST_EXPR *rs);
 static PM_LIST_PHRASE *prepPhrs(PE_LIST_T_PHRASE *phrases);
 
-static PE_EXPR *makeUnfoldHOCaseExpr(PE_LIST_T_PHRASE *phrases, 
+static PE_EXPR *makeUnfoldHOCaseExpr(PE_LIST_T_PHRASE *phrases,
                                      char *var, char *var2);
 static PE_EXPR *makeProgExpr(PE_LIST_T_PHRASE *phrases, char *var);
 static CT_PHRASE      **makeCorePhraseArray(PE_LIST_T_PHRASE **pePhrases);
 static BBOOL            isComplete(CT_EXPR *expr);
-static BBOOL            remXtraVar(char *var,        CT_EXPR *expr, 
+static BBOOL            remXtraVar(char *var,        CT_EXPR *expr,
                                    char **resultVar, CT_EXPR **resultExpr);
 static BBOOL            stripVar(CT_VAR_BASE **vb, CT_EXPR **expr);
 
@@ -105,7 +105,7 @@ transPeExpr(PE_EXPR  *peExpr){
 
         switch (peExpr->info.app.term->tag) {
         case T_COMPLETE_CASE :
-            resultTerm = transCase(resultTerm, peTerm);                        
+            resultTerm = transCase(resultTerm, peTerm);
 
             if ( isComplete(result) == BFALSE ) {
                 cleanup();
@@ -116,24 +116,24 @@ transPeExpr(PE_EXPR  *peExpr){
             break;
         case T_CASE :
             resultTerm = transCase(resultTerm, peTerm);                break;
-	case T_BUILTIN:
+        case T_BUILTIN:
           resultTerm = transBI(resultTerm, peTerm);                    break;
-	case T_STRUCTOR :
+        case T_STRUCTOR :
             resultTerm = transStructor(resultTerm, peTerm);            break;
-        case T_FUNCTION :                         
+        case T_FUNCTION :
             resultTerm = transFunction(resultTerm, peTerm);            break;
-        case T_MACRO :  
+        case T_MACRO :
             resultTerm = transMacro(resultTerm, peTerm);               break;
-        case T_MAP :                        
+        case T_MAP :
             resultTerm = transMap(resultTerm, peTerm);                 break;
-        case T_FOLD :                      
+        case T_FOLD :
             resultTerm= transFold(resultTerm, peTerm);                 break;
-        case T_UNFOLD :                    
+        case T_UNFOLD :
             resultTerm = transUnfold(resultTerm, peTerm);              break;
-        case T_RECORD :                    
+        case T_RECORD :
             resultTerm = transRecord(resultTerm, peTerm);              break;
         default :
-            printMsg(FATAL_MSG,"transPeExpr", "%d is invalid tag for a term", 
+            printMsg(FATAL_MSG,"transPeExpr", "%d is invalid tag for a term",
                      peTerm->tag);
         }   /*  hctiws  */
 
@@ -209,11 +209,11 @@ transFunction(CT_TERM *result, PE_TERM *peTerm) {
   result->tag = CT_T_FUNCTION;
   result->info.function = (CT_FUNCTION *)MHA(ctHD, 1, sizeof(CT_FUNCTION));
 
-  result->info.function->fun_name = 
+  result->info.function->fun_name =
     libStrdup(ctHD, peTerm->info.function->fun_name);
-  
+
   /* Set up an abstraction for each macro in the function */
-  result->info.function->macros = 
+  result->info.function->macros =
       makeCorePhraseArray(peTerm->info.function->macros);
 
   return result;
@@ -232,9 +232,9 @@ transMacro(CT_TERM *result, PE_TERM *peTerm) {
   result->tag = CT_T_MACRO;
   result->info.macro = (CT_MACROS *)MHA(ctHD, 1, sizeof(CT_MACROS));
 
-  result->info.macro->macro_name = 
+  result->info.macro->macro_name =
       libStrdup(ctHD, peTerm->info.macro->macro_name);
-  
+
   /* ((2)) Set up an abstraction for each macro in the macro */
   result->info.macro->macros = makeCorePhraseArray(peTerm->info.macro->macros);
 
@@ -257,7 +257,7 @@ transMap (CT_TERM *result, PE_TERM *peTerm) {
   char         *newVar = makeNewRsrvdVar(ctHD);
   CT_VAR_BASE  *varBase = ctMakeVarBase(ctHD, newVar, BFALSE);
   CT_MAP_PHRASE **pArray = (CT_MAP_PHRASE **)MHA(ctHD, numParams + 1,
- 					         sizeof(CT_MAP_PHRASE *));
+                                                 sizeof(CT_MAP_PHRASE *));
 
   result->tag       = CT_T_MAP;
   result->info.maps = (CT_MAP *)MHA(ctHD, 1, sizeof (CT_MAP));
@@ -271,16 +271,16 @@ transMap (CT_TERM *result, PE_TERM *peTerm) {
       pArray[index]->var_base = pArray[index]->neg_var_base = NULL;
       pArray[index]->expr = pArray[index]->neg_expr = NULL;
 
-      if (pePhrases[index].positive)	{
-	  pArray[index]->var_base = varBase;
-	  pArray[index]->expr = 
+      if (pePhrases[index].positive)    {
+          pArray[index]->var_base = varBase;
+          pArray[index]->expr =
               transPeExpr(makeProgExpr(pePhrases[index].positive, newVar));
           stripVar(&(pArray[index]->var_base), &(pArray[index]->expr));
       }   /*  fi  */
 
-      if (pePhrases[index].negative)	{
-	  pArray[index]->neg_var_base = varBase;
-	  pArray[index]->neg_expr = 
+      if (pePhrases[index].negative)    {
+          pArray[index]->neg_var_base = varBase;
+          pArray[index]->neg_expr =
               transPeExpr(makeProgExpr(pePhrases[index].negative, newVar));
           stripVar(&(pArray[index]->neg_var_base), &(pArray[index]->neg_expr));
       }   /*  fi  */
@@ -351,7 +351,7 @@ transFold(CT_TERM *result, PE_TERM *peTerm) {
     foldPhrase->expr = transPeExpr(makeProgExpr(foldPePhrase->phrases,newVar));
     stripVar(&foldPhrase->var_base, &foldPhrase->expr);
 
-    result->info.folds[i] = foldPhrase; 
+    result->info.folds[i] = foldPhrase;
   }   /*  rof  */
   result->info.folds[numStructs] = NULL;
 
@@ -439,7 +439,7 @@ transRecord(CT_TERM *result, PE_TERM *peTerm) {
   int           i = 0;
   char         *newVar = NULL;
   CT_VAR_BASE  *varBase = NULL;
-  PE_RECORD   *rec = NULL;  
+  PE_RECORD   *rec = NULL;
 
   result->tag = CT_T_RECORD;
   result->info.records =
@@ -458,9 +458,9 @@ transRecord(CT_TERM *result, PE_TERM *peTerm) {
         }   /*  fi  */
 
         result->info.records[i]->var_base = varBase;
-        result->info.records[i]->expr = 
+        result->info.records[i]->expr =
             transPeExpr(makeProgExpr(rec->cases->info.cases, newVar));
-        stripVar(&result->info.records[i]->var_base, 
+        stripVar(&result->info.records[i]->var_base,
                  &result->info.records[i]->expr);
     }   /*  fi  */
     else {
@@ -518,7 +518,7 @@ prepPhrs(PE_LIST_T_PHRASE *phrases) {
         pmPhrase->rhs = transPeExpr(tPhrase->expr);
         pmPhrases = PMPhraseListCons(pmPhrase, tailPMPhrases);
     }   /*  fi  */
-    else 
+    else
         pmPhrases = NULL;
 
     return pmPhrases;
@@ -632,7 +632,7 @@ isComplete(CT_EXPR *expr) {
  *                               *
  *********************************/
 static BBOOL
-remXtraVar(char *var, CT_EXPR *expr, 
+remXtraVar(char *var, CT_EXPR *expr,
            char **resultVar, CT_EXPR **resultExpr) {
 /*   If input looks like:             *
  *      v,   { x => term } v          *
@@ -640,11 +640,11 @@ remXtraVar(char *var, CT_EXPR *expr,
  *      x, term                       *
  *   otherwise output looks like:     *
  *      v,   expr                     *
- */ 
+ */
 
 BBOOL result = BFALSE;
 
-    if ( (expr->tag == CT_APP) && 
+    if ( (expr->tag == CT_APP) &&
          (expr->info.app.term->tag == CT_T_ABS) &&
          (expr->info.app.term->info.abs->var_base->tag == CT_VB_VAR) &&
          (expr->info.app.expr->tag == CT_VAR) &&

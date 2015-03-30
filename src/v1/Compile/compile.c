@@ -60,21 +60,21 @@ static M_INSTR *_CompileRecord(int numParms, COMB_PHR **parms, char *parentTypeN
 static M_INSTR *_CompileFold(char *comb, int numParms, COMB_PHR **parms, COMB_EXPR *state);
 static M_INSTR *_CompileMapInduct(char *comb, COMB_PHR **parms, COMB_EXPR *state);
 static M_INSTR *_CompileMapCoinduct(char *comb, COMB_PHR **parms,
-				    char *parentType, COMB_EXPR *state);
+                                    char *parentType, COMB_EXPR *state);
 static M_INSTR *_CompileUnfold(int numParms, COMB_PHR **parms,
-			       char *parentType, COMB_EXPR *state);
+                               char *parentType, COMB_EXPR *state);
 static M_INSTR *_CompileFunctionParam(COMB_EXPR *expr);
 
 static M_INSTR *_CompileCata  (int         numParms,     /* [#@] */
-			       COMB_PHR  **parms,
-			       COMB_EXPR  *state);
+                               COMB_PHR  **parms,
+                               COMB_EXPR  *state);
 static M_INSTR *_CompileAna   (int         numParms,
-			       COMB_PHR  **parms,
-			       COMB_EXPR  *state,
-			       char       *parentType);
+                               COMB_PHR  **parms,
+                               COMB_EXPR  *state,
+                               char       *parentType);
 static void     SelfReference (COMB_EXPR **expr,
-			       int         selfTag,
-			       COMB_EXPR  *selfExpr);
+                               int         selfTag,
+                               COMB_EXPR  *selfExpr);
 
 static void     _CompileParms(M_INSTR *instr);
 
@@ -145,18 +145,18 @@ CP_LIST_ALIAS
  *        AliasListMemberCexpr         *
  *                                     *
  ***************************************/
-static 
-BBOOL             
+static
+BBOOL
 AliasListMemberCexpr(CP_LIST_ALIAS *alist, COMB_EXPR *expr)
 {
      CP_LIST_ALIAS *list = alist;
      ALIAS         *item = NULL;
      while (list) {
-	  item = AliasListHead(list);
-	  if (item->cexpr == expr) {
-	       return(BTRUE);
-	  }
-	  list = AliasListTail(list);
+          item = AliasListHead(list);
+          if (item->cexpr == expr) {
+               return(BTRUE);
+          }
+          list = AliasListTail(list);
      }
      return(BFALSE);
 }
@@ -174,11 +174,11 @@ ALIAS
      ALIAS         *head = NULL;
 
      while (list) {
-	  head = AliasListHead(list);
-	  if (head->cexpr == expr) {
-	       return(head);
-	  }
-	  list = AliasListTail(list);
+          head = AliasListHead(list);
+          if (head->cexpr == expr) {
+               return(head);
+          }
+          list = AliasListTail(list);
      }
      return(NULL);
 }
@@ -188,7 +188,7 @@ ALIAS
  *        AliasListHead                *
  *                                     *
  ***************************************/
-static 
+static
 ALIAS
 *AliasListHead(CP_LIST_ALIAS *list)
 {
@@ -243,10 +243,10 @@ static
 void
 _AddPrim(char *id, M_INSTR_TAG tag)
 {
-     
+
      if (primCount>= MAX_PRIM_COMB) {
-	  printf("_AddPrim(): Can not add primitive combinator %s\n", id);
-	  exit(-1);
+          printf("_AddPrim(): Can not add primitive combinator %s\n", id);
+          exit(-1);
      }
      combTbl[primCount].ch_id = id;
      combTbl[primCount].MC_id = tag;
@@ -258,7 +258,7 @@ _AddPrim(char *id, M_INSTR_TAG tag)
  *          CompilerConstruct          *
  *                                     *
  ***************************************/
-void 
+void
 CompilerConstruct(void)
 {
      EmitConstruct();
@@ -313,7 +313,7 @@ CompilerDestruct(void)
 static
 COMB_PHR **
 makeP0Arr (int    num,
-	   MEMORY heapDesc)
+           MEMORY heapDesc)
 {
   COMB_PHR  **P0arr = NULL;
   COMB_EXPR  *P0    = NULL;
@@ -325,14 +325,14 @@ makeP0Arr (int    num,
       P0    = CombExprP0 (heapDesc);
 
       for (count = 0; count < num; count++)
-	{
-	  P0arr[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						   1,
-						   sizeof (COMB_PHR));
+        {
+          P0arr[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                   1,
+                                                   sizeof (COMB_PHR));
 
-	  P0arr[count]->positive = P0;
-	  P0arr[count]->negative = P0;
-	}
+          P0arr[count]->positive = P0;
+          P0arr[count]->negative = P0;
+        }
     }
 
   return P0arr;
@@ -353,10 +353,10 @@ lookupComb(char *name)
      assert(name);
 
      while ((combTbl[count].ch_id != NULL)) {
-	  if (strcmp(combTbl[count].ch_id, name) == 0)
-	       return(combTbl[count].MC_id);
-	  else
-	       count++;
+          if (strcmp(combTbl[count].ch_id, name) == 0)
+               return(combTbl[count].MC_id);
+          else
+               count++;
      }
 
      return(MCinvalid);
@@ -414,30 +414,30 @@ _CompilePrimitive(COMB_EXPR *cexpr)
      COMB_PHR **parms = cexpr->info.combinator.param;  /* H-O */
 
      assert(cexpr);
-     
+
      emitCode.instr = lookupComb(cexpr->info.combinator.name);
      switch (emitCode.instr) {
-	case MCpair:         /* H-O */
+        case MCpair:         /* H-O */
          if (_isIdentityComb(parms[1]->positive)) { /* <f, Id> => push.f.pair */
                emitCode.instr = MCsave;
                emit();
-               
+
                _CompileSC(parms[0]->positive);  /* H-O */
-               
+
                emitCode.instr = MCpair;
                emit();         /* H-O */
           } else if (_isP1Comb(parms[1]->positive)) { /* <f, p1> => pr.f.pair */
                emitCode.instr = MCpr;
                emit();
-               
+
                _CompileSC(parms[0]->positive);  /* H-O */
-               
+
                emitCode.instr = MCpair;
                emit();
           } else {                          /* <f, g>  => push.g.swap.f.pair */
                emitCode.instr = MCsave;
                emit();
-               
+
                assert(parms);
                assert(parms[1]);
                assert(parms[1]->positive);
@@ -445,18 +445,18 @@ _CompilePrimitive(COMB_EXPR *cexpr)
 
                emitCode.instr = MCswap;
                emit();
-               
+
                assert(parms[0]);
                assert(parms[0]->positive);
                _CompileSC(parms[0]->positive);  /* H-O */
                emitCode.instr = MCpair;
                emit();
           }
-	  break;
-	case MCmap_prod:
+          break;
+        case MCmap_prod:
           emitCode.instr = MCmap_prod;
           emit();
-          
+
           assert(parms);
           assert(parms[1]);
           assert(parms[1]->positive);
@@ -470,17 +470,17 @@ _CompilePrimitive(COMB_EXPR *cexpr)
           _CompileSC(parms[0]->positive);  /* H-O */
           emitCode.instr = MCpair;
           emit();
-	  break;
-	case MCbang:
-	case MCp0:
-	case MCp1:
-	  emit();
-	  break;
-	case MCret:
-	  break;
-	default:
-	  printMsg(FATAL_MSG, "_CompilePrimitive - Unknown primitive instruction");
-	  break;
+          break;
+        case MCbang:
+        case MCp0:
+        case MCp1:
+          emit();
+          break;
+        case MCret:
+          break;
+        default:
+          printMsg(FATAL_MSG, "_CompilePrimitive - Unknown primitive instruction");
+          break;
      }
 }
 
@@ -575,19 +575,19 @@ _CompileInduct(COMB_EXPR *cexpr)
     assert(cexpr);
 
      switch (cexpr->info.combinator.class) {
-	case CC_MAP_I:
+        case CC_MAP_I:
         case CC_CATA:      /* [#@] */
-	case CC_FOLD:
-	case CC_CASE:
+        case CC_FOLD:
+        case CC_CASE:
           assert (cexpr->info.combinator.class != CC_FOLD);     /* [#@] */
 
-	  emitCode.instr = MCinduct;        /* use constructor on V as offset into code */
-	  emitCode.cexpr = cexpr;
-	  emit();
-	  break;
-	default:
-	  printMsg(FATAL_MSG, "_CompileInduct:  invalid class.");
-	  exit(1);
+          emitCode.instr = MCinduct;        /* use constructor on V as offset into code */
+          emitCode.cexpr = cexpr;
+          emit();
+          break;
+        default:
+          printMsg(FATAL_MSG, "_CompileInduct:  invalid class.");
+          exit(1);
      }
 }
 
@@ -627,7 +627,7 @@ _CompileDestr (COMB_EXPR *cexpr)
  *                                     *
  ***************************************/
 static
-M_INSTR 
+M_INSTR
 *_CompileFunctionParam(COMB_EXPR *expr)
 {
      M_INSTR *result = NULL;
@@ -677,10 +677,10 @@ _CompileFunction (COMB_EXPR *cexpr)
       fparms = cexpr->info.combinator.param;
 
       if (fparms) {
-	emitCode.instr          = MCldparm;
-	emitCode.info.macroList = EmitParm(cexpr->info.combinator.numParams);
-	emitCode.cexpr          = cexpr;
-	emit();
+        emitCode.instr          = MCldparm;
+        emitCode.info.macroList = EmitParm(cexpr->info.combinator.numParams);
+        emitCode.cexpr          = cexpr;
+        emit();
       }
 
       emitCode.instr         = MCfunc;
@@ -688,8 +688,8 @@ _CompileFunction (COMB_EXPR *cexpr)
       emit();
 
       if (fparms) {
-	emitCode.instr = MCunload;
-	emit();
+        emitCode.instr = MCunload;
+        emit();
       }
     }
 }
@@ -710,14 +710,14 @@ _CompileMacro(COMB_EXPR *cexpr)
 
      assert(cexpr);
      assert(cexpr->info.combinator.class == CC_MACRO);
-     
+
      fparms = cexpr->info.combinator.param;
 
      if (fparms) {
-	  emitCode.instr          = MCldparm;
-	  emitCode.info.macroList = EmitParm(cexpr->info.combinator.numParams);
-	  emitCode.cexpr          = cexpr;
-	  emit();
+          emitCode.instr          = MCldparm;
+          emitCode.info.macroList = EmitParm(cexpr->info.combinator.numParams);
+          emitCode.cexpr          = cexpr;
+          emit();
      }
 
      emitCode.instr          = MCparm;
@@ -725,8 +725,8 @@ _CompileMacro(COMB_EXPR *cexpr)
      emit();
 
      if (fparms) {
-	  emitCode.instr = MCunload;
-	  emit();
+          emitCode.instr = MCunload;
+          emit();
      }
 }
 
@@ -751,13 +751,13 @@ _CompileParms(M_INSTR *instr)
      combArgs = expr->info.combinator.param;
 
      for (count = 0; count < expr->info.combinator.numParams; count++) {
-	  args[count] = EmitAddr();
-	  _CompileSC(combArgs[count]->positive); /* H-O */
+          args[count] = EmitAddr();
+          _CompileSC(combArgs[count]->positive); /* H-O */
 
-	  emitCode.instr = MCreload;
-	  emit();
-	  emitCode.instr = MCret;
-	  emit();
+          emitCode.instr = MCreload;
+          emit();
+          emitCode.instr = MCret;
+          emit();
 
      }
 }
@@ -773,63 +773,63 @@ _CompileC(COMB_EXPR *cexpr)
 {
      assert(cexpr);
 
-     switch (cexpr->info.combinator.class) { 
+     switch (cexpr->info.combinator.class) {
         case CC_PRIMITIVE:
-	  _CompilePrimitive(cexpr);
+          _CompilePrimitive(cexpr);
           break;
         case CC_UNFOLD:
         case CC_RECORD:
-	case CC_MAP_C:
-	  assert (cexpr->info.combinator.class != CC_UNFOLD);     /* [#@] */
+        case CC_MAP_C:
+          assert (cexpr->info.combinator.class != CC_UNFOLD);     /* [#@] */
 
-	  emitCode.instr = MCjump;
-	  emitCode.cexpr = cexpr;
-	  emit();
-	  break;
+          emitCode.instr = MCjump;
+          emitCode.cexpr = cexpr;
+          emit();
+          break;
 
-	case CC_ANA:     /* [#@] */
+        case CC_ANA:     /* [#@] */
 
-	  emitCode.instr = MCjumpc;
-	  emitCode.cexpr = cexpr;
-	  emit ();
+          emitCode.instr = MCjumpc;
+          emitCode.cexpr = cexpr;
+          emit ();
 
-	  break;
+          break;
 
         case CC_CONSTRUCTOR:
-	  _CompileConstr(cexpr);
-	  break;
-	case CC_CATA:     /* [#@] */
+          _CompileConstr(cexpr);
+          break;
+        case CC_CATA:     /* [#@] */
         case CC_FOLD:
         case CC_CASE:
         case CC_MAP_I:
-	  assert (cexpr->info.combinator.class != CC_FOLD);     /* [#@] */
+          assert (cexpr->info.combinator.class != CC_FOLD);     /* [#@] */
 
-	  _CompileInduct(cexpr);
+          _CompileInduct(cexpr);
           break;
         case CC_DESTRUCTOR:
-	  _CompileDestr(cexpr);
+          _CompileDestr(cexpr);
           break;
         case CC_FUNCTION:
-	  _CompileFunction(cexpr);
+          _CompileFunction(cexpr);
           break;
-	case CC_MACRO:
-	  _CompileMacro(cexpr);
-	  break;
+        case CC_MACRO:
+          _CompileMacro(cexpr);
+          break;
 
-	case CC_BUILTIN_INT:        /* [BI] ADDED (SEE ABOVE) */
-	  _CompileInt (cexpr);
+        case CC_BUILTIN_INT:        /* [BI] ADDED (SEE ABOVE) */
+          _CompileInt (cexpr);
 
-	  break;
+          break;
 
-	case CC_BUILTIN_CHAR:       /* [BI] ADDED (SEE ABOVE) */
-	  _CompileChar (cexpr);
+        case CC_BUILTIN_CHAR:       /* [BI] ADDED (SEE ABOVE) */
+          _CompileChar (cexpr);
 
-	  break;
+          break;
 
-	case CC_AT:          /* [#@] */
-	  _CompileAt ();
+        case CC_AT:          /* [#@] */
+          _CompileAt ();
 
-	  break;
+          break;
 
         default:
           printMsg(FATAL_MSG, "_CompileC():  Combinator class not def.");
@@ -853,11 +853,11 @@ _CompileSC(COMB_EXPR *cexpr)
           _CompileSC(cexpr->info.composition.r);
           break;
         case CTT_COMBINATOR:
-	  _CompileC(cexpr);
+          _CompileC(cexpr);
           break;
         default:
           fprintf(stderr, "_CompileSC(): Internal error: trying to Compile\n");
-	  exit(1);
+          exit(1);
           break;
      }
 }
@@ -874,8 +874,8 @@ _CompileSC(COMB_EXPR *cexpr)
 static
 M_INSTR *
 _CompileRecord (int        numParms,
-		COMB_PHR **parms,
-		char      *parentTypeName)
+                COMB_PHR **parms,
+                char      *parentTypeName)
 {
   M_INSTR  *recordStart = NULL;
   M_INSTR  *curr        = NULL;
@@ -926,24 +926,24 @@ _CompileRecord (int        numParms,
       (curr + count)->info.closureCode = EmitAddr ();
 
       if (isFO)
-	{
-	  emitCode.instr = MCmkupdate;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCmkupdate;
+          emit ();
+        }
 
       _CompileSC (parms[count]->positive);
 
       if (isFO)
-	{
-	  emitCode.instr          = MCupdate;      /* DOES IMPLICIT MCret */
-	  emitCode.info.updateClo = count + 1;
-	  emit ();
-	}
+        {
+          emitCode.instr          = MCupdate;      /* DOES IMPLICIT MCret */
+          emitCode.info.updateClo = count + 1;
+          emit ();
+        }
       else
-	{
-	  emitCode.instr = MCret;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCret;
+          emit ();
+        }
     }
 
   return recordStart;
@@ -972,21 +972,21 @@ M_INSTR
 
      /* set up the array -- offset table for the phrases */
      for (count = 0; count < numParms; count++) {
-	  emitCode.instr = MCgoto;
-	  emitCode.cexpr = NULL;
-	  emit();
+          emitCode.instr = MCgoto;
+          emitCode.cexpr = NULL;
+          emit();
      }
 
      /* fill in pointers to the compiled code */
      for (count = 0; count < numParms; count++) {
-	  EmitMsg("Cases");
+          EmitMsg("Cases");
 
-	  (caseStart + count)->info.inductCode = EmitAddr();
-	  _CompileSC(parms[count]->positive);  /* H-O */
+          (caseStart + count)->info.inductCode = EmitAddr();
+          _CompileSC(parms[count]->positive);  /* H-O */
 
-	  /* set return from executing phrase */
-	  emitCode.instr     = MCret;
-	  emit();     
+          /* set return from executing phrase */
+          emitCode.instr     = MCret;
+          emit();
      }
 
      return(caseStart);
@@ -1001,8 +1001,8 @@ static
 char
 *_getType(char *comb)
 {
-     return(libStrdup(strHD, 
-		      st_GetOpCombParentByName(comb)));
+     return(libStrdup(strHD,
+                      st_GetOpCombParentByName(comb)));
 }
 
 
@@ -1017,9 +1017,9 @@ char
 static
 M_INSTR *
 _CompileAna (int         numParms,
-	     COMB_PHR  **parms,
-	     COMB_EXPR  *state,
-	     char       *parentType)
+             COMB_PHR  **parms,
+             COMB_EXPR  *state,
+             char       *parentType)
 {
   M_INSTR  *start  = NULL;
   M_INSTR  *curr   = NULL;
@@ -1071,24 +1071,24 @@ _CompileAna (int         numParms,
       curr[count].info.closureCode = EmitAddr ();
 
       if (isFO)
-	{
-	  emitCode.instr = MCmkupdate;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCmkupdate;
+          emit ();
+        }
 
       _CompileSC (parms[count]->positive);
 
       if (isFO)
-	{
-	  emitCode.instr          = MCupdate;
-	  emitCode.info.updateClo = count + 1;
-	  emit ();
-	}
+        {
+          emitCode.instr          = MCupdate;
+          emitCode.info.updateClo = count + 1;
+          emit ();
+        }
       else
-	{
-	  emitCode.instr = MCret;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCret;
+          emit ();
+        }
     }
 
   return start;
@@ -1106,8 +1106,8 @@ _CompileAna (int         numParms,
 static
 M_INSTR *
 _CompileCata (int         numParms,
-	      COMB_PHR  **parms,
-	      COMB_EXPR  *state)
+              COMB_PHR  **parms,
+              COMB_EXPR  *state)
 {
   M_INSTR *start = NULL;
   int      count = 0;
@@ -1157,8 +1157,8 @@ _CompileCata (int         numParms,
 static
 void
 SelfReference (COMB_EXPR **expr,
-	       int         selfTag,
-	       COMB_EXPR  *selfExpr)
+               int         selfTag,
+               COMB_EXPR  *selfExpr)
 {
   assert (expr);
   assert (*expr);
@@ -1174,24 +1174,24 @@ SelfReference (COMB_EXPR **expr,
 
     case CTT_COMBINATOR:
       if ((*expr)->info.combinator.class == CC_SELF)
-	{
-	  if ((*expr)->info.combinator.self == selfTag)
-	    *expr = selfExpr;
-	}
+        {
+          if ((*expr)->info.combinator.self == selfTag)
+            *expr = selfExpr;
+        }
       else
-	{
-	  int index     = 0;
-	  int numParams = (*expr)->info.combinator.numParams;
+        {
+          int index     = 0;
+          int numParams = (*expr)->info.combinator.numParams;
 
-	  for (index = 0; index < numParams; index++)
-	    {
-	      if ((*expr)->info.combinator.param[index]->positive)
-		SelfReference (&((*expr)->info.combinator.param[index]->positive), selfTag, selfExpr);
+          for (index = 0; index < numParams; index++)
+            {
+              if ((*expr)->info.combinator.param[index]->positive)
+                SelfReference (&((*expr)->info.combinator.param[index]->positive), selfTag, selfExpr);
 
-	      if ((*expr)->info.combinator.param[index]->negative)
-		SelfReference (&((*expr)->info.combinator.param[index]->negative), selfTag, selfExpr);
-	    }
-	}
+              if ((*expr)->info.combinator.param[index]->negative)
+                SelfReference (&((*expr)->info.combinator.param[index]->negative), selfTag, selfExpr);
+            }
+        }
 
       break;
 
@@ -1231,30 +1231,30 @@ M_INSTR
 
      /* set up the array -- offset table for the phrases */
      for (count = 0; count < numParms; count++) {
-	  emitCode.instr = MCgoto;
-	  emit();
+          emitCode.instr = MCgoto;
+          emit();
      }
 
      /* fill in pointers to the compiled code */
      for (count = 0; count < numParms; count++) {
-	  EmitMsg("Folds");
+          EmitMsg("Folds");
 
-	  (foldStart + count)->info.code = EmitAddr();
+          (foldStart + count)->info.code = EmitAddr();
 
-	  phraseComb = CombExprComposition(tmpHD,
-					   CombExprPair(tmpHD,
-							mapEi(tmpHD,
-							      constrs[count], 
-							      makeP0Arr(max(parametricParms, numParms),
-									    tmpHD),
-							      state),
-							CombExprP1(tmpHD)),
-					   parms[count]->positive); /* H-O */
+          phraseComb = CombExprComposition(tmpHD,
+                                           CombExprPair(tmpHD,
+                                                        mapEi(tmpHD,
+                                                              constrs[count],
+                                                              makeP0Arr(max(parametricParms, numParms),
+                                                                            tmpHD),
+                                                              state),
+                                                        CombExprP1(tmpHD)),
+                                           parms[count]->positive); /* H-O */
 
-	  _CompileSC(phraseComb);
+          _CompileSC(phraseComb);
 
-	  emitCode.instr     = MCret;
-	  emit();     
+          emitCode.instr     = MCret;
+          emit();
      }
      return(foldStart);
 }
@@ -1271,9 +1271,9 @@ M_INSTR
 static
 M_INSTR *
 _CompileUnfold (int        numParms,
-		COMB_PHR **parms,
-		char      *parentType,
-		COMB_EXPR *state)
+                COMB_PHR **parms,
+                char      *parentType,
+                COMB_EXPR *state)
 {
   M_INSTR    *unfoldStart     = NULL;
   M_INSTR    *curr            = NULL;
@@ -1329,42 +1329,42 @@ _CompileUnfold (int        numParms,
       curr[count].info.closureCode = EmitAddr ();     /* ARRAY OF CLOSURES */
 
       if (isFO)
-	{
-	  emitCode.instr = MCmkupdate;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCmkupdate;
+          emit ();
+        }
 
       if (isFO)
-	second = CombExprP1 (tmpHD);
+        second = CombExprP1 (tmpHD);
       else
-	second = CombExprComposition (tmpHD,
-				      CombExprP1 (tmpHD),
-				      CombExprP1 (tmpHD));
+        second = CombExprComposition (tmpHD,
+                                      CombExprP1 (tmpHD),
+                                      CombExprP1 (tmpHD));
 
       phraseComb = CombExprComposition (tmpHD,
-					CombExprPair (tmpHD,
-						      parms[count]->positive,
-						      second),
-					mapEi (tmpHD,
-					       destrs[count], 
-					       makeP0Arr (max (parametricParms,
-							       numParms),
-							  tmpHD),
-					       state));
+                                        CombExprPair (tmpHD,
+                                                      parms[count]->positive,
+                                                      second),
+                                        mapEi (tmpHD,
+                                               destrs[count],
+                                               makeP0Arr (max (parametricParms,
+                                                               numParms),
+                                                          tmpHD),
+                                               state));
 
       _CompileSC (phraseComb);
 
       if (isFO)
-	{
-	  emitCode.instr          = MCupdate;
-	  emitCode.info.updateClo = count + 1;
-	  emit ();
-	}
+        {
+          emitCode.instr          = MCupdate;
+          emitCode.info.updateClo = count + 1;
+          emit ();
+        }
       else
-	{
-	  emitCode.instr = MCret;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCret;
+          emit ();
+        }
     }
 
   return unfoldStart;
@@ -1401,24 +1401,24 @@ M_INSTR
 
      /* set up the array -- offset table for the phrases */
      for (count = 0; count < numStructors; count++) {
-	  emitCode.instr = MCgoto;
-	  emit();
+          emitCode.instr = MCgoto;
+          emit();
      }
 
      /* fill in pointers to the compiled code */
      for (count = 0; count < numStructors; count++) {
-	  EmitMsg("Map Table");
+          EmitMsg("Map Table");
 
-	  (mapStart + count)->info.code = EmitAddr();
+          (mapStart + count)->info.code = EmitAddr();
 
-	  phraseComb = CombExprComposition(tmpHD,
-					   mapEi(tmpHD, constrs[count], parms, state),
-					   CombExprConstructor(tmpHD, constrs[count]));
-	  
-	  _CompileSC(phraseComb);
+          phraseComb = CombExprComposition(tmpHD,
+                                           mapEi(tmpHD, constrs[count], parms, state),
+                                           CombExprConstructor(tmpHD, constrs[count]));
 
-	  emitCode.instr     = MCret;
-	  emit();     
+          _CompileSC(phraseComb);
+
+          emitCode.instr     = MCret;
+          emit();
      }
      return(mapStart);
 }
@@ -1435,9 +1435,9 @@ M_INSTR
 static
 M_INSTR *
 _CompileMapCoinduct (char       *comb,
-		     COMB_PHR  **parms,
-		     char       *parentType1,
-		     COMB_EXPR  *state)
+                     COMB_PHR  **parms,
+                     char       *parentType1,
+                     COMB_EXPR  *state)
 {
   M_INSTR    *mapStart     = NULL;
   M_INSTR    *curr         = NULL;
@@ -1495,61 +1495,61 @@ _CompileMapCoinduct (char       *comb,
       (curr + count)->info.closureCode = EmitAddr ();   /* ARRAY OF CLOSURES */
 
       if (isFO)
-	{
-	  emitCode.instr = MCmkupdate;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCmkupdate;
+          emit ();
+        }
 
       if (isFO)
-	first = CombExprPair (tmpHD,
-			      CombExprComposition (tmpHD,
-						   CombExprP0 (tmpHD),
-						   CombExprDestructor (tmpHD,
-								       destrs[count])),
-			      CombExprP1 (tmpHD));
+        first = CombExprPair (tmpHD,
+                              CombExprComposition (tmpHD,
+                                                   CombExprP0 (tmpHD),
+                                                   CombExprDestructor (tmpHD,
+                                                                       destrs[count])),
+                              CombExprP1 (tmpHD));
       else
-	first = CombExprPair (tmpHD,
-			      CombExprComposition (tmpHD,
-						   CombExprPair (tmpHD,
-								 CombExprComposition (tmpHD,
-										      CombExprPair (tmpHD,
-												    CombExprP0 (tmpHD),
-												    CombExprComposition (tmpHD,
-															 CombExprP1 (tmpHD),
-															 CombExprP1 (tmpHD))),
-										      mapEiHO (tmpHD,
-											       destrs[count],
-											       parms)),
-								 CombExprComposition (tmpHD,
-										      CombExprP1 (tmpHD),
-										      CombExprP0 (tmpHD))),
+        first = CombExprPair (tmpHD,
+                              CombExprComposition (tmpHD,
+                                                   CombExprPair (tmpHD,
+                                                                 CombExprComposition (tmpHD,
+                                                                                      CombExprPair (tmpHD,
+                                                                                                    CombExprP0 (tmpHD),
+                                                                                                    CombExprComposition (tmpHD,
+                                                                                                                         CombExprP1 (tmpHD),
+                                                                                                                         CombExprP1 (tmpHD))),
+                                                                                      mapEiHO (tmpHD,
+                                                                                               destrs[count],
+                                                                                               parms)),
+                                                                 CombExprComposition (tmpHD,
+                                                                                      CombExprP1 (tmpHD),
+                                                                                      CombExprP0 (tmpHD))),
 
-						   CombExprDestructor (tmpHD,
-								       destrs[count])),
-			      CombExprComposition (tmpHD,
-						   CombExprP1 (tmpHD),
-						   CombExprP1 (tmpHD)));
+                                                   CombExprDestructor (tmpHD,
+                                                                       destrs[count])),
+                              CombExprComposition (tmpHD,
+                                                   CombExprP1 (tmpHD),
+                                                   CombExprP1 (tmpHD)));
 
       phraseComb = CombExprComposition (tmpHD,
-					first,
-					mapEi (tmpHD,
-					       destrs[count],
-					       parms,
-					       state));
+                                        first,
+                                        mapEi (tmpHD,
+                                               destrs[count],
+                                               parms,
+                                               state));
 
       _CompileSC (phraseComb);
 
       if (isFO)
-	{
-	  emitCode.instr          = MCupdate;
-	  emitCode.info.updateClo = count + 1;
-	  emit ();
-	}
+        {
+          emitCode.instr          = MCupdate;
+          emitCode.info.updateClo = count + 1;
+          emit ();
+        }
       else
-	{
-	  emitCode.instr = MCret;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCret;
+          emit ();
+        }
     }
 
 /*
@@ -1562,60 +1562,60 @@ _CompileMapCoinduct (char       *comb,
       (curr + count)->info.closureCode = EmitAddr ();   / * ARRAY OF CLOSURES * /
 
       if (isFO)
-	{
-	  emitCode.instr = MCmkupdate;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCmkupdate;
+          emit ();
+        }
 
       if (isFO)
-	first = CombExprPair (tmpHD,
-			      CombExprComposition (tmpHD,
-						   CombExprP0 (tmpHD),
-						   CombExprDestructor (tmpHD,
-								       destrs[count])),
-			      CombExprP1 (tmpHD));
+        first = CombExprPair (tmpHD,
+                              CombExprComposition (tmpHD,
+                                                   CombExprP0 (tmpHD),
+                                                   CombExprDestructor (tmpHD,
+                                                                       destrs[count])),
+                              CombExprP1 (tmpHD));
       else
-	first = CombExprPair (tmpHD,
-			      CombExprComposition (tmpHD,
-						   CombExprPair (tmpHD,
-								 CombExprComposition (tmpHD,
-										      CombExprP0 (tmpHD),
-										      CombExprP0 (tmpHD)),
-								 CombExprComposition (tmpHD,
-										      CombExprPair (tmpHD,
-												    CombExprP1 (tmpHD),
-												    CombExprComposition (tmpHD,
-															 CombExprP0 (tmpHD),
-															 CombExprP1 (tmpHD))),
-										      mapEiHO (tmpHD,
-											       destrs[count],
-											       parms))),
-						   CombExprDestructor (tmpHD,
-								       destrs[count])),
-			      CombExprComposition (tmpHD,
-						   CombExprP0 (tmpHD),
-						   CombExprP1 (tmpHD)));
+        first = CombExprPair (tmpHD,
+                              CombExprComposition (tmpHD,
+                                                   CombExprPair (tmpHD,
+                                                                 CombExprComposition (tmpHD,
+                                                                                      CombExprP0 (tmpHD),
+                                                                                      CombExprP0 (tmpHD)),
+                                                                 CombExprComposition (tmpHD,
+                                                                                      CombExprPair (tmpHD,
+                                                                                                    CombExprP1 (tmpHD),
+                                                                                                    CombExprComposition (tmpHD,
+                                                                                                                         CombExprP0 (tmpHD),
+                                                                                                                         CombExprP1 (tmpHD))),
+                                                                                      mapEiHO (tmpHD,
+                                                                                               destrs[count],
+                                                                                               parms))),
+                                                   CombExprDestructor (tmpHD,
+                                                                       destrs[count])),
+                              CombExprComposition (tmpHD,
+                                                   CombExprP0 (tmpHD),
+                                                   CombExprP1 (tmpHD)));
 
       phraseComb = CombExprComposition (tmpHD,
-					first,
-					mapEi (tmpHD,
-					       destrs[count],
-					       parms,
-					       state));
+                                        first,
+                                        mapEi (tmpHD,
+                                               destrs[count],
+                                               parms,
+                                               state));
 
       _CompileSC (phraseComb);
 
       if (isFO)
-	{
-	  emitCode.instr          = MCupdate;
-	  emitCode.info.updateClo = count + 1;
-	  emit ();
-	}
+        {
+          emitCode.instr          = MCupdate;
+          emitCode.info.updateClo = count + 1;
+          emit ();
+        }
       else
-	{
-	  emitCode.instr = MCret;
-	  emit ();
-	}
+        {
+          emitCode.instr = MCret;
+          emit ();
+        }
     }
 */
 
@@ -1638,97 +1638,97 @@ _CompilePass2(M_INSTR *start)
      assert(start);
 
      while (current < EmitAddr()) {
-	  expr = current->cexpr;
-	  if (expr) {
-	       if (!AliasListMemberCexpr(aliasList, expr)) {  
-		    aliasList = AliasListCons(AliasNew(current, expr), aliasList);
-		    if (current->instr != MCldparm) {
-			 switch (expr->info.combinator.class) {
-			    case CC_CASE:
-			      current->info.inductCode =
-				   _CompileCase(expr->info.combinator.numParams,
-						expr->info.combinator.param,
-						current + 1);
-			      break;
-			    case CC_RECORD:
-			      current->info.code =
-				   _CompileRecord(expr->info.combinator.numParams,
-						  expr->info.combinator.param,
-						  expr->info.combinator.parentName);
-			      break;
+          expr = current->cexpr;
+          if (expr) {
+               if (!AliasListMemberCexpr(aliasList, expr)) {
+                    aliasList = AliasListCons(AliasNew(current, expr), aliasList);
+                    if (current->instr != MCldparm) {
+                         switch (expr->info.combinator.class) {
+                            case CC_CASE:
+                              current->info.inductCode =
+                                   _CompileCase(expr->info.combinator.numParams,
+                                                expr->info.combinator.param,
+                                                current + 1);
+                              break;
+                            case CC_RECORD:
+                              current->info.code =
+                                   _CompileRecord(expr->info.combinator.numParams,
+                                                  expr->info.combinator.param,
+                                                  expr->info.combinator.parentName);
+                              break;
 
-			    case CC_CATA:     /* [#@] */
+                            case CC_CATA:     /* [#@] */
 
-			      current->info.inductCode =
-				_CompileCata (expr->info.combinator.numParams,
-					      expr->info.combinator.param,
-					      expr);
+                              current->info.inductCode =
+                                _CompileCata (expr->info.combinator.numParams,
+                                              expr->info.combinator.param,
+                                              expr);
 
-			      break;
+                              break;
 
-			    case CC_ANA:     /* [#@] */
+                            case CC_ANA:     /* [#@] */
 
-			      current->info.code =
-				_CompileAna (expr->info.combinator.numParams,
-					     expr->info.combinator.param,
-					     expr,
-					     expr->info.combinator.parentName);
+                              current->info.code =
+                                _CompileAna (expr->info.combinator.numParams,
+                                             expr->info.combinator.param,
+                                             expr,
+                                             expr->info.combinator.parentName);
 
-			      break;
+                              break;
 
-			    case CC_FOLD:
-			      assert (BFALSE);     /* [#@] */
+                            case CC_FOLD:
+                              assert (BFALSE);     /* [#@] */
 
-			      current->info.inductCode =
-				   _CompileFold(expr->info.combinator.name,
-						expr->info.combinator.numParams,
-						expr->info.combinator.param,
-						expr);
+                              current->info.inductCode =
+                                   _CompileFold(expr->info.combinator.name,
+                                                expr->info.combinator.numParams,
+                                                expr->info.combinator.param,
+                                                expr);
 
-			      break;
-			    case CC_UNFOLD:
-			      assert (BFALSE);     /* [#@] */
+                              break;
+                            case CC_UNFOLD:
+                              assert (BFALSE);     /* [#@] */
 
-			      current->info.code = 
-				   _CompileUnfold(expr->info.combinator.numParams,
-						  expr->info.combinator.param,
-						  expr->info.combinator.parentName,
-						  expr);
-			      break;
-			    case CC_MAP_I:
-			      current->info.inductCode =
-				   _CompileMapInduct(expr->info.combinator.name,
-						     expr->info.combinator.param,
-						     expr);
-			      break;
-			    case CC_MAP_C:
-			      current->info.code =
-				   _CompileMapCoinduct(expr->info.combinator.name,
-						       expr->info.combinator.param,
-						       expr->info.combinator.parentName,
-						       expr);
-			      break;
-			    default: 
-			      printMsg(FATAL_MSG, "_CompilePass2 - unrecognized combinator class");
-			      break;
-			 }
-		    }
-		    else {
-			 _CompileParms(current);
-		    }
-	       }
-	       else {
-		    alias = AliasListFind(aliasList, current->cexpr);
+                              current->info.code =
+                                   _CompileUnfold(expr->info.combinator.numParams,
+                                                  expr->info.combinator.param,
+                                                  expr->info.combinator.parentName,
+                                                  expr);
+                              break;
+                            case CC_MAP_I:
+                              current->info.inductCode =
+                                   _CompileMapInduct(expr->info.combinator.name,
+                                                     expr->info.combinator.param,
+                                                     expr);
+                              break;
+                            case CC_MAP_C:
+                              current->info.code =
+                                   _CompileMapCoinduct(expr->info.combinator.name,
+                                                       expr->info.combinator.param,
+                                                       expr->info.combinator.parentName,
+                                                       expr);
+                              break;
+                            default:
+                              printMsg(FATAL_MSG, "_CompilePass2 - unrecognized combinator class");
+                              break;
+                         }
+                    }
+                    else {
+                         _CompileParms(current);
+                    }
+               }
+               else {
+                    alias = AliasListFind(aliasList, current->cexpr);
 
-		    if (isInductiveType(alias->cexpr->info.combinator.parentName)) {
-			 current->info.inductCode = alias->macro_code->info.inductCode;
-		    }
-		    else {
-			 current->info.code = alias->macro_code->info.code;
-		    }
-	       }
-	  }
-	  current++; 
+                    if (isInductiveType(alias->cexpr->info.combinator.parentName)) {
+                         current->info.inductCode = alias->macro_code->info.inductCode;
+                    }
+                    else {
+                         current->info.code = alias->macro_code->info.code;
+                    }
+               }
+          }
+          current++;
      }
 }
 
@@ -1758,7 +1758,7 @@ M_INSTR
 
      _CompilePass2(result);
 
-     MemDealloc(tmpHD); 
+     MemDealloc(tmpHD);
      MemDealloc(aliasHD);
 
      return(result);
@@ -1789,7 +1789,7 @@ M_INSTR
 
      EmitSet(index);
 
-     MemDealloc(tmpHD); 
+     MemDealloc(tmpHD);
      MemDealloc(aliasHD);
 
      return(result);

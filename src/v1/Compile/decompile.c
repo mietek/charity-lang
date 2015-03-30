@@ -7,7 +7,7 @@
  *   contact: charity@cpsc.ucalgary.ca                                        *
  *                                                                            *
  *****************************************************************************/
- 
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,10 +29,10 @@
  *****************************************************************************/
 static COMB_EXPR     *makeRecord(V_INSTR *rec, ST_TYPE *type);
 static COMB_EXPR     *makeClosure(V_INSTR *clo, V_INSTR *record,
-				  ST_TYPE *type);
+                                  ST_TYPE *type);
 
 static CLO_TAB_ENTRY  CloTabEntryNew(V_INSTR *clo, V_INSTR *record,
-				     ST_TYPE *type);
+                                     ST_TYPE *type);
 
 /*****************************************************************************
  *                                                                           *
@@ -51,12 +51,12 @@ static BBOOL      rightDisplay = BFALSE;
  *                                     *
  ***************************************/
 void
-deCompileConstruct(void) 
+deCompileConstruct(void)
 {
   decompHD  = MemAlloc("decompile", MAX_DECOMPILE_SIZE, sizeof(COMB_EXPR));
   cloTabHD  = MemAlloc("decompile closure", MAX_CLO_TAB_SIZE, sizeof(CLOSURE));
-  cloTab    = (CLOSURE *) MemHeapAlloc(cloTabHD, MAX_CLO_TAB_SIZE, 
-				       sizeof(CLOSURE));
+  cloTab    = (CLOSURE *) MemHeapAlloc(cloTabHD, MAX_CLO_TAB_SIZE,
+                                       sizeof(CLOSURE));
   cloTabIdx = 0;
 }
 
@@ -66,7 +66,7 @@ deCompileConstruct(void)
  *                                     *
  ***************************************/
 void
-deCompileDestruct(void) 
+deCompileDestruct(void)
 {
   MemDealloc(decompHD);
   MemDealloc(cloTabHD);
@@ -78,10 +78,10 @@ deCompileDestruct(void)
  *                                     *
  ***************************************/
 void
-deCompileReset(void) 
+deCompileReset(void)
 {
   MemReset(decompHD);
-  MemReset(cloTabHD); 
+  MemReset(cloTabHD);
   cloTabIdx = 0;
   rightDisplay = BFALSE;
 }
@@ -106,7 +106,7 @@ CLOSURE
 *getClosure(CLO_TAB_ENTRY clo_entry)
 {
   CLOSURE *pages = NULL;
-     
+
   pages = (CLOSURE *) getPage(cloTabHD, (clo_entry / MAX_CLO_TAB_SIZE) + 1);
   return(&pages[clo_entry % MAX_CLO_TAB_SIZE]);
 }
@@ -139,15 +139,15 @@ CLO_TAB_ENTRY
 CloTabEntryNew(V_INSTR *clo, V_INSTR *record, ST_TYPE *type)
 {
   if (cloTabIdx >= MAX_CLO_TAB_SIZE - 2) {
-    cloTab = (CLOSURE *) MemHeapAlloc(cloTabHD, MAX_CLO_TAB_SIZE, 
-				      sizeof(CLOSURE));
+    cloTab = (CLOSURE *) MemHeapAlloc(cloTabHD, MAX_CLO_TAB_SIZE,
+                                      sizeof(CLOSURE));
     cloTabIdx = 0;
   }
 
   cloTab[cloTabIdx].rec        = record;
   cloTab[cloTabIdx].clo        = clo;
   cloTab[cloTabIdx].type       = type;
-  
+
   return(cloTabIdx++);
 }
 
@@ -180,14 +180,14 @@ COMB_EXPR
 static
 COMB_EXPR
 *makeRecord(V_INSTR *rec, ST_TYPE *type)
-{   
+{
   COMB_EXPR  *result     = NULL;
   char       *parentName = NULL;
-  char        str[MAX_STRING_LENGTH_DEFAULT];  
+  char        str[MAX_STRING_LENGTH_DEFAULT];
   int         count      = 0;
   char       **destrs    = NULL;
   ST_TYPE    *cloType    = NULL;
-     
+
   assert(rec);
 
   result = (COMB_EXPR *) MemHeapAlloc(decompHD, 1, sizeof(COMB_EXPR));
@@ -205,27 +205,27 @@ COMB_EXPR
 
   result->info.combinator.name      = libStrdup(decompHD, str);
   result->info.combinator.numParams = getNumStructors(parentName);
-  
-  result->info.combinator.param = 
+
+  result->info.combinator.param =
     (COMB_PHR **) MemHeapAlloc(decompHD, result->info.combinator.numParams,
-			       sizeof(COMB_PHR *));
-  
+                               sizeof(COMB_PHR *));
+
   assert(result->info.combinator.numParams < 50);
-  
+
   destrs = getStructorNames(parentName);
 
   /* ignore 1st dummy record which holds macro frame */
   for (count = 0; count < result->info.combinator.numParams; count++) {
     cloType = st_SubstType(decompHD,
-			   getStructorType(destrs[count]),
-			   type,
-			   type->info.user_data.args);  
+                           getStructorType(destrs[count]),
+                           type,
+                           type->info.user_data.args);
 
     result->info.combinator.param[count] =
     (COMB_PHR *) MemHeapAlloc(decompHD, 1, sizeof(COMB_PHR));
 
     result->info.combinator.param[count]->positive = makeClosure(&rec[count+1], rec,
-								 cloType);
+                                                                 cloType);
   }
 
   return(result);
@@ -248,34 +248,34 @@ COMB_EXPR
 
   switch (type->tag) {
   case TYPE_1:
-    V_assert(value == _BANG); 
+    V_assert(value == _BANG);
     result =  CombExprNew(decompHD, CC_PRIMITIVE, "!", 0, NULL);
     break;
   case TYPE_PROD:
     V_assert(value->instr == MCldmacroframe);
-    result = CombExprPair(decompHD, 
-			  deCompile(value->info.pair.v0, type->info.prod.l),
-			  deCompile(value->info.pair.v1, type->info.prod.r));
+    result = CombExprPair(decompHD,
+                          deCompile(value->info.pair.v0, type->info.prod.l),
+                          deCompile(value->info.pair.v1, type->info.prod.r));
     break;
   case TYPE_USER_DATA:
     if (value->info.gc.gcId >= 1) {     /* [#@] */
       constructorArray = getStructorNames(type->info.user_data.name);
-	  
+
       assert(constructorArray[value->info.structor.posn - 1]);     /* [#@] */
-      result = CombExprNew(decompHD, 
-			   CC_CONSTRUCTOR,
-			   constructorArray[value->info.structor.posn - 1],     /* [#@] */
-			   0,
-			   NULL);
-	       
+      result = CombExprNew(decompHD,
+                           CC_CONSTRUCTOR,
+                           constructorArray[value->info.structor.posn - 1],     /* [#@] */
+                           0,
+                           NULL);
+
       if (value->info.structor.next) {
-	newType = st_SubstType(decompHD,
-			       getStructorType(constructorArray[value->info.structor.posn - 1]),     /* [#@] */
-			       type,
-			       type->info.user_data.args);  
-	result = CombExprComposition(decompHD, result,
-				     deCompile(value->info.structor.next,
-					       newType));
+        newType = st_SubstType(decompHD,
+                               getStructorType(constructorArray[value->info.structor.posn - 1]),     /* [#@] */
+                               type,
+                               type->info.user_data.args);
+        result = CombExprComposition(decompHD, result,
+                                     deCompile(value->info.structor.next,
+                                               newType));
       }
     }
     else

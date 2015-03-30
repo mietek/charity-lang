@@ -1,7 +1,7 @@
-(* some excepting routines (eg. hd, tl, div) depend on strings being 
+(* some excepting routines (eg. hd, tl, div) depend on strings being
    defined and so have been put at the end of STRINGS.ch *)
 
-data coprod(A,B) -> C  = b0 : A -> C 
+data coprod(A,B) -> C  = b0 : A -> C
                        | b1 : B -> C.
 
 data list(a) -> C =
@@ -16,7 +16,7 @@ data nat -> C =
     | succ:C -> C.
 
 (*
-data result(A) -> Y= 
+data result(A) -> Y=
     exception : string -> Y
   | val : A -> Y.
 *)
@@ -63,10 +63,10 @@ def sub : nat * nat -> nat =
 
 def mul : nat * nat -> nat =
     (x,y) => p1
-	       ({| zero:()     => (x,zero)
-	         | succ:(x, y) => (x,add(x, y))
-		 |} (y)
-	       ).
+               ({| zero:()     => (x,zero)
+                 | succ:(x, y) => (x,add(x, y))
+                 |} (y)
+               ).
 
 def max : nat * nat -> nat =
     (x,y) => { zero()  => y
@@ -97,12 +97,12 @@ def eq(x, y) =
      ((add(sub(x, y), sub(y, x)))).
 *)
 (* revised to Robin's more efficient version Sept14,92*)
-def eq : nat * nat -> bool = 
-    (x,y) => { (flag, zero()) => flag       
-	     | (_, succ(_))   => false   
+def eq : nat * nat -> bool =
+    (x,y) => { (flag, zero()) => flag
+             | (_, succ(_))   => false
              } ({| zero : ()           => (true,y)
-	         | succ : (_, zero())  => (false,zero)
-	                | (_, succ(n)) => (true,n)
+                 | succ : (_, zero())  => (false,zero)
+                        | (_, succ(n)) => (true,n)
                  |} (x)).
 
 def gt : nat * nat -> bool =
@@ -131,7 +131,7 @@ def length : list(A) -> nat =
           | cons:(a, state) => succ(state)
           |} (L).
 
-def exp : nat * nat -> nat = 
+def exp : nat * nat -> nat =
     (base, power) => {| zero:()  => succ(zero)
                       | succ:(v) => mul(base, v)
                       |} (power).

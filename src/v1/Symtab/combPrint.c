@@ -40,47 +40,47 @@ static ST_TYPE *st_type;           /* the type of an expression */
  *                                                                           *
  *****************************************************************************/
 static PP_COMB_WARNING  combShow(COMB_EXPR *comb, int sDepth, int rDepth);
-static PP_COMB_WARNING  showCombExpr(COMB_EXPR *combExpr, 
-				     int sDepth, 
-				     int rDepth);
+static PP_COMB_WARNING  showCombExpr(COMB_EXPR *combExpr,
+                                     int sDepth,
+                                     int rDepth);
 
 /* [H-O] ALTERED THE TYPE OF THE FIRST PARAMETER (SEE BELOW): */
 
 static PP_COMB_WARNING showParams(COMB_PHR **params,
-				  int        sDepth,
-				  int        rDepth,
-				  char     **recNames,
-				  int        numParams);
+                                  int        sDepth,
+                                  int        rDepth,
+                                  char     **recNames,
+                                  int        numParams);
 
-static void            rightDisplayMode(COMB_EXPR *combExpr, 
-					int maxShowDepth, 
-					int maxRecordDepth);
-static void            leftDisplayMode(COMB_EXPR *combExpr, 
-					int maxShowDepth, 
-					int maxRecordDepth);
+static void            rightDisplayMode(COMB_EXPR *combExpr,
+                                        int maxShowDepth,
+                                        int maxRecordDepth);
+static void            leftDisplayMode(COMB_EXPR *combExpr,
+                                        int maxShowDepth,
+                                        int maxRecordDepth);
 static BBOOL           structorDomainIsPair(char *structorName);
-static PP_COMB_WARNING showComposition(COMB_EXPR *combExpr, 
-				       int sDepth, 
-				       int rDepth);
+static PP_COMB_WARNING showComposition(COMB_EXPR *combExpr,
+                                       int sDepth,
+                                       int rDepth);
 
-static PP_COMB_WARNING st_ShowList(COMB_EXPR *list, 
-				int sDepth, 
-				int rDepth, 
-				BBOOL first);
+static PP_COMB_WARNING st_ShowList(COMB_EXPR *list,
+                                int sDepth,
+                                int rDepth,
+                                BBOOL first);
 
 static PP_COMB_WARNING st_ShowString (COMB_EXPR *string,     /* [BI] ADDED THIS PROTOTYPE (SEE BELOW) */
-				      int        sDepth,
-				      int        rDepth,
-				      BBOOL      first);
+                                      int        sDepth,
+                                      int        rDepth,
+                                      BBOOL      first);
 
 static void            showINT(COMB_EXPR *combExpr);
 static void            makeDigits(COMB_EXPR *digits, int i);
 
 static void            showSTRING(COMB_EXPR *str);
 
-static void            _combExprPrint(COMB_EXPR *combExpr, 
-				      int        maxShowDepth, 
-				      int        maxRecordDepth);
+static void            _combExprPrint(COMB_EXPR *combExpr,
+                                      int        maxShowDepth,
+                                      int        maxRecordDepth);
 
 
 /*********************************
@@ -144,30 +144,30 @@ showCombExpr(COMB_EXPR *combExpr, int sDepth, int rDepth) {
   COMB_EXPR       *newCombExpr;
   PP_COMB_WARNING  rval = PP_DEPTH_OK;
 
-  if (sDepth < MaxShowDepth) 
+  if (sDepth < MaxShowDepth)
     switch (combExpr->tag) {
       case CTT_COMBINATOR :
-	rval = combShow(combExpr, ++sDepth, rDepth);
-	break;
+        rval = combShow(combExpr, ++sDepth, rDepth);
+        break;
       case CTT_COMPOSITION :
-	/* left side should only be a constructor */
-	rval = showComposition(combExpr, sDepth, rDepth);
-	break;
+        /* left side should only be a constructor */
+        rval = showComposition(combExpr, sDepth, rDepth);
+        break;
       case CTT_CLOSURE :
-	if (rDepth < MaxRecordDepth) {
-	  newCombExpr = Evaluate(combExpr, NULL);
-	  combExpr->tag = newCombExpr->tag; /*!!!! may want to take this out */
-	  combExpr->info = newCombExpr->info;
-	  rval = showCombExpr(newCombExpr, sDepth, rDepth);
-	}
-	else {
-	  appendBuff(CLOSURE_STRING);
-	  rval = PP_RDEPTH_EXCEEDED;
-	}
-	break;
+        if (rDepth < MaxRecordDepth) {
+          newCombExpr = Evaluate(combExpr, NULL);
+          combExpr->tag = newCombExpr->tag; /*!!!! may want to take this out */
+          combExpr->info = newCombExpr->info;
+          rval = showCombExpr(newCombExpr, sDepth, rDepth);
+        }
+        else {
+          appendBuff(CLOSURE_STRING);
+          rval = PP_RDEPTH_EXCEEDED;
+        }
+        break;
       default :
-	printMsg(FATAL_MSG, "showCombExpr - %d is not a valid tag", combExpr->tag);
-	break;
+        printMsg(FATAL_MSG, "showCombExpr - %d is not a valid tag", combExpr->tag);
+        break;
       }   /*  hctiws  */
   else {
     appendBuff(CLOSURE_STRING);
@@ -193,96 +193,96 @@ showComposition(COMB_EXPR *combExpr, int sDepth, int rDepth) {
 
   if (lExpr->info.combinator.class == CC_CONSTRUCTOR)
       if ((strcmp(lExpr->info.combinator.name, "cons") == 0) ||      /* sugar */
-	  (strcmp(lExpr->info.combinator.name, "nil") == 0))
-	{
-	  if (strcmp(lExpr->info.combinator.name, "cons") == 0 &&
-	      rExpr->info.combinator.param[0]->positive->info.combinator.class == CC_BUILTIN_CHAR)
-	    {
-	      appendBuff ("\"");
-	      rval = st_ShowString (rExpr, sDepth + 1, rDepth, BTRUE);     /* [BI] PRINT STRINGS */
-	      appendBuff ("\"");
-	    }
-	  else
-	    {
-	      appendBuff("[");
-	      rval = st_ShowList(rExpr, sDepth+1, rDepth, BTRUE);
-	      appendBuff("]");
-	    }
-	}
+          (strcmp(lExpr->info.combinator.name, "nil") == 0))
+        {
+          if (strcmp(lExpr->info.combinator.name, "cons") == 0 &&
+              rExpr->info.combinator.param[0]->positive->info.combinator.class == CC_BUILTIN_CHAR)
+            {
+              appendBuff ("\"");
+              rval = st_ShowString (rExpr, sDepth + 1, rDepth, BTRUE);     /* [BI] PRINT STRINGS */
+              appendBuff ("\"");
+            }
+          else
+            {
+              appendBuff("[");
+              rval = st_ShowList(rExpr, sDepth+1, rDepth, BTRUE);
+              appendBuff("]");
+            }
+        }
       else if (strcmp(lExpr->info.combinator.name, "INT") == 0)      /* sugar */
-	showINT(rExpr);
+        showINT(rExpr);
       else if (strcmp(lExpr->info.combinator.name, "STRING") == 0)  {/* sugar */
-	appendBuff("\"");
-	showSTRING(rExpr);
-	appendBuff("\"");
+        appendBuff("\"");
+        showSTRING(rExpr);
+        appendBuff("\"");
       }   /*   fi esle  */
       else {                                                     /* no sugar */
-	showCombExpr(combExpr->info.composition.l, sDepth, rDepth);
+        showCombExpr(combExpr->info.composition.l, sDepth, rDepth);
 
-	if (rExpr->tag == CTT_COMBINATOR) 
-	  switch (rExpr->info.combinator.class) {
-	  case CC_PRIMITIVE :
-	    /* don't print composed !s */
-	    if (strcmp(rExpr->info.combinator.name, PRIM_BANG)!=0)
-	      rval =showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
-	    break;
-	  case CC_CONSTRUCTOR :
-	    appendBuff("(");      
-	    appendBuff(rExpr->info.combinator.name);
-	    appendBuff(")");
-	    break;
+        if (rExpr->tag == CTT_COMBINATOR)
+          switch (rExpr->info.combinator.class) {
+          case CC_PRIMITIVE :
+            /* don't print composed !s */
+            if (strcmp(rExpr->info.combinator.name, PRIM_BANG)!=0)
+              rval =showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
+            break;
+          case CC_CONSTRUCTOR :
+            appendBuff("(");
+            appendBuff(rExpr->info.combinator.name);
+            appendBuff(")");
+            break;
 
-	  case CC_BUILTIN_CHAR:     /* [BI] PRINT BUILTIN CHARACTERS */
-	    {
-	      char s[100];
+          case CC_BUILTIN_CHAR:     /* [BI] PRINT BUILTIN CHARACTERS */
+            {
+              char s[100];
 
-	      if (isprint (rExpr->info.combinator.c))
-		sprintf (s, "('%c')", rExpr->info.combinator.c);
-	      else
-		sprintf (s, "(\\d%d)", (int)rExpr->info.combinator.c);
+              if (isprint (rExpr->info.combinator.c))
+                sprintf (s, "('%c')", rExpr->info.combinator.c);
+              else
+                sprintf (s, "(\\d%d)", (int)rExpr->info.combinator.c);
 
-	      appendBuff (s);
-	    }
+              appendBuff (s);
+            }
 
-	    break;
+            break;
 
-	  case CC_BUILTIN_INT:     /* [BI] PRINT BUILTIN INTEGERS */
-	    {
-	      char s[100];
+          case CC_BUILTIN_INT:     /* [BI] PRINT BUILTIN INTEGERS */
+            {
+              char s[100];
 
-	      sprintf (s, "(%d)", rExpr->info.combinator.i);
-	      appendBuff (s);
-	    }
+              sprintf (s, "(%d)", rExpr->info.combinator.i);
+              appendBuff (s);
+            }
 
-	    break;
+            break;
 
-	case CC_DESTRUCTOR :
-	case CC_FOLD :
-	case CC_CASE :
-	case CC_MAP_I :
-	case CC_UNFOLD : 
-	case CC_RECORD :
-	case CC_MAP_C :
-	case CC_FUNCTION :
-	case CC_MACRO :
-	  rval = showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
-	  break;
-	default :
-	  printMsg(FATAL_MSG, "showComposition() - unexpected class %d", 
-		   rExpr->info.combinator.class);
-	}
+        case CC_DESTRUCTOR :
+        case CC_FOLD :
+        case CC_CASE :
+        case CC_MAP_I :
+        case CC_UNFOLD :
+        case CC_RECORD :
+        case CC_MAP_C :
+        case CC_FUNCTION :
+        case CC_MACRO :
+          rval = showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
+          break;
+        default :
+          printMsg(FATAL_MSG, "showComposition() - unexpected class %d",
+                   rExpr->info.combinator.class);
+        }
       else if (structorDomainIsPair(lExpr->info.combinator.name)) {
-	  appendBuff("(");
-	  rval = showCombExpr(combExpr->info.composition.r,++sDepth, rDepth);
-	  appendBuff(")");
-	}   /*  fi esle  */
+          appendBuff("(");
+          rval = showCombExpr(combExpr->info.composition.r,++sDepth, rDepth);
+          appendBuff(")");
+        }   /*  fi esle  */
       else
-	rval = showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
+        rval = showCombExpr(combExpr->info.composition.r, ++sDepth, rDepth);
     }   /*  esle  */
 
   else
     printMsg(FATAL_MSG, "Unexpected combinator class, %d, in showComposition",
-	     lExpr->info.combinator.class);
+             lExpr->info.combinator.class);
 
   return(rval);
 
@@ -304,8 +304,8 @@ st_ShowList(COMB_EXPR *list, int sDepth, int rDepth, BBOOL first) {
   COMB_EXPR       *listMem,
                   *listTail;
 
-  if ((list->tag == CTT_COMBINATOR) && 
-      (list->info.combinator.class == CC_PRIMITIVE)) 
+  if ((list->tag == CTT_COMBINATOR) &&
+      (list->info.combinator.class == CC_PRIMITIVE))
     if (strcmp(list->info.combinator.name, PRIM_PAIR) == 0) { /* cons case */
       first ? appendBuff("") : appendBuff(", ");
 
@@ -324,8 +324,8 @@ st_ShowList(COMB_EXPR *list, int sDepth, int rDepth, BBOOL first) {
       appendBuff("");
   else
       appendBuff("");
-/*    printMsg(FATAL_MSG, 
-	     "Unexpected combinator expression structure in st_ShowList");*/
+/*    printMsg(FATAL_MSG,
+             "Unexpected combinator expression structure in st_ShowList");*/
 
   return(rval);
 
@@ -343,9 +343,9 @@ st_ShowList(COMB_EXPR *list, int sDepth, int rDepth, BBOOL first) {
 static
 PP_COMB_WARNING
 st_ShowString (COMB_EXPR *list,
-	       int        sDepth,
-	       int        rDepth,
-	       BBOOL      first)
+               int        sDepth,
+               int        rDepth,
+               BBOOL      first)
 {
   /*
    * combExpr eg. <!;'a',!;nil>     (cons case)
@@ -368,16 +368,16 @@ st_ShowString (COMB_EXPR *list,
 /*       rval = showCombExpr(listMem, sDepth,rDepth); */
 
       {
-	char output[10];
+        char output[10];
 
-	if (listMem->info.combinator.c == '\\')
-	  sprintf (output, "\\\\");
-	else if (isprint (listMem->info.combinator.c))
-	  sprintf (output, "%c", listMem->info.combinator.c);
-	else
-	  sprintf (output, "\\d%d", (int)listMem->info.combinator.c);
+        if (listMem->info.combinator.c == '\\')
+          sprintf (output, "\\\\");
+        else if (isprint (listMem->info.combinator.c))
+          sprintf (output, "%c", listMem->info.combinator.c);
+        else
+          sprintf (output, "\\d%d", (int)listMem->info.combinator.c);
 
-	appendBuff (output);
+        appendBuff (output);
       }
 
       tval = st_ShowString(listTail->info.composition.r, sDepth, rDepth, BFALSE);
@@ -403,27 +403,27 @@ showINT(COMB_EXPR *combExpr) {
 
   /* [H-O] ALTERED combinator.param ACCESS (SEE codetab.h): */
 
-  if ((combExpr->tag == CTT_COMBINATOR) && 
+  if ((combExpr->tag == CTT_COMBINATOR) &&
       (combExpr->info.combinator.class == CC_PRIMITIVE) &&
       (strcmp(combExpr->info.combinator.name, PRIM_PAIR) == 0) &&
       (combExpr->info.combinator.param[0]->positive->tag == CTT_COMPOSITION) &&
       (combExpr->info.combinator.param[0]->positive->info.composition.l->tag == CTT_COMBINATOR) &&
       (combExpr->info.combinator.param[0]->positive->info.composition.l->info.combinator.class == CC_CONSTRUCTOR)) {
-    sign = 
+    sign =
      (combExpr->info.combinator.param[0]->positive->info.composition.l->info.combinator.name);
-    if (strcmp(sign, "positive") == 0) 
+    if (strcmp(sign, "positive") == 0)
       appendBuff("");
-    else if (strcmp(sign, "negative") == 0) 
+    else if (strcmp(sign, "negative") == 0)
       appendBuff("-");
     else
       printMsg(FATAL_MSG, "Unexpected sign constructor, %s, in showINT",
-	       sign);
+               sign);
     makeDigits(combExpr->info.combinator.param[1]->positive, 0);
     appendBuff(integer);
   }   /*  fi  */
   else
-    printMsg(FATAL_MSG, 
-	     "Combinator expression is not structured as expected in showINT");
+    printMsg(FATAL_MSG,
+             "Combinator expression is not structured as expected in showINT");
 }
 
 
@@ -432,7 +432,7 @@ showINT(COMB_EXPR *combExpr) {
  *    makeDigits                 *
  *                               *
  *********************************/
-static void 
+static void
 makeDigits(COMB_EXPR *digits, int i) {
 
   COMB_EXPR *digitsTail;
@@ -441,31 +441,31 @@ makeDigits(COMB_EXPR *digits, int i) {
 
   if ((digits->tag == CTT_COMPOSITION) &&
       (digits->info.composition.l->tag == CTT_COMBINATOR) &&
-      (digits->info.composition.l->info.combinator.class == CC_CONSTRUCTOR)) 
+      (digits->info.composition.l->info.combinator.class == CC_CONSTRUCTOR))
     if (strcmp(digits->info.composition.l->info.combinator.name, "cons") == 0){
       digitsTail = digits->info.composition.r;
-      if ((digitsTail->tag == CTT_COMBINATOR) && 
-	  (digitsTail->info.combinator.class == CC_PRIMITIVE) &&
-	  (strcmp(digitsTail->info.combinator.name, PRIM_PAIR) == 0) &&
-	  (digitsTail->info.combinator.param[0]->positive->tag == CTT_COMPOSITION) &&
-	  (digitsTail->info.combinator.param[0]->positive->info.composition.l->tag == 
-	   CTT_COMBINATOR) &&
-	  (digitsTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.class == CC_CONSTRUCTOR))  {
-	integer[i] = 
-	  digitsTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.name[1];
-	makeDigits(digitsTail->info.combinator.param[1]->positive, i+1);
+      if ((digitsTail->tag == CTT_COMBINATOR) &&
+          (digitsTail->info.combinator.class == CC_PRIMITIVE) &&
+          (strcmp(digitsTail->info.combinator.name, PRIM_PAIR) == 0) &&
+          (digitsTail->info.combinator.param[0]->positive->tag == CTT_COMPOSITION) &&
+          (digitsTail->info.combinator.param[0]->positive->info.composition.l->tag ==
+           CTT_COMBINATOR) &&
+          (digitsTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.class == CC_CONSTRUCTOR))  {
+        integer[i] =
+          digitsTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.name[1];
+        makeDigits(digitsTail->info.combinator.param[1]->positive, i+1);
       }   /*  fi  */
       else
-	printMsg(FATAL_MSG, 
-		"Unexpected structure of combinator expression in showDigits");
+        printMsg(FATAL_MSG,
+                "Unexpected structure of combinator expression in showDigits");
     }   /*  fi  */
-    else if (strcmp(digits->info.composition.l->info.combinator.name, "nil") 
-	     == 0)
+    else if (strcmp(digits->info.composition.l->info.combinator.name, "nil")
+             == 0)
       integer[i] = '\0';
     else
       printMsg(FATAL_MSG, "Unexpected constructor, %s, in showDigits",
-	       digits->info.composition.l->info.combinator.name);
-  
+               digits->info.composition.l->info.combinator.name);
+
 }
 
 
@@ -485,32 +485,32 @@ showSTRING(COMB_EXPR *str) {
 
   if ((str->tag == CTT_COMPOSITION) &&
       (str->info.composition.l->tag == CTT_COMBINATOR) &&
-      (str->info.composition.l->info.combinator.class == CC_CONSTRUCTOR)) 
+      (str->info.composition.l->info.combinator.class == CC_CONSTRUCTOR))
     if (strcmp(str->info.composition.l->info.combinator.name, "cons") == 0){
       strTail = str->info.composition.r;
-      if ((strTail->tag == CTT_COMBINATOR) && 
-	  (strTail->info.combinator.class == CC_PRIMITIVE) &&
-	  (strcmp(strTail->info.combinator.name, PRIM_PAIR) == 0) &&
-	  (strTail->info.combinator.param[0]->positive->tag == CTT_COMPOSITION) &&
-	  (strTail->info.combinator.param[0]->positive->info.composition.l->tag == 
-	   CTT_COMBINATOR) &&
-	  (strTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.class == CC_CONSTRUCTOR) &&
-	  (strcmp(strTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.name, "CHAR") == 0))  {
-	makeDigits(strTail->info.combinator.param[0]->positive->info.composition.r, 0);
-	c = (char)atoi(integer);
-	appendBuff(&c);
-	showSTRING(strTail->info.combinator.param[1]->positive);
+      if ((strTail->tag == CTT_COMBINATOR) &&
+          (strTail->info.combinator.class == CC_PRIMITIVE) &&
+          (strcmp(strTail->info.combinator.name, PRIM_PAIR) == 0) &&
+          (strTail->info.combinator.param[0]->positive->tag == CTT_COMPOSITION) &&
+          (strTail->info.combinator.param[0]->positive->info.composition.l->tag ==
+           CTT_COMBINATOR) &&
+          (strTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.class == CC_CONSTRUCTOR) &&
+          (strcmp(strTail->info.combinator.param[0]->positive->info.composition.l->info.combinator.name, "CHAR") == 0))  {
+        makeDigits(strTail->info.combinator.param[0]->positive->info.composition.r, 0);
+        c = (char)atoi(integer);
+        appendBuff(&c);
+        showSTRING(strTail->info.combinator.param[1]->positive);
       }   /*  fi  */
       else
-	printMsg(FATAL_MSG, 
-		"Unexpected structure of combinator expression in showSTRING");
+        printMsg(FATAL_MSG,
+                "Unexpected structure of combinator expression in showSTRING");
     }   /*  fi  */
-    else if (strcmp(str->info.composition.l->info.combinator.name, "nil") 
-	     == 0)
+    else if (strcmp(str->info.composition.l->info.combinator.name, "nil")
+             == 0)
       appendBuff("");
     else
       printMsg(FATAL_MSG, "Unexpected constructor, %s, in showSTRING",
-	       str->info.composition.l->info.combinator.name);
+               str->info.composition.l->info.combinator.name);
 
 }
 
@@ -547,29 +547,29 @@ char             *pairNames[] = {NULL, NULL},
 
   switch (combExpr->info.combinator.class) {
     case CC_PRIMITIVE :
-      if (strcmp(combExpr->info.combinator.name, PRIM_BANG)==0) 
-	appendBuff("()");
+      if (strcmp(combExpr->info.combinator.name, PRIM_BANG)==0)
+        appendBuff("()");
       else if (strcmp(combExpr->info.combinator.name, PRIM_PAIR)==0) {
-	appendBuff("(");
-	rval = showParams(combExpr->info.combinator.param,
-			  sDepth,   rDepth,   pairNames,    2);
-	appendBuff(")");
+        appendBuff("(");
+        rval = showParams(combExpr->info.combinator.param,
+                          sDepth,   rDepth,   pairNames,    2);
+        appendBuff(")");
       }
       else
-	printMsg(FATAL_MSG, "combShow - %s is not a valid primitive name", combExpr->info.combinator.name);
+        printMsg(FATAL_MSG, "combShow - %s is not a valid primitive name", combExpr->info.combinator.name);
       break;
     case CC_CONSTRUCTOR :
-      if (strcmp(combExpr->info.combinator.name, "nil") == 0) 
-	appendBuff("[]");
+      if (strcmp(combExpr->info.combinator.name, "nil") == 0)
+        appendBuff("[]");
       else
-	appendBuff(combExpr->info.combinator.name);
+        appendBuff(combExpr->info.combinator.name);
       break;
     case CC_RECORD :
       appendBuff("(");
       recNames = getStructorNames(combExpr->info.combinator.parentName);
       rval = showParams(combExpr->info.combinator.param,
-			sDepth,    ++rDepth,    recNames,
-			getNumStructors(combExpr->info.combinator.parentName));
+                        sDepth,    ++rDepth,    recNames,
+                        getNumStructors(combExpr->info.combinator.parentName));
       appendBuff(")");
       break;
     case CC_DESTRUCTOR :
@@ -584,24 +584,24 @@ char             *pairNames[] = {NULL, NULL},
 
     case CC_BUILTIN_INT:     /* [BI] PRINT BUILTIN INTEGERS */
       {
-	char s[100];
+        char s[100];
 
-	sprintf (s, "%d", combExpr->info.combinator.i);
-	appendBuff (s);
+        sprintf (s, "%d", combExpr->info.combinator.i);
+        appendBuff (s);
       }
 
       break;
 
     case CC_BUILTIN_CHAR:     /* [BI] PRINT BUILTIN CHARACTERS */
       {
-	char s[100];
+        char s[100];
 
-	if (isprint (combExpr->info.combinator.c))
-	  sprintf (s, "'%c'", combExpr->info.combinator.c);
-	else
-	  sprintf (s, "\\d%d", (int)combExpr->info.combinator.c);
+        if (isprint (combExpr->info.combinator.c))
+          sprintf (s, "'%c'", combExpr->info.combinator.c);
+        else
+          sprintf (s, "\\d%d", (int)combExpr->info.combinator.c);
 
-	appendBuff (s);
+        appendBuff (s);
       }
 
       break;
@@ -631,10 +631,10 @@ char             *pairNames[] = {NULL, NULL},
 static
 PP_COMB_WARNING
 showParams(COMB_PHR **params,
-	   int        sDepth,
-	   int        rDepth,
-	   char     **recNames,
-	   int        numParams)
+           int        sDepth,
+           int        rDepth,
+           char     **recNames,
+           int        numParams)
 {
   int              i;
   PP_COMB_WARNING  newRval;
@@ -646,57 +646,57 @@ showParams(COMB_PHR **params,
       canNotPoke = BFALSE;
 
       if (recNames[i])     /* pair won't have destructor names */
-	{
-	  ST_KEY destKey;
+        {
+          ST_KEY destKey;
 
-	  appendBuff (recNames[i]);
-	  appendBuff (": ");
+          appendBuff (recNames[i]);
+          appendBuff (": ");
 
-	  destKey = st_NameToKey (recNames[i]);
+          destKey = st_NameToKey (recNames[i]);
 
-	  assert (destKey);
+          assert (destKey);
 
-	  if (st_IsHO (destKey))
-	    canNotPoke = BTRUE;
-	}
+          if (st_IsHO (destKey))
+            canNotPoke = BTRUE;
+        }
 
       /* [H-O] ALTERED TO PRINT OUT BIVARIANT COMBINATOR PHRASES: */
 
       if (params[i]->positive)
-	{
-	  if (canNotPoke)
-	    {
-	      appendBuff ("<function>");
-	      newRval = PP_DEPTH_OK;
-	    }
-	  else
-	    newRval = showCombExpr (params[i]->positive, sDepth, rDepth);
+        {
+          if (canNotPoke)
+            {
+              appendBuff ("<function>");
+              newRval = PP_DEPTH_OK;
+            }
+          else
+            newRval = showCombExpr (params[i]->positive, sDepth, rDepth);
 
-	  if (newRval > rval)
-	    rval = newRval;
+          if (newRval > rval)
+            rval = newRval;
 
-	  if (params[i]->negative)
-	    appendBuff (" & ");
-	}
+          if (params[i]->negative)
+            appendBuff (" & ");
+        }
 
       if (params[i]->negative)
-	{
-	  assert (!canNotPoke);
+        {
+          assert (!canNotPoke);
 
-	  newRval = showCombExpr (params[i]->negative, sDepth, rDepth);
+          newRval = showCombExpr (params[i]->negative, sDepth, rDepth);
 
-	  if (newRval > rval)
-	    rval = newRval;
-	}
+          if (newRval > rval)
+            rval = newRval;
+        }
 
       if (!params[i]->positive && !params[i]->negative)
-	{
-	  assert (!canNotPoke);
-	  appendBuff ("_");
-	}
+        {
+          assert (!canNotPoke);
+          appendBuff ("_");
+        }
 
       if (i != numParams - 1)
-	appendBuff(", ");
+        appendBuff(", ");
     }
 
   return (rval);
@@ -716,7 +716,7 @@ rightDisplayMode(COMB_EXPR *combExpr, int maxShowDepth, int maxRecordDepth) {
   emptyInputLine();  getInputLine(input,MAX_INPUT_LENGTH);  restoreInputLine();
 
 /*  if (kludge) {
-    getInputLine(input,MAX_INPUT_LENGTH);  
+    getInputLine(input,MAX_INPUT_LENGTH);
     kludge = 0;
   }
   getInputLine(input,MAX_INPUT_LENGTH);

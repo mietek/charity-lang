@@ -46,8 +46,8 @@ typedef enum
   L_VOIDPTR,           /* for pointers, see pmLib.c */
   L_MEM_PAGE,
   L_PM_PHRASE,
-  L_TYPE_ASMT,	       /* typechecker */
-  L_TYPED_PATT	       /* typechecker */
+  L_TYPE_ASMT,         /* typechecker */
+  L_TYPED_PATT         /* typechecker */
 }
 LIST_TYPE;
 

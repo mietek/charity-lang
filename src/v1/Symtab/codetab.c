@@ -77,8 +77,8 @@ CodeTableConstruct(int size)
 /* !!!! should use passed in size */
      codeTblDesc = MemAlloc("code table", CODETAB_SIZE, sizeof(CT_ENTRY *));
      codeTable   = (CT_ENTRY **) MemHeapAlloc(codeTblDesc,
-					      CODETAB_SIZE,
-					      sizeof(CT_ENTRY *));
+                                              CODETAB_SIZE,
+                                              sizeof(CT_ENTRY *));
 
      assert(codeTable);
 
@@ -110,7 +110,7 @@ void
 CodeTableReset(void)
 {
      MemReset(codeTblDesc);
-     MemReset(codeHD);     
+     MemReset(codeHD);
      MemReset(transHD);
 
      ctTranslateReset();
@@ -138,7 +138,7 @@ CT_ENTRY
      entry->comb_exp     = NULL;
      entry->machine_code = mc;
      entry->next         = NULL;
-     
+
      return(entry);
 }
 
@@ -157,26 +157,26 @@ CodeTableAdd(char *name, COMB_EXPR *expr, M_INSTR *mc)
 
      hash = _hashKey(name);
      if (codeTable[hash]) { /* entry exists in table, search for free space */
-	  curr = prev = codeTable[hash];
+          curr = prev = codeTable[hash];
 
-	  while (curr && strcmp(curr->name, name) != 0) {
-	       prev = curr;
-	       curr = curr->next;
-	  }
-	  if (curr) { /* name already exists in table */
-	       curr->comb_exp = expr;
-	       curr->machine_code = mc;
-	  }
-	  else {
-	       entry = _NewEntry(name, expr, mc);
-	       assert(entry);
-	       prev->next = entry;
-	  }
+          while (curr && strcmp(curr->name, name) != 0) {
+               prev = curr;
+               curr = curr->next;
+          }
+          if (curr) { /* name already exists in table */
+               curr->comb_exp = expr;
+               curr->machine_code = mc;
+          }
+          else {
+               entry = _NewEntry(name, expr, mc);
+               assert(entry);
+               prev->next = entry;
+          }
      }
      else {
-	  entry = _NewEntry(name, expr, mc);
-	  assert(entry);
-	  codeTable[hash] = entry;
+          entry = _NewEntry(name, expr, mc);
+          assert(entry);
+          codeTable[hash] = entry;
      }
 }
 
@@ -187,19 +187,19 @@ CodeTableAdd(char *name, COMB_EXPR *expr, M_INSTR *mc)
  *********************************/
 static
 CT_ENTRY
-*_findEntry(char *name, CT_ENTRY *entry) 
+*_findEntry(char *name, CT_ENTRY *entry)
 {
      CT_ENTRY *curr  = NULL;
 
-     if (entry) { 
-	  curr = entry;
+     if (entry) {
+          curr = entry;
 
-	  while (curr) {
-	       if (strcmp(curr->name, name) == 0) {
-		    return(curr);
-	       }
-	       curr = curr->next;
-	  }
+          while (curr) {
+               if (strcmp(curr->name, name) == 0) {
+                    return(curr);
+               }
+               curr = curr->next;
+          }
      }
 
      return(NULL);
@@ -247,7 +247,7 @@ CodeTableShowComb(char *funName)
      CT_ENTRY *entry = NULL;
 
      entry = _findEntry(funName, codeTable[_hashKey(funName)]);
-     
+
      if (entry) {
        CombExprPrint(entry->comb_exp);
        printf("\n"); fflush(stdout);

@@ -50,8 +50,8 @@ static TYPE_ASMT_LIST *match(TYPE_EXPR *e1, TYPE_EXPR *e2)
       return TAL_cons(type_asmt(e1->id.var,e2),0);
     case TYPE_CON:
       if (type_var_occurs_in_TEL(e1->id.var,e2->params)) {
-	tc_close_typechecker(0);
-	printMsg(ERROR_MSG,"unable to unify types (failed occurs check)");
+        tc_close_typechecker(0);
+        printMsg(ERROR_MSG,"unable to unify types (failed occurs check)");
       }
       return TAL_cons(type_asmt(e1->id.var,e2),0);
     default:
@@ -61,37 +61,37 @@ static TYPE_ASMT_LIST *match(TYPE_EXPR *e1, TYPE_EXPR *e2)
     switch (e2->tag) {
     case TYPE_VAR:
       if (type_var_occurs_in_TEL(e2->id.var,e1->params)) {
-	tc_close_typechecker(0);
-	printMsg(ERROR_MSG,"unable to unify types (failed occurs check)");
+        tc_close_typechecker(0);
+        printMsg(ERROR_MSG,"unable to unify types (failed occurs check)");
       }
       return TAL_cons(type_asmt(e2->id.var,e1),0);
     case TYPE_CON:
       list1 = e1->params;
       list2 = e2->params;
       if (tc_type_con_match(e1->id.con,e2->id.con)) {
-	/* length of list1 and list2 are assumed to be equal */
-	if (!list1) return 0;
-	match_list = 0;
-	i=0;
-	while (list1[i]) {
-	  match_list = TAL_append(match_list,match(list1[i],list2[i]));
-	  i++;
-	}
-	return match_list;
+        /* length of list1 and list2 are assumed to be equal */
+        if (!list1) return 0;
+        match_list = 0;
+        i=0;
+        while (list1[i]) {
+          match_list = TAL_append(match_list,match(list1[i],list2[i]));
+          i++;
+        }
+        return match_list;
       }
       else {
         /* special handling for @ type constructors (assumes all other tycons >= 0) */
-	if (e2->id.con < 0) return match(e1,list2[0]);
-	if (e1->id.con < 0) {
-	  str2 = st_KeyToName(e2->id.con);
-	  tc_close_typechecker(0);
-	  printMsg(ERROR_MSG,"cannot propagate @ exception through %s type",str2);
-	}
-	/* unification error */
-	str1 = st_KeyToName(e1->id.con);
-	str2 = st_KeyToName(e2->id.con);
-	tc_close_typechecker(0);
-	printMsg(ERROR_MSG,"unable to unify %s with %s",str1,str2);
+        if (e2->id.con < 0) return match(e1,list2[0]);
+        if (e1->id.con < 0) {
+          str2 = st_KeyToName(e2->id.con);
+          tc_close_typechecker(0);
+          printMsg(ERROR_MSG,"cannot propagate @ exception through %s type",str2);
+        }
+        /* unification error */
+        str1 = st_KeyToName(e1->id.con);
+        str2 = st_KeyToName(e2->id.con);
+        tc_close_typechecker(0);
+        printMsg(ERROR_MSG,"unable to unify %s with %s",str1,str2);
       }
     case USER_VAR:
       tc_close_typechecker(0);
@@ -188,7 +188,7 @@ static TYPE_ASMT_LIST *coalesce(TYPE_ASMT *asmt, TYPE_ASMT_LIST *list)
   }
   expr1 = subst_in_TE(asmt,asmt1->rhs.expr);
   if (expr1  &&  expr1->tag==TYPE_VAR  &&  tc_type_var_match(asmt1->var,expr1->id.var)) {
-    return coalesce(asmt,TAL_tail(list));	/* discard V:=V */
+    return coalesce(asmt,TAL_tail(list));       /* discard V:=V */
   }
   if (type_var_occurs_in_TE(asmt1->var,expr1)) {
     tc_close_typechecker(0);

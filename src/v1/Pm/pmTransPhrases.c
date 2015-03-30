@@ -47,7 +47,7 @@ static CT_EXPR *intcharCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs,
 
 static STR_LIST *getStructs(PM_LIST_PHRASE *phrases);
 static PE_LIST_PATT *makeDCList(int structsLen);
-static PM_LIST_PHRASE *processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, 
+static PM_LIST_PHRASE *processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r,
                                       STR_LIST *destructs, char *constr,
                                       long i, BBOOL wanti);
 static STR_LIST       *getDestrs(PE_PATT *p);
@@ -124,7 +124,7 @@ CT_EXPR*
 terminalCase(PM_LIST_PHRASE *phrases) {
 /* phrases is not empty */
 /* travels down the list of phrases completing rhss. A rhs only needs to
- * be completed if it is a case or an abstraction. All other terms are 
+ * be completed if it is a case or an abstraction. All other terms are
  * guaranteed to be complete. Once a complete rhs is found we can quit.
  */
   PM_PHRASE        *phr = PMPhraseListHead(phrases);
@@ -222,14 +222,14 @@ indCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs, char *parent) {
     result->tag = CT_APP;
     result->info.app.term = (CT_TERM *)MHA(ctHD, 1, sizeof(CT_TERM));
     result->info.app.term->tag = CT_T_CASE;
-    result->info.app.term->info.cases = 
+    result->info.app.term->info.cases =
                         (CT_CASE **)MHA(ctHD, numStructs+1, sizeof(CT_CASE *));
-         
+
     for ( i=0; i<numStructs; i++ ) {
         sType = getStructorType(structs[i]);
-	casePhrase = (CT_CASE *)MHA(ctHD,1, sizeof(CT_CASE));
+        casePhrase = (CT_CASE *)MHA(ctHD,1, sizeof(CT_CASE));
 
-	casePhrase->constr = libStrdup(ctHD, structs[i]);
+        casePhrase->constr = libStrdup(ctHD, structs[i]);
 
         /* build the variable base & discriminant list */
         if ( sType->tag != TYPE_1 ) {
@@ -248,8 +248,8 @@ indCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs, char *parent) {
         }   /*  esle  */
 
         newPhrases = processPhrases(phrases, r, NULL, structs[i], 0, BTRUE);
-	casePhrase->expr = pmTransPhrs(newPhrases, rs);
-	result->info.app.term->info.cases[i] = casePhrase;
+        casePhrase->expr = pmTransPhrs(newPhrases, rs);
+        result->info.app.term->info.cases[i] = casePhrase;
     }   /*  rof  */
     result->info.app.term->info.cases[numStructs] = NULL;
 
@@ -273,15 +273,15 @@ intcharCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs,
                                 ? BTRUE  : BFALSE;
     char        *charRep = NULL;
     CT_EXPR     *r = CTExprListHead(rs);
-    PE_PATT     *firstIntPatt = getFirstPatt(phrases, 
+    PE_PATT     *firstIntPatt = getFirstPatt(phrases,
                                              isIntConst
                                                  ? P_INT: P_CHAR);
-    long         i = firstIntPatt->info.intcharBI.lTag == INTX 
-                       ? firstIntPatt->info.intcharBI.l 
+    long         i = firstIntPatt->info.intcharBI.lTag == INTX
+                       ? firstIntPatt->info.intcharBI.l
                        : firstIntPatt->info.intcharBI.u+1;
     CT_TERM     *intcharTerm  = (CT_TERM *)MHA (ctHD, 1, sizeof (CT_TERM));
     CT_EXPR     *iExpr = ctMakeAPPExpr(ctHD,intcharTerm, ctMakeBangExpr(ctHD));
-    CT_TERM     *fun  = ctMakeFunTerm(ctHD, 
+    CT_TERM     *fun  = ctMakeFunTerm(ctHD,
                                       isIntConst ? GE_INT : GE_CHAR,
                                       NULL, BTRUE);
     CT_EXPR     *funInput = ctMakePairExpr(ctHD, r, iExpr);
@@ -300,14 +300,14 @@ intcharCase(PM_LIST_PHRASE *phrases, CT_LIST_EXPR *rs,
     caseBool->info.cases[0] = (CT_CASE *)MHA(ctHD, 1, sizeof(CT_CASE));
     caseBool->info.cases[0]->constr = libStrdup(ctHD, FALSE_CONSTRUCTORNAME);
     caseBool->info.cases[0]->var_base = ctMakeVarBase(ctHD, NULL, BFALSE);
-    caseBool->info.cases[0]->expr = 
+    caseBool->info.cases[0]->expr =
         pmTransPhrs(processPhrases(phrases, r, NULL, intcharConst, i, BTRUE),
                      rs);
 
     caseBool->info.cases[1] = (CT_CASE *)MHA(ctHD, 1, sizeof(CT_CASE));
     caseBool->info.cases[1]->constr = libStrdup(ctHD, TRUE_CONSTRUCTORNAME);
     caseBool->info.cases[1]->var_base = ctMakeVarBase(ctHD, NULL, BFALSE);
-    caseBool->info.cases[1]->expr = 
+    caseBool->info.cases[1]->expr =
         pmTransPhrs(processPhrases(phrases, r, NULL, intcharConst, i, BFALSE),
                      rs);
     caseBool->info.cases[2] = NULL;
@@ -377,7 +377,7 @@ getStructs(PM_LIST_PHRASE *phrases) {
         case P_VAR :
             phrsTmp = PMPhraseListTail(phrsTmp);
             break;
-        case P_HOVAR : 
+        case P_HOVAR :
         case P_BANG :
             structs = NULL;
             phrsTmp = NULL;
@@ -394,12 +394,12 @@ getStructs(PM_LIST_PHRASE *phrases) {
             assert(NULL);
         }   /*  hctiws  */
 
-    
-    }   /*  rof  */    
-    
+
+    }   /*  rof  */
+
     if ( posns != NULL ) {
-        for ( i=numStructs-1; i>=0; i-- ) 
-            if ( posns[i] != 0 ) 
+        for ( i=numStructs-1; i>=0; i-- )
+            if ( posns[i] != 0 )
                 structs = StrListCons(structsType[i], structs, scratchHD);
     }   /*  fi  */
 
@@ -424,7 +424,7 @@ makeDCList(int structsLen) {
     PE_LIST_PATT   *result = NULL;
     PE_PATT        *dcPatt = peMakeVarPatt(scratchHD, DONTCARE, BTRUE);
 
-    for ( i=0; i<structsLen; i++ ) 
+    for ( i=0; i<structsLen; i++ )
         result = PE_PattListCons(dcPatt, result);
 
     return result;
@@ -468,14 +468,14 @@ getDestrPatts(PE_PATT *p, STR_LIST *structs) {
     patts = (PE_PATT **)MHA(scratchHD, numStructs+1, sizeof(PE_PATT *));
     patts[numStructs] = NULL;
 
-    while ( (d = p->info.record[i++]) ) {   
+    while ( (d = p->info.record[i++]) ) {
         /* load patts with destructor patterns from the record pattern */
         sPos = getStructorPosn(d->id);
         patts[sPos] = d->arg;
     }   /*  elihw  */
 
     /* WARNING: changes internal ptrs */
-    oldStructs = structs = StrListReverse(structs); 
+    oldStructs = structs = StrListReverse(structs);
     while ( structs ) {
         /* create a list of patterns; one for each destructor in structs */
         s = StrListHead(structs);
@@ -519,7 +519,7 @@ applyStructsToR(STR_LIST *structs, CT_EXPR *r) {
 
     if ( st_IsHO(st_NameToKey(s)) == BTRUE )
         app = r;
-    else  
+    else
         app = ctMakeAPPExpr(ctHD, ctMakeStructTerm(ctHD, s, BTRUE), r);
 
     result = CTExprListCons(app, applyStructsToR(CTExprListTail(structs), r));
@@ -537,8 +537,8 @@ applyStructsToR(STR_LIST *structs, CT_EXPR *r) {
  *********************************/
 static
 PM_LIST_PHRASE *
-processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs, 
-               char *constr, long i, BBOOL trueCase) { 
+processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
+               char *constr, long i, BBOOL trueCase) {
 
     /* The pattern lists in phrases cannot be NULL                      */
 
@@ -549,9 +549,9 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
     PM_PHRASE     *pmNew = NULL;
     CT_EXPR       *rhsNew = NULL;
 
-    PE_INT_TAG     lTag = NEGINF,  
+    PE_INT_TAG     lTag = NEGINF,
                    uTag = POSINF;
-    long           l = 0, 
+    long           l = 0,
                    u = 0;
     PE_PATT       *pNew = NULL;
     CT_TERM       *dTerm = NULL;
@@ -569,7 +569,7 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
 
    switch ( p->tag ) {
     case P_VAR :
-        if ( strcmp(p->info.var, DONTCARE) != 0 ) 
+        if ( strcmp(p->info.var, DONTCARE) != 0 )
             /* substitute r for var on rhs */
             rhsNew = ctMakeAPPExpr(ctHD,ctMakeAbsTerm(ctHD,ctMakeVarBase(ctHD,
                                           p->info.var, BTRUE), pm->rhs),    r);
@@ -592,8 +592,8 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
         /* can only have variables in place for higher order patterns */
         pmNew->patts = ps;
         if ( strcmp(p->info.var, DONTCARE) != 0 ) {
-            dTerm = ctMakeStructTerm(ctHD, 
-                        st_KeyToName(p->info.hovar.destr), BTRUE);  
+            dTerm = ctMakeStructTerm(ctHD,
+                        st_KeyToName(p->info.hovar.destr), BTRUE);
             /* substitute <d_i(expr, r)> for <var expr> on rhs */
             pmNew->rhs =
                  replaceHOFunCalls(pm->rhs, p->info.hovar.hovar, r, dTerm);
@@ -696,7 +696,7 @@ processPhrases(PM_LIST_PHRASE *phrases, CT_EXPR *r, STR_LIST *destructs,
  *    getDestrs                  *
  *                               *
  *********************************/
-static 
+static
 STR_LIST *
 getDestrs(PE_PATT *p) {
 
@@ -713,7 +713,7 @@ getDestrs(PE_PATT *p) {
         destrs = StrListCons(PROD0, destrs, scratchHD);
     }   /*  fi  */
     else {
-        while ( (d = structs[i++]) ) 
+        while ( (d = structs[i++]) )
             destrs = StrListCons(d->id, destrs, scratchHD);
     }   /*  esle  */
 
@@ -727,7 +727,7 @@ getDestrs(PE_PATT *p) {
  *    replaceHOFunCalls          *
  *                               *
  *********************************/
-static 
+static
 CT_EXPR *
 replaceHOFunCalls(CT_EXPR *rhs, char *var, CT_EXPR *r, CT_TERM *term) {
 
@@ -758,7 +758,7 @@ replaceHOFunCalls(CT_EXPR *rhs, char *var, CT_EXPR *r, CT_TERM *term) {
             break;
         case CT_T_FUNCTION :
             if ( strcmp(rhsTerm->info.function->fun_name, var) == 0 ) {
-                rhs = ctMakeAPPExpr(ctHD, term, 
+                rhs = ctMakeAPPExpr(ctHD, term,
                                     ctMakePairExpr(ctHD,rhs->info.app.expr,r));
             }   /*  fi  */
             while ( (phr = rhsTerm->info.function->macros[i++]) )
@@ -791,12 +791,12 @@ replaceHOFunCalls(CT_EXPR *rhs, char *var, CT_EXPR *r, CT_TERM *term) {
                 rec->expr = replaceHOFunCalls(rec->expr,var, r, term);
             break;
         case CT_T_ABS :
-            rhsTerm->info.abs->expr = 
+            rhsTerm->info.abs->expr =
                 replaceHOFunCalls(rhsTerm->info.abs->expr,var, r, term);
             break;
         default:
             assert(NULL);
-    
+
         }   /*  hctiws  */
 
         break;
@@ -865,7 +865,7 @@ completeExpr(CT_EXPR *t_i, CT_EXPR *t_j) {
               }   /*  elihw  */
           }   /*  fi  */
           else    /* must be an abstraction */
-              t_i->info.app.term->info.abs->expr =  
+              t_i->info.app.term->info.abs->expr =
                   completeExpr(t_i->info.app.term->info.abs->expr, t_j);
       }   /*  fi  */
       break;

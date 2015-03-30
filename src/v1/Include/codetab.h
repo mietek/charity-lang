@@ -23,12 +23,12 @@
 
 extern int     kludge;
 
-typedef enum 
-{ 
-  CTT_COMPOSITION, 
-  CTT_COMBINATOR, 
-  CTT_CLOSURE 
-} 
+typedef enum
+{
+  CTT_COMPOSITION,
+  CTT_COMBINATOR,
+  CTT_CLOSURE
+}
 COMB_EXPR_TAG;
 
 typedef enum
@@ -89,26 +89,26 @@ typedef struct _COMB_EXPR
   union
     {
       struct
-	{
-	  struct _COMB_EXPR *l;
-	  struct _COMB_EXPR *r;
-	}
+    {
+      struct _COMB_EXPR *l;
+      struct _COMB_EXPR *r;
+    }
       composition;
 
       struct
-	{
+    {
           COMB_CLASS   class;
-	  char        *name;
-	  char        *parentName;
-	  int          parameter;      /* only used for function and macro */
-	  int          numParams;
-	  COMB_PHR   **param;          /* [H-O] ALTERED TYPE (SEE ABOVE)   */
+      char        *name;
+      char        *parentName;
+      int          parameter;      /* only used for function and macro */
+      int          numParams;
+      COMB_PHR   **param;          /* [H-O] ALTERED TYPE (SEE ABOVE)   */
 
-	  int  i;                      /* [BI] FOR BUILTIN INTEGERS   ONLY */
-	  char c;                      /*      FOR BUILTIN CHARACTERS ONLY */
+      int  i;                      /* [BI] FOR BUILTIN INTEGERS   ONLY */
+      char c;                      /*      FOR BUILTIN CHARACTERS ONLY */
 
-	  int self;                    /* [#@]                             */
-	}
+      int self;                    /* [#@]                             */
+    }
       combinator;
 
       CLO_TAB_ENTRY closure;
@@ -117,58 +117,58 @@ typedef struct _COMB_EXPR
 }
 COMB_EXPR;
 
-typedef struct 
-{ 
-  /* number of reductions */ 
-  long   machine_ops; 
- 
-  /* memory used */ 
-  long   heap_size; 
-  long   cells_used; 
- 
-} MACHINE_STATS; 
- 
-/**************************/ 
-/*                        */ 
-/* Code Table Entry Type  */ 
-/*                        */ 
-/**************************/ 
- 
-typedef struct _CT_ENTRY { 
-     char             *name; 
-     COMB_EXPR        *comb_exp; 
-     M_INSTR          *machine_code;  
+typedef struct
+{
+  /* number of reductions */
+  long   machine_ops;
+
+  /* memory used */
+  long   heap_size;
+  long   cells_used;
+
+} MACHINE_STATS;
+
+/**************************/
+/*                        */
+/* Code Table Entry Type  */
+/*                        */
+/**************************/
+
+typedef struct _CT_ENTRY {
+     char             *name;
+     COMB_EXPR        *comb_exp;
+     M_INSTR          *machine_code;
 
      struct _CT_ENTRY *next;
-} CT_ENTRY; 
- 
-/**************************/ 
-/*                        */ 
-/* Code Table Functions   */ 
-/*                        */ 
-/**************************/ 
+} CT_ENTRY;
 
-extern void                CodeTableConstruct(int size);    
-extern void                CodeTableDestruct(void);    
-extern void                CodeTableReset(void);    
+/**************************/
+/*                        */
+/* Code Table Functions   */
+/*                        */
+/**************************/
 
-extern void                CodeTableAdd(char *name, COMB_EXPR *expr, M_INSTR *mc); 
+extern void                CodeTableConstruct(int size);
+extern void                CodeTableDestruct(void);
+extern void                CodeTableReset(void);
+
+extern void                CodeTableAdd(char *name, COMB_EXPR *expr, M_INSTR *mc);
 extern COMB_EXPR          *CodeTableGetComb(char *name);
 extern M_INSTR            *CodeTableGetMC(char *name);
 
-extern void                CodeTableShowComb(char *funName); 
-extern void                CodeTableShowMC(char *funName); 
- 
+extern void                CodeTableShowComb(char *funName);
+extern void                CodeTableShowMC(char *funName);
+
 
 /***********************************
  *                                 *
  *   Combinator Printing Functions *
  *                                 *
  ***********************************/
-extern void         combExprPrint(COMB_EXPR *combExpr, 
-				  int        maxShowDepth, 
-				  int        maxRecordDepth,
-				  ST_TYPE   *type);
+extern void         combExprPrint(COMB_EXPR *combExpr,
+                  int        maxShowDepth,
+                  int        maxRecordDepth,
+                  ST_TYPE   *type);
 
 
-#endif 
+#endif

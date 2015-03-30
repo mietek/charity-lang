@@ -19,7 +19,7 @@ CPPFLAGS=@CPPFLAGS@ -I$(INC)
 C_SRCS = gc.c machine.c
 OBJS = $(C_SRCS:.c=.o)
 
-.PHONY:	all clean distclean
+.PHONY: all clean distclean
 
 all: $(OBJS)
 

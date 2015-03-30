@@ -24,7 +24,7 @@ static int hashKey  (ST_KEY  key);
 static void initSymTableHeap (void);
 
 char *makeMacroName (char *functionName,
-		     char *macroName);
+                     char *macroName);
 
 
 /*********************************
@@ -76,7 +76,7 @@ initSymTable (BBOOL loadBase)
 /*
   symTabDesc = MemAlloc("symtab", SYMTAB_SIZE, sizeof(ST_ENTRY *));
   symTab = (ST_SYM_TAB *)MemHeapAlloc(symTabDesc, SYMTAB_SIZE,
-				      sizeof(ST_ENTRY *));
+                                      sizeof(ST_ENTRY *));
 
   initSymTableHeap ();
 */
@@ -201,7 +201,7 @@ addEntryToSymTab(ST_ENTRY *entry) {
   ST_ENTRY        *nextEntry;
   ST_LOOKUP_ENTRY *nextLookup,
                   *lookup;
-    
+
 /* add to lookup table */
 
   lookup = (ST_LOOKUP_ENTRY *)MHA(symTab->scopeHD,1, sizeof (ST_LOOKUP_ENTRY));
@@ -298,7 +298,7 @@ st_RemoveAnyEntry (ST_KEY key)
       numMacros = entry->info.function.numMacros;
 
       for (i = 0; i < numMacros; i++)
-	st_RemoveAnyEntry (entry->info.function.macroKeys[i]);
+        st_RemoveAnyEntry (entry->info.function.macroKeys[i]);
 
       break;
 
@@ -306,10 +306,10 @@ st_RemoveAnyEntry (ST_KEY key)
       numStructs = entry->info.datatype.numStructors;
 
       for (i = 0; i < numStructs; i++)
-	st_RemoveAnyEntry (entry->info.datatype.structorKeys[i]);
+        st_RemoveAnyEntry (entry->info.datatype.structorKeys[i]);
 
       for (i = 0; i < NUM_OPCOMBS; i++)
-	st_RemoveAnyEntry (entry->info.datatype.opCombKeys[i]);
+        st_RemoveAnyEntry (entry->info.datatype.opCombKeys[i]);
 
       break;
 
@@ -330,10 +330,10 @@ st_RemoveAnyEntry (ST_KEY key)
   else
     {
       while (!st_KeysEqual (next->key, key))
-	{
-	  before = next;
-	  next   = next->nextEntry;
-	}
+        {
+          before = next;
+          next   = next->nextEntry;
+        }
 
       before->nextEntry = next->nextEntry;
     }
@@ -348,10 +348,10 @@ st_RemoveAnyEntry (ST_KEY key)
   else
     {
       while (strcmp (lnext->name, entry->name) != 0)
-	{
-	  lbefore = lnext;
-	  lnext   = lnext->next;
-	}
+        {
+          lbefore = lnext;
+          lnext   = lnext->next;
+        }
 
       lbefore->next = lnext->next;
     }
@@ -381,20 +381,20 @@ getEntry (char *name)
       lookup = scope->lookupTab[index];
 
       while (lookup)
-	{
-	  if (strcmp (lookup->name, name) == 0)
-	    {
-	      entry = scope->table[hashKey (lookup->key)];
+        {
+          if (strcmp (lookup->name, name) == 0)
+            {
+              entry = scope->table[hashKey (lookup->key)];
 
-	      while (entry)
-		if (st_KeysEqual (entry->key, lookup->key))
-		  return entry;
-		else
-		  entry = entry->nextEntry;
-	    }
+              while (entry)
+                if (st_KeysEqual (entry->key, lookup->key))
+                  return entry;
+                else
+                  entry = entry->nextEntry;
+            }
 
-	  lookup = lookup->next;
-	}
+          lookup = lookup->next;
+        }
 
       scope = scope->below;
     }
@@ -427,12 +427,12 @@ st_GetEntry (ST_KEY key, int *level)
       entry = scope->table[index];
 
       while (entry)
-	{
-	  if (st_KeysEqual (entry->key, key))
-	    return entry;
-	  else
-	    entry = entry->nextEntry;
-	}
+        {
+          if (st_KeysEqual (entry->key, key))
+            return entry;
+          else
+            entry = entry->nextEntry;
+        }
 
       (*level)++;
       scope = scope->below;

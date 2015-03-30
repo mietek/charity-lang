@@ -20,7 +20,7 @@ C_SRCS = addSymtab.c codetab.c combPrint.c lookupSymtab.c miscSymtab.c \
 	symtab.c
 OBJS = $(C_SRCS:.c=.o)
 
-.PHONY:	all clean distclean
+.PHONY: all clean distclean
 
 all: $(OBJS)
 

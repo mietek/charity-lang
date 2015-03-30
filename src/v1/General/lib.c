@@ -67,7 +67,7 @@ makeNewRsrvdVar(MEMORY heapDesc) {
     varLen++;
     varCntr = varCntr / 10;
   }
-  resLen = strlen(RES_PREFIX); 
+  resLen = strlen(RES_PREFIX);
   varLen = varLen + resLen;
   varStr = (char *)MemHeapAlloc(heapDesc, varLen, sizeof(char));
 
@@ -87,18 +87,18 @@ makeNewRsrvdVar(MEMORY heapDesc) {
 char
 *libStrdup(MEMORY heapDesc, char *str)
 {
-	int len      = 0;
-	char *result = NULL;
+        int len      = 0;
+        char *result = NULL;
 
-	assert(str);
+        assert(str);
 
-	len = strlen(str);
-	result = (char *) MemHeapAlloc(heapDesc, len + 1, sizeof(char));
-	assert(result);
+        len = strlen(str);
+        result = (char *) MemHeapAlloc(heapDesc, len + 1, sizeof(char));
+        assert(result);
 
-	strcpy(result, str);
-	return(result);
-}	
+        strcpy(result, str);
+        return(result);
+}
 
 
 /*********************************
@@ -120,7 +120,7 @@ libStrListdup(MEMORY HD, STR_LIST *strList) {
     newList = NULL;
 
   return newList;
-  
+
 }
 
 
@@ -136,7 +136,7 @@ PtrArrayLen(char **array)
    with each item in the array a pointer */
      int count = 0;
      while (array[count])
-	  count++;
+          count++;
      return(count);
 }
 

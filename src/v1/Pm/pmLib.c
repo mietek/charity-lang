@@ -66,8 +66,8 @@ cleanup(void) {
 BBOOL
 possiblyIncomplete(CT_EXPR *expr) {
 
-  if ( (expr->tag == CT_APP) && 
-       ((expr->info.app.term->tag == CT_T_CASE) || 
+  if ( (expr->tag == CT_APP) &&
+       ((expr->info.app.term->tag == CT_T_CASE) ||
         (expr->info.app.term->tag == CT_T_ABS)) )
       return BTRUE;
   else
@@ -90,7 +90,7 @@ ctMakeVarBase(MEMORY heap, char *var, BBOOL copyVar) {
 
     if ( var ) {
         vbase->tag = CT_VB_VAR;
-        if ( copyVar ) 
+        if ( copyVar )
             vbase->info.var = libStrdup(heap, var);
         else
             vbase->info.var = var;
@@ -130,7 +130,7 @@ ctMakeStructTerm(MEMORY heap, char *structName, BBOOL copyVar){
  *                               *
  *********************************/
 CT_TERM *
-ctMakeFunTerm(MEMORY heap, char *funName, 
+ctMakeFunTerm(MEMORY heap, char *funName,
               CT_PHRASE **macros, BBOOL copyFunName){
 
   CT_TERM *result = (CT_TERM *)MHA(heap, 1, sizeof(CT_TERM));
@@ -170,8 +170,8 @@ ctMakeVarExpr(MEMORY heap, char *var, BBOOL copyVar) {
 
   if ( var ) {
       result->tag = CT_VAR;
-  
-      if ( copyVar ) 
+
+      if ( copyVar )
           result->info.var = libStrdup(heap, var);
       else
           result->info.var = var;
@@ -196,7 +196,7 @@ ctMakeBangExpr(MEMORY heap) {
 
   result = (CT_EXPR *)MHA(heap, 1, sizeof(CT_EXPR));
   result->tag = CT_BANG;
-  
+
   return result;
 
 }   /*  end ctMakeBangExpr  */
@@ -422,12 +422,12 @@ ctTermExpr(MEMORY heap, CT_TERM *term, CT_EXPR *expr) {
     case CT_T_MAP :
         while ( (mphr = term->info.maps->phrases[i++]) ) {
             if ( mphr->expr )
-                result = 
+                result =
                     CTExprAddrListAppend(ctExprExpr(heap, &mphr->expr, expr),
                                          result);
 
             if ( mphr->neg_expr )
-                result = 
+                result =
                     CTExprAddrListAppend(ctExprExpr(heap,&mphr->neg_expr,expr),
                                          result);
         }   /*  elihw  */
@@ -499,29 +499,29 @@ ctExprCmp(CT_EXPR *expr1, CT_EXPR *expr2) {
  *    ct_isVarBase               *
  *                               *
  *********************************/
-BBOOL 
+BBOOL
 ct_isVarBase(PE_PATT *patt) {
 
   BBOOL result;
 
-  if (!patt) 
+  if (!patt)
     return(BFALSE);
 
   switch (patt->tag) {
-  case P_BANG   : 
+  case P_BANG   :
   case P_VAR    : result = BTRUE;                              break;
   case P_PAIR   : result = (ct_isVarBase(patt->info.ppair.l) &&
                             ct_isVarBase(patt->info.ppair.r));   break;
-  case P_HOVAR  : 
-  case P_RECORD : 
+  case P_HOVAR  :
+  case P_RECORD :
   case P_INT    :
   case P_STR    :
   case P_CHAR   :
   case P_CONSTR : result = BFALSE;                             break;
   default       :
     result = BFALSE;
-    printMsg(FATAL_MSG, 
-	     "ct_isVarBase - %d is not a valid PE_PATT tag", patt->tag);
+    printMsg(FATAL_MSG,
+             "ct_isVarBase - %d is not a valid PE_PATT tag", patt->tag);
   }   /*  hctiws  */
 
   return result;

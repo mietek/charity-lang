@@ -149,21 +149,21 @@ _Machine(V_INSTR **value)
 
      while (PC->instr != MChalt) {
 
-	  switch (PC->instr) {
-	     case MChalt:
-	       disp("MChalt\n"); 
-	       break;
-	     case MCret:
-	       disp("MCret\n");
-	       D_assert(D1->instr == DPcont); 
+          switch (PC->instr) {
+             case MChalt:
+               disp("MChalt\n");
+               break;
+             case MCret:
+               disp("MCret\n");
+               D_assert(D1->instr == DPcont);
 
-	       PC = D1->info.code;
-	       popD1();
-	       break;
-	     case MCgoto:
-	       disp("MCgoto\n");
-	       PC = PC->info.code;
-	       break;
+               PC = D1->info.code;
+               popD1();
+               break;
+             case MCgoto:
+               disp("MCgoto\n");
+               PC = PC->info.code;
+               break;
              case MCsave:
                disp("MCsave\n");
 
@@ -183,7 +183,7 @@ _Machine(V_INSTR **value)
                break;
              case MCpair:
                disp("MCpair\n");
-	       D_assert(D4->instr == DPpr0 || D4->instr == DPpr1); 
+               D_assert(D4->instr == DPpr0 || D4->instr == DPpr1);
 
                allocH2(1, R0);
                V_set(R0->instr = MCpair);
@@ -211,14 +211,14 @@ _Machine(V_INSTR **value)
                disp("map_prod\n");
                V_assert(V->instr == MCpair);
                allocH2(1, R0);
-	       V_set(R0->instr = MCpair);
+               V_set(R0->instr = MCpair);
 
                R0->info.pair.v1 = V->info.pair.v1;   /* <_, v2>                         */
                R1 = V->info.pair.v0;                 /* <v0, v1>                        */
 
                V_assert(R1->instr == MCpair);
                R0->info.pair.v0 = R1->info.pair.v0;  /* build <v0, v2>                  */
-               
+
                pushD4(DPpr0);
                D4->info.pr0  = R0;
 
@@ -239,15 +239,15 @@ _Machine(V_INSTR **value)
                D4->info.pr1 = V->info.pair.v1;     /* pr1(v1, c)                      */
                PC++;
                break;
-	     case MCfunc:
-	       disp("FUNC\n");
+             case MCfunc:
+               disp("FUNC\n");
 
-	       pushD1(DPcont);
-	       D1->info.code = PC + 1;
+               pushD1(DPcont);
+               D1->info.code = PC + 1;
 
-	       PC               = PC->info.funcCode;
-	       break;
-             case MCparm: 
+               PC               = PC->info.funcCode;
+               break;
+             case MCparm:
                disp1("`%d\n",PC->info.macroParm);
 
                pushD1(DPcont);
@@ -255,18 +255,18 @@ _Machine(V_INSTR **value)
 
                pushD3(DPreload);
                D3->info.reload = A;
-               
-	       V_assert(A->info.macroFrame.arg);
-               PC = A->info.macroFrame.arg[PC->info.macroParm];  
+
+               V_assert(A->info.macroFrame.arg);
+               PC = A->info.macroFrame.arg[PC->info.macroParm];
                A  = A->info.macroFrame.prev;
                break;
              case MCldparm:
                disp("MCldparm\n");
 
-	       V_assert(PC->info.macroList);
+               V_assert(PC->info.macroList);
 
-	       allocH1(1, R0);
-	       V_set(R0->instr = MCldparm);
+               allocH1(1, R0);
+               V_set(R0->instr = MCldparm);
                R0->info.macroFrame.prev = A;
                R0->info.macroFrame.arg  = PC->info.macroList;
                A                        = R0;
@@ -275,71 +275,71 @@ _Machine(V_INSTR **value)
                break;
              case MCreload:
                disp("MCreload\n");
-               D_assert(D3->instr == DPreload); 
+               D_assert(D3->instr == DPreload);
                A = D3->info.reload;
                popD3();
                PC++;
-	       break;
+               break;
              case MCunload:
                disp("MCunload\n");
 
                A = A->info.macroFrame.prev;
                PC++;
                break;
-	     case MCbang:
-	       disp("!\n");
-	       V = _BANG;
-	       PC++;
-	       break;
-	     case MCcons:       /* Build the cons structure in the Heap */
-	       disp1("cons{%d}\n", PC->info.structorPosn);
+             case MCbang:
+               disp("!\n");
+               V = _BANG;
+               PC++;
+               break;
+             case MCcons:       /* Build the cons structure in the Heap */
+               disp1("cons{%d}\n", PC->info.structorPosn);
 
-	       allocH1(1, R0);
-	       V_set(R0->instr = PC->instr);
+               allocH1(1, R0);
+               V_set(R0->instr = PC->instr);
 
-	       R0->info.structor.posn = PC->info.structorPosn;
-	       R0->info.structor.next = V;
-	       V                      = R0;
-	       PC++;
-	       break;
-	     case MCjump:
-	       disp("jump\n");
+               R0->info.structor.posn = PC->info.structorPosn;
+               R0->info.structor.next = V;
+               V                      = R0;
+               PC++;
+               break;
+             case MCjump:
+               disp("jump\n");
 
-	       pushD1(DPcont);
-	       D1->info.code = PC + 1;
+               pushD1(DPcont);
+               D1->info.code = PC + 1;
 
-	       PC               = PC->info.code;
-	       break;
+               PC               = PC->info.code;
+               break;
 
-	     case MCjumpc:                                 /* [#@]                    */
-	       disp ("jump?...");
+             case MCjumpc:                                 /* [#@]                    */
+               disp ("jump?...");
 
-	       V_assert (V->instr == MCpair);
+               V_assert (V->instr == MCpair);
 
-	       if (V->info.pair.v0->info.at.next &&        /* AT TAG?                 */
-		   V->info.pair.v0->info.at.posn == 0)
-		 {
-		   disp ("no\n");                          /* YES---DON'T JUMP        */
-		   V = V->info.pair.v0->info.at.next;      /*    ...AND STRIP THE TAG */
+               if (V->info.pair.v0->info.at.next &&        /* AT TAG?                 */
+                   V->info.pair.v0->info.at.posn == 0)
+                 {
+                   disp ("no\n");                          /* YES---DON'T JUMP        */
+                   V = V->info.pair.v0->info.at.next;      /*    ...AND STRIP THE TAG */
 
-		   PC++;
-		 }
-	       else
-		 {
-		   disp ("yes\n");                         /* NO--- JUMP              */
+                   PC++;
+                 }
+               else
+                 {
+                   disp ("yes\n");                         /* NO--- JUMP              */
 
-		   pushD1 (DPcont);
-		   D1->info.code = PC + 1;
+                   pushD1 (DPcont);
+                   D1->info.code = PC + 1;
 
-		   PC = PC->info.code;
-		 }
+                   PC = PC->info.code;
+                 }
 
-	       break;
+               break;
 
-	     case MCinduct:
-	       disp("induct\n");
+             case MCinduct:
+               disp("induct\n");
 
-	       pushD1(DPcont);
+               pushD1(DPcont);
                D1->info.code = PC + 1;
 
                V_assert(V->instr == MCpair);
@@ -356,24 +356,24 @@ _Machine(V_INSTR **value)
                PC = PC->info.inductCode;
                PC = PC + (R1->info.structor.posn - 1);     /* [#@] */
 
-	       break;
+               break;
              case MCalloc:
                disp1("alloc{%d}\n", PC->info.allocNum);
                allocH1(PC->info.allocNum, R0);
                PC++;
                break;
-	     case MCldmacroframe:  /* load the current macro frame into the record */
-	       disp("ldmacroframe\n");
+             case MCldmacroframe:  /* load the current macro frame into the record */
+               disp("ldmacroframe\n");
 
-	       V_set(R0->instr = MCldmacroframe);
+               V_set(R0->instr = MCldmacroframe);
 
-	       R0->info.recMacroFrame.frame = A;
-	       R0->info.recMacroFrame.gcId  = PC->info.numDestrs;
+               R0->info.recMacroFrame.frame = A;
+               R0->info.recMacroFrame.gcId  = PC->info.numDestrs;
                R1 = V;
-	       V = R0;
-	       R0++;
-	       PC++;
-	       break;
+               V = R0;
+               R0++;
+               PC++;
+               break;
              case MCbclosure:
                disp("bclosure\n");
 
@@ -391,22 +391,22 @@ _Machine(V_INSTR **value)
                R0->info.closure.v              = R1;
                R0->info.closure.c              = PC->info.closureCode;
                PC++;
-               break;          
+               break;
              case MCdest:
                disp1("dest(%d)\n",PC->info.structorPosn);
 
-	       pushD3(DPreload);
-	       D3->info.reload = A;
+               pushD3(DPreload);
+               D3->info.reload = A;
 
                pushD1(DPcont);
                D1->info.code = PC + 1;
 
-               V_assert(V->instr == MCldmacroframe); 
+               V_assert(V->instr == MCldmacroframe);
                R1 = V;
                R0 = V + PC->info.structorPosn;
 
                V_assert((R0->instr == MCclosure) || (R0->instr == MCbclosure));
-	       A  = V->info.recMacroFrame.frame;
+               A  = V->info.recMacroFrame.frame;
 
                V  = R0->info.closure.v;
                PC = R0->info.closure.c;
@@ -421,31 +421,31 @@ _Machine(V_INSTR **value)
              case MCdestHO:
                disp1 ("destHO(%d)\n", PC->info.structorPosn);
 
-	       pushD3 (DPreload);
-	       D3->info.reload = A;
+               pushD3 (DPreload);
+               D3->info.reload = A;
 
                pushD1 (DPcont);
                D1->info.code = PC + 1;
 
-	       V_assert (V->instr == MCpair);
+               V_assert (V->instr == MCpair);
 
-	       allocH2 (1, R0);
-	       V_set (R0->instr = MCpair);
+               allocH2 (1, R0);
+               V_set (R0->instr = MCpair);
 
                R0->info.pair.v0 = V->info.pair.v0;
-	       R1               = V->info.pair.v1;
-	       V                = R0;
+               R1               = V->info.pair.v1;
+               V                = R0;
 
-	       V_assert (R1->instr == MCldmacroframe);
+               V_assert (R1->instr == MCldmacroframe);
 
-	       A  = R1->info.recMacroFrame.frame;
-	       R0 = R1 + PC->info.structorPosn;
+               A  = R1->info.recMacroFrame.frame;
+               R0 = R1 + PC->info.structorPosn;
 
-	       V_assert (   (R0->instr == MCclosure)
-			 || (R0->instr == MCbclosure));
+               V_assert (   (R0->instr == MCclosure)
+                         || (R0->instr == MCbclosure));
 
-	       V->info.pair.v1 = R0->info.closure.v;
-	       PC              = R0->info.closure.c;
+               V->info.pair.v1 = R0->info.closure.v;
+               PC              = R0->info.closure.c;
 
                break;
 
@@ -460,367 +460,367 @@ _Machine(V_INSTR **value)
                break;
              case MCupdate:
                disp("update\n");
-               D_assert(D2->instr == DPupdate); 
+               D_assert(D2->instr == DPupdate);
 
-	       if (D2->info.update) {  /* see if we need to do the update */
-		    R0 = D2->info.update + PC->info.updateClo;
+               if (D2->info.update) {  /* see if we need to do the update */
+                    R0 = D2->info.update + PC->info.updateClo;
 
-		    V_assert((R0->instr == MCclosure) || (R0->instr == MCbclosure));
-		    R0->info.closure.v = V;
-		    R0->info.closure.c = &_RET;
-	       }
-	       popD2();
+                    V_assert((R0->instr == MCclosure) || (R0->instr == MCbclosure));
+                    R0->info.closure.v = V;
+                    R0->info.closure.c = &_RET;
+               }
+               popD2();
 
-	       D_assert(D1->instr == DPcont); 
+               D_assert(D1->instr == DPcont);
 
-	       PC = D1->info.code;
+               PC = D1->info.code;
                popD1();
                break;
 
-	     case MCint:     /* [BI] BUILTIN INTEGERS */
+             case MCint:     /* [BI] BUILTIN INTEGERS */
 
-	       disp1 ("int{%d}\n", PC->info.i);
+               disp1 ("int{%d}\n", PC->info.i);
 
-	       allocH1 (1, V);
+               allocH1 (1, V);
 
-	       V_set (V->instr = PC->instr);
+               V_set (V->instr = PC->instr);
 
-	       V->info.integer.i    = PC->info.i;
-	       V->info.integer.gcId = GC_BUILTIN;
+               V->info.integer.i    = PC->info.i;
+               V->info.integer.gcId = GC_BUILTIN;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCchar:     /* [BI] BUILTIN CHARACTERS */
+             case MCchar:     /* [BI] BUILTIN CHARACTERS */
 
-	       disp1 ("char{%d}\n", (int)PC->info.c);
+               disp1 ("char{%d}\n", (int)PC->info.c);
 
-	       allocH1 (1, V);
+               allocH1 (1, V);
 
-	       V_set (V->instr = PC->instr);
+               V_set (V->instr = PC->instr);
 
-	       V->info.character.c    = (int)PC->info.c;
-	       V->info.character.gcId = GC_BUILTIN;
+               V->info.character.c    = (int)PC->info.c;
+               V->info.character.gcId = GC_BUILTIN;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCadd:     /* [BI] BUILTIN ADDITION */
+             case MCadd:     /* [BI] BUILTIN ADDITION */
 
-	       disp ("add\n");
+               disp ("add\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = V->info.pair.v0->info.integer.i + V->info.pair.v1->info.integer.i;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = V->info.pair.v0->info.integer.i + V->info.pair.v1->info.integer.i;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCsub:     /* [BI] BUILTIN SUBTRACTION */
+             case MCsub:     /* [BI] BUILTIN SUBTRACTION */
 
-	       disp ("sub\n");
+               disp ("sub\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = V->info.pair.v0->info.integer.i - V->info.pair.v1->info.integer.i;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = V->info.pair.v0->info.integer.i - V->info.pair.v1->info.integer.i;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCmul:     /* [BI] BUILTIN MULTIPLICATION */
+             case MCmul:     /* [BI] BUILTIN MULTIPLICATION */
 
-	       disp ("mul\n");
+               disp ("mul\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = V->info.pair.v0->info.integer.i * V->info.pair.v1->info.integer.i;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = V->info.pair.v0->info.integer.i * V->info.pair.v1->info.integer.i;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCdiv:     /* [BI] BUILTIN DIVISION */
+             case MCdiv:     /* [BI] BUILTIN DIVISION */
 
-	       disp ("div\n");
+               disp ("div\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = V->info.pair.v0->info.integer.i / V->info.pair.v1->info.integer.i;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = V->info.pair.v0->info.integer.i / V->info.pair.v1->info.integer.i;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCmod:     /* [BI] BUILTIN MODULUS OPERATION (INTEGER DIVISION REMAINDER) */
+             case MCmod:     /* [BI] BUILTIN MODULUS OPERATION (INTEGER DIVISION REMAINDER) */
 
-	       disp ("mod\n");
+               disp ("mod\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = V->info.pair.v0->info.integer.i % V->info.pair.v1->info.integer.i;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = V->info.pair.v0->info.integer.i % V->info.pair.v1->info.integer.i;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MClt_int:     /* [BI] [#@] BUILTIN LESS-THAN FOR INTEGERS */
+             case MClt_int:     /* [BI] [#@] BUILTIN LESS-THAN FOR INTEGERS */
 
-	       disp ("lt_int\n");
+               disp ("lt_int\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.integer.i < V->info.pair.v1->info.integer.i) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.integer.i < V->info.pair.v1->info.integer.i) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCle_int:     /* [BI] [#@] BUILTIN LESS-THAN-EQUAL-TO FOR INTEGERS */
+             case MCle_int:     /* [BI] [#@] BUILTIN LESS-THAN-EQUAL-TO FOR INTEGERS */
 
-	       disp ("le_int\n");
+               disp ("le_int\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.integer.i <= V->info.pair.v1->info.integer.i) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.integer.i <= V->info.pair.v1->info.integer.i) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCgt_int:     /* [BI] [#@] BUILTIN GREATER-THAN FOR INTEGERS */
+             case MCgt_int:     /* [BI] [#@] BUILTIN GREATER-THAN FOR INTEGERS */
 
-	       disp ("gt_int\n");
+               disp ("gt_int\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.integer.i > V->info.pair.v1->info.integer.i) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.integer.i > V->info.pair.v1->info.integer.i) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCge_int:     /* [BI] [#@] BUILTIN GREATER-THAN-EQUAL-TO FOR INTEGERS */
+             case MCge_int:     /* [BI] [#@] BUILTIN GREATER-THAN-EQUAL-TO FOR INTEGERS */
 
-	       disp ("ge_int\n");
+               disp ("ge_int\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.integer.i >= V->info.pair.v1->info.integer.i) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.integer.i >= V->info.pair.v1->info.integer.i) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCeq_int:     /* [BI] [#@] BUILTIN EQUALITY FOR INTEGERS */
+             case MCeq_int:     /* [BI] [#@] BUILTIN EQUALITY FOR INTEGERS */
 
-	       disp ("eq_int\n");
+               disp ("eq_int\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.integer.i == V->info.pair.v1->info.integer.i) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.integer.i == V->info.pair.v1->info.integer.i) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MClt_char:     /* [BI] [#@] BUILTIN LESS-THAN FOR CHARACTERS */
+             case MClt_char:     /* [BI] [#@] BUILTIN LESS-THAN FOR CHARACTERS */
 
-	       disp ("lt_char\n");
+               disp ("lt_char\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.character.c < V->info.pair.v1->info.character.c) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.character.c < V->info.pair.v1->info.character.c) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCle_char:     /* [BI] [#@] BUILTIN LESS-THAN-EQUAL-TO FOR CHARACTERS */
+             case MCle_char:     /* [BI] [#@] BUILTIN LESS-THAN-EQUAL-TO FOR CHARACTERS */
 
-	       disp ("le_char\n");
+               disp ("le_char\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.character.c <= V->info.pair.v1->info.character.c) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.character.c <= V->info.pair.v1->info.character.c) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCgt_char:     /* [BI] [#@] BUILTIN GREATER-THAN FOR CHARACTERS */
+             case MCgt_char:     /* [BI] [#@] BUILTIN GREATER-THAN FOR CHARACTERS */
 
-	       disp ("gt_char\n");
+               disp ("gt_char\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.character.c > V->info.pair.v1->info.character.c) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.character.c > V->info.pair.v1->info.character.c) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCge_char:     /* [BI] [#@] BUILTIN GREATER-THAN-EQUAL-TO FOR CHARACTERS */
+             case MCge_char:     /* [BI] [#@] BUILTIN GREATER-THAN-EQUAL-TO FOR CHARACTERS */
 
-	       disp ("ge_char\n");
+               disp ("ge_char\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.character.c >= V->info.pair.v1->info.character.c) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.character.c >= V->info.pair.v1->info.character.c) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCeq_char:     /* [BI] [#@] BUILTIN EQUALITY FOR CHARACTERS */
+             case MCeq_char:     /* [BI] [#@] BUILTIN EQUALITY FOR CHARACTERS */
 
-	       disp ("eq_char\n");
+               disp ("eq_char\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCcons);
+               V_set (R0->instr = MCcons);
 
-	       R0->info.structor.posn = (V->info.pair.v0->info.character.c == V->info.pair.v1->info.character.c) + 1;
-	       R0->info.structor.next = NULL;
+               R0->info.structor.posn = (V->info.pair.v0->info.character.c == V->info.pair.v1->info.character.c) + 1;
+               R0->info.structor.next = NULL;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCcode:     /* [BI] BUILTIN CHARACTER-TO-ASCII-CODE CONVERSION */
+             case MCcode:     /* [BI] BUILTIN CHARACTER-TO-ASCII-CODE CONVERSION */
 
-	       disp ("code\n");
+               disp ("code\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCint);
+               V_set (R0->instr = MCint);
 
-	       R0->info.integer.i    = (int)V->info.character.c;
-	       R0->info.integer.gcId = GC_BUILTIN;
+               R0->info.integer.i    = (int)V->info.character.c;
+               R0->info.integer.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCdecode:     /* [BI] BUILTIN ASCII-CODE-TO-CHARACTER CONVERSION */
+             case MCdecode:     /* [BI] BUILTIN ASCII-CODE-TO-CHARACTER CONVERSION */
 
-	       disp ("decode\n");
+               disp ("decode\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = MCchar);
+               V_set (R0->instr = MCchar);
 
-	       R0->info.character.c    = (char)V->info.integer.i;
-	       R0->info.character.gcId = GC_BUILTIN;
+               R0->info.character.c    = (char)V->info.integer.i;
+               R0->info.character.gcId = GC_BUILTIN;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCat:     /* [#@] */
+             case MCat:     /* [#@] */
 
-	       disp ("@\n");
+               disp ("@\n");
 
-	       allocH1 (1, R0);
+               allocH1 (1, R0);
 
-	       V_set (R0->instr = PC->instr);
+               V_set (R0->instr = PC->instr);
 
-	       R0->info.at.next = V;
-	       R0->info.at.posn = 0;
+               R0->info.at.next = V;
+               R0->info.at.posn = 0;
 
-	       V = R0;
+               V = R0;
 
-	       PC++;
+               PC++;
 
-	       break;
+               break;
 
-	     case MCinvalid:
-	       printMsg(FATAL_MSG, "invalid instruction in machine.");
-	       break;
-	     default:
-	       printMsg(FATAL_MSG, "invalid machine instruction.");
-	       break;
-	  }
-	}
+             case MCinvalid:
+               printMsg(FATAL_MSG, "invalid instruction in machine.");
+               break;
+             default:
+               printMsg(FATAL_MSG, "invalid machine instruction.");
+               break;
+          }
+        }
      *value = V;
      return(machineOps);
 }
@@ -845,23 +845,23 @@ COMB_EXPR
 #endif
 
      if (expr->tag == CTT_CLOSURE) {
-	  closure = getClosure(expr->info.closure);
+          closure = getClosure(expr->info.closure);
 
-	  V      = closure->clo->info.closure.v;
-	  PC     = closure->clo->info.closure.c;
-	  A      = closure->rec->info.recMacroFrame.frame;
-	  R1     = closure->rec;
+          V      = closure->clo->info.closure.v;
+          PC     = closure->clo->info.closure.c;
+          A      = closure->rec->info.recMacroFrame.frame;
+          R1     = closure->rec;
 
-	  pushD1(DPcont);
-	  D1->info.code = &_HALT;
+          pushD1(DPcont);
+          D1->info.code = &_HALT;
 
-	  machineOps = _Machine(&value);
-	  type = closure->type;
+          machineOps = _Machine(&value);
+          type = closure->type;
      }
      else {
-	  MachineReset();
-	  PC         = _CompileHalt(expr);
-	  machineOps = _Machine(&value);
+          MachineReset();
+          PC         = _CompileHalt(expr);
+          machineOps = _Machine(&value);
      }
 
 #if mcDebug
@@ -869,9 +869,9 @@ COMB_EXPR
 #endif
 
      if (value)
-	  result = deCompile(value, type);
+          result = deCompile(value, type);
      else /* here we have a bang */
-	  result = deCompile(_BANG, type);
+          result = deCompile(_BANG, type);
 
      return(result);
 }

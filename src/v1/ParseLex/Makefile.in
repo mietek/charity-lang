@@ -19,7 +19,7 @@ CPPFLAGS=@CPPFLAGS@ -I$(INC)
 C_SRCS = listParse.c parse.c printParse.c
 OBJS = $(C_SRCS:.c=.o) y.tab.o lex.yy.o
 
-.PHONY:	all clean distclean
+.PHONY: all clean distclean
 
 all: $(OBJS)
 

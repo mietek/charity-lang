@@ -131,6 +131,6 @@ extern void mc_MachineOpen  (void);
 extern void mc_MachineClose (void);
 
 extern struct _COMB_EXPR *Evaluate (struct _COMB_EXPR *expr,
-				    struct _ST_TYPE   *resultType);
+                    struct _ST_TYPE   *resultType);
 
 #endif

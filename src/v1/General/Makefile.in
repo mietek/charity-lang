@@ -11,7 +11,7 @@ YACC=@YACC@
 
 INC=$(SRCDIR)/Include
 
-CFLAGS=@CFLAGS@ -DNDEBUG 
+CFLAGS=@CFLAGS@ -DNDEBUG
 CPPFLAGS=@CPPFLAGS@ -I$(INC)
 
 # THE OBJECT FILES
@@ -19,7 +19,7 @@ CPPFLAGS=@CPPFLAGS@ -I$(INC)
 C_SRCS = commands.c ioChar.c lib.c main.c pmem.c
 OBJS = $(C_SRCS:.c=.o)
 
-.PHONY:	all clean distclean
+.PHONY: all clean distclean
 
 -include $(C_SRCS:.c=.d)
 
@@ -30,7 +30,7 @@ clean:
 
 distclean:
 	$(RM) Makefile
-	
+
 .c.d :
 	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
 		| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \

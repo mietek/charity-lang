@@ -12,8 +12,8 @@
 
 /***********************************
  * pmem.h
- * Generic Memory manager 
- ***********************************/   
+ * Generic Memory manager
+ ***********************************/
 
 #define MHA   MemHeapAlloc
 

@@ -50,7 +50,7 @@ TYPE_EXPR *convert_ST_TYPE_to_TE(ST_TYPE *st_type)
     return expr;
   case TYPE_STATE_VAR:
     expr->tag = TYPE_VAR;
-    expr->id.var = -1;		/* since param_var undefined in this case */
+    expr->id.var = -1;          /* since param_var undefined in this case */
     return expr;
   case TYPE_USER_DATA:
     expr->tag = TYPE_CON;
@@ -60,7 +60,7 @@ TYPE_EXPR *convert_ST_TYPE_to_TE(ST_TYPE *st_type)
     else {
       expr->params = (TYPE_EXPR **) MemHeapAlloc(tc_memory,numparams+1,sizeof(TYPE_EXPR *));
       for (i=0; i<numparams; i++) {
-	expr->params[i] = convert_ST_TYPE_to_TE(st_type->info.user_data.args[i]);
+        expr->params[i] = convert_ST_TYPE_to_TE(st_type->info.user_data.args[i]);
       }
       expr->params[i] = 0;
     }
@@ -129,13 +129,13 @@ ST_TYPE *convert_TE_to_ST_TYPE(TYPE_EXPR *expr)
       numparams = TEL_length(expr->params);
       if (numparams == 0) st_type->info.user_data.args = 0;
       else {
-	st_type->info.user_data.args = (ST_TYPE **) MemHeapAlloc(tc_memory,numparams+1,sizeof(ST_TYPE *));
-	i=0;
-	while (expr->params[i]) {
-	  st_type->info.user_data.args[i] = convert_TE_to_ST_TYPE(expr->params[i]);
-	  i++;
-	}
-	st_type->info.user_data.args[i] = 0;
+        st_type->info.user_data.args = (ST_TYPE **) MemHeapAlloc(tc_memory,numparams+1,sizeof(ST_TYPE *));
+        i=0;
+        while (expr->params[i]) {
+          st_type->info.user_data.args[i] = convert_TE_to_ST_TYPE(expr->params[i]);
+          i++;
+        }
+        st_type->info.user_data.args[i] = 0;
       }
       return st_type;
     default:

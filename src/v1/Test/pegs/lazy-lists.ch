@@ -44,7 +44,7 @@ def Lfilter{P: A -> bool}: Llist(A) -> Llist(A)
             |}(L).
 
 %
-%   Translation routines lists to and from lazy lists 
+%   Translation routines lists to and from lazy lists
 %
 
 def list_2_Llist: list(A) -> Llist(A)

@@ -13,7 +13,7 @@
 #define MAX_HEAPS 99
 
 
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include "ioChar.h"
 #include "pmem.h"
@@ -114,7 +114,7 @@ main(int argc, char **argv)
     fprintf(stderr, usage, progname);
     exit(1);
   }
-  
+
   SystemConstruct();
 
   if (argc > 1) {
@@ -129,6 +129,6 @@ main(int argc, char **argv)
   SystemDestruct();
 
   printf ("\n");     /* [H-O] [FIX] SHOULD BE VIA I/O MODULE */
-  
+
   return(0);
 }

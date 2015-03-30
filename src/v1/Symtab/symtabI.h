@@ -72,72 +72,72 @@ typedef struct _ST_ENTRY
     struct _ST_ENTRY    *nextEntry;
 
     union {
-	struct {
-	     char            **macroNames;     /*to be eliminated; use macroKeys */
-	     ST_KEY           *macroKeys;      /* macro keys IN ORDER! */
-	     int               numMacros;      /* so we can traverse array */
-	     ST_TYPE_SIG      *type_sig;
-	     M_INSTR_TAG       instr;          /* [BI] ADDED (SEE miscSymtab.c) */
-	} function;
+    struct {
+         char            **macroNames;     /*to be eliminated; use macroKeys */
+         ST_KEY           *macroKeys;      /* macro keys IN ORDER! */
+         int               numMacros;      /* so we can traverse array */
+         ST_TYPE_SIG      *type_sig;
+         M_INSTR_TAG       instr;          /* [BI] ADDED (SEE miscSymtab.c) */
+    } function;
 
-	/* macro name is $$functionName.macroName$$ */
-	struct {
-	     int posn;
-	     struct _ST_ENTRY    *parent_type;
-	     ST_TYPE_SIG         *type_sig;
-	} macros;
+    /* macro name is $$functionName.macroName$$ */
+    struct {
+         int posn;
+         struct _ST_ENTRY    *parent_type;
+         ST_TYPE_SIG         *type_sig;
+    } macros;
 
-	struct
-	  {
-	    /* [H-O] ADDED A FIELD TO INDICATE IF H-O DESTRUCTOR: */
+    struct
+      {
+        /* [H-O] ADDED A FIELD TO INDICATE IF H-O DESTRUCTOR: */
 
-	    int               posn;
-	    struct _ST_ENTRY *parent;
-	    ST_TYPE_SIG      *type_sig;
-	    BBOOL             isHO;
-	  }
-	structor;
+        int               posn;
+        struct _ST_ENTRY *parent;
+        ST_TYPE_SIG      *type_sig;
+        BBOOL             isHO;
+      }
+    structor;
 
-	/* [H-O] ADDED A FIELD FOR VARIANCE ARITY (varity) OF DATATYPES: */
+    /* [H-O] ADDED A FIELD FOR VARIANCE ARITY (varity) OF DATATYPES: */
 
-	struct
-	  {
-	    ST_DT_KIND   class;
+    struct
+      {
+        ST_DT_KIND   class;
 
-	    int          numParams;            /*  ARITY                     */
-	    V_VARIANCE  *varity;               /* VARITY (OF LEN. numParams) */
+        int          numParams;            /*  ARITY                     */
+        V_VARIANCE  *varity;               /* VARITY (OF LEN. numParams) */
 
-	    int          numStructors;         /* STRUCTORS */
-	    ST_KEY      *structorKeys;
-	    char       **structorNames;        /*
-					        * TO BE ELIMINATED;
-						* USE structorKeys
-						*
-						*/
+        int          numStructors;         /* STRUCTORS */
+        ST_KEY      *structorKeys;
+        char       **structorNames;        /*
+                            * TO BE ELIMINATED;
+                        * USE structorKeys
+                        *
+                        */
 
-	    ST_KEY      *opCombKeys;           /* OPERATORS */
+        ST_KEY      *opCombKeys;           /* OPERATORS */
 
-	    ST_TYPE     *genericStateType;     /* TYPE FOR THE STATE VAR */
-	  }
-	datatype;
+        ST_TYPE     *genericStateType;     /* TYPE FOR THE STATE VAR */
+      }
+    datatype;
 
-	struct
-	  {
-	    int         numParams;
-	    V_VARIANCE *varity;
-	    ST_TYPE    *expansion;
-	  }
-	alias;
+    struct
+      {
+        int         numParams;
+        V_VARIANCE *varity;
+        ST_TYPE    *expansion;
+      }
+    alias;
 
-	struct {
-	     int                  numParams;
-	     struct _ST_ENTRY    *parent;
-	     ST_TYPE_SIG         *type_sig;
-	} opcomb;
+    struct {
+         int                  numParams;
+         struct _ST_ENTRY    *parent;
+         ST_TYPE_SIG         *type_sig;
+    } opcomb;
 
         struct {
             char          *uniqueVar;
-	    BBOOL          isHO;
+        BBOOL          isHO;
         } var;
 
     } info;

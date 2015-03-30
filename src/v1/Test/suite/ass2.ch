@@ -19,7 +19,7 @@ and still be adjacent
 *)
 def csublist: list(A) -> list(list(A)) =
     L => p0 {| nil: () => ([[]],[])
-             | cons: (x,(L',LastL)) => 
+             | cons: (x,(L',LastL)) =>
                      (append (sublist1(x,LastL),L'), sublist1(x,LastL))
              |} L.
 
@@ -40,13 +40,13 @@ def lencsublist: list(A)*int -> list(list(A)) =
 %% Note the last cons case - it cannot be reached, so it is a dummy case
 def group {P: A*A -> bool}: list(A) -> list(list(A)) =
     L => {| nil: () => []
-	  | cons: (x,[]) => [[x]]
+          | cons: (x,[]) => [[x]]
           | cons: (x,cons(cons(y,ys),zs)) =>
-			{false => cons([x],cons(cons(y,ys),zs))
-			| true => cons(cons(x,cons(y,ys)),zs)
-			} P(x,y)
-	  | cons: (x,_) => []
-	  |} L.
+                        {false => cons([x],cons(cons(y,ys),zs))
+                        | true => cons(cons(x,cons(y,ys)),zs)
+                        } P(x,y)
+          | cons: (x,_) => []
+          |} L.
 
 (* Question 2 part 2 - return number of occurences in a list of strings.
    Because of the different eq functions: eq, eq_int, eq_string,etc., I
@@ -58,13 +58,13 @@ def group {P: A*A -> bool}: list(A) -> list(list(A)) =
 
 def occurences: list(string) -> list(string*int) =
     L => {| nil: () => []
-	  | cons: (s,[]) => [(s,1)]
-	  | cons: (s,cons((t,num),ts)) =>
-			{false => cons((s,1),cons((t,num),ts))
-			| true => cons((t,succ_int num),ts)
-			} eq_string(s,t)
-	  | cons: (s,_) => []
-	  |} L.
+          | cons: (s,[]) => [(s,1)]
+          | cons: (s,cons((t,num),ts)) =>
+                        {false => cons((s,1),cons((t,num),ts))
+                        | true => cons((t,succ_int num),ts)
+                        } eq_string(s,t)
+          | cons: (s,_) => []
+          |} L.
 
 %% Question 3 - return diagonal of inflist(inflist(nat))
 
@@ -87,13 +87,13 @@ def natsnats: 1 -> inflist(inflist(nat)) =
 %% Function 'get' given in class or copied from notes
 def get: inflist(A)*nat -> A =
     (IL,n) => head {| zero: () => IL
-		    | succ: IL' => tail IL'
+                    | succ: IL' => tail IL'
                     |} n.
 
 def diagonal: inflist(inflist(A)) -> inflist(A) =
     ILL => (| x => head: get(get(ILL,x),x)
-	    |      tail: succ x
-	    |) zero.
+            |      tail: succ x
+            |) zero.
 
 %% Question 4 - inverse stream function
 
@@ -112,14 +112,14 @@ def inverse: inflist(nat) -> inflist(nat) =
 %% First step - onediag produces each diagonal for collectdiags
 def onediag: inflist(inflist(A))*nat -> A*list(A) =
    (IL,x)=> p0 {| zero: () => ((get(get(IL,zero),x),[]),(succ zero,pred x))
-	        | succ: ((a,L),(x,y)) =>
+                | succ: ((a,L),(x,y)) =>
                     ((a,cons(get(get(IL,x),y),L)),(succ x,pred y))
-	        |} x.
+                |} x.
 
 def collectdiags: inflist(inflist(A)) -> inflist(A*list(A)) =
     IL => (| x => head: onediag(IL,x)
-	   |      tail: succ x
-	   |) zero.
+           |      tail: succ x
+           |) zero.
 
 %% Second step - collect the inflist of pairs and return one inflist
 
@@ -133,10 +133,10 @@ def headntail: A*list(A) -> A*list(A)
 
 def diagtrav': inflist(A*list(A)) -> inflist(A) =
     IL => (| ((x,xs),y) => head: x
-	   |	           tail: {  true => (get (IL,succ y),succ y)
-				 | false => (headntail(x,xs),y)
-				 } isEmpty(xs)
-	   |) (get(IL,zero),zero).
+           |               tail: {  true => (get (IL,succ y),succ y)
+                                 | false => (headntail(x,xs),y)
+                                 } isEmpty(xs)
+           |) (get(IL,zero),zero).
 
 def diagtrav: inflist(inflist(A)) -> inflist(A) =
    ILL => diagtrav'(collectdiags(ILL)).
@@ -153,7 +153,7 @@ def showbits: colist(bit) -> list(bit) =
 def addbits: colist(bit)*colist(bit) -> colist(bit) =
 
 def mulbits: colist(bit)*colist(bit) -> colist(bit) =
-*)  
+*)
 
 %% Question 7 - a pushdown function
 

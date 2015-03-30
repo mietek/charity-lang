@@ -18,7 +18,7 @@
  * A list package with run-time checking of data elements.  This will
  * cost extra overhead in examining the type of each item in a list, but
  * can be offset by moving towards C++ with a static type checker for
- * all list items.  
+ * all list items.
  */
 
 static LIST *_reverse(LIST *L, LIST *prevPtr);
@@ -44,7 +44,7 @@ LIST
      /*  assert(x);  integer lists  */
 
      if (l) { /* run time tag check */
-	 assert(l->lt == lt);
+         assert(l->lt == lt);
      }
 
      list = (LIST *) MemHeapAlloc(mdesc, 1, sizeof(LIST));
@@ -64,10 +64,10 @@ LIST
 *_append(LIST *L1, LIST *L2)
 {
      LIST *tmp = L1;
-     
+
      if (!L1) return L2;
      while (tmp->next) {
-	  tmp = tmp->next;
+          tmp = tmp->next;
      }
      tmp->next = L2;
 
@@ -83,7 +83,7 @@ char
 *_head(LIST *L)
 {
      if (L) {
-	  return(L->item);
+          return(L->item);
      }
      return(0);
 }
@@ -98,7 +98,7 @@ _reverse(LIST *L, LIST *prevPtr) {
 
     LIST   *tmp;
 
-    if ( L == NULL ) 
+    if ( L == NULL )
         return prevPtr;
     else {
         tmp = _reverse(ListTail(L), L);
@@ -148,9 +148,9 @@ ListLen(LIST *list)
     int   count = 0;
 
     while (tmp) {
-	    count++;
-	    tmp = tmp->next;
-    }	
+            count++;
+            tmp = tmp->next;
+    }
     return(count);
 }
 
@@ -167,7 +167,7 @@ ListRemNthElement(int n, LIST *list)
          *prevMember;
     int   count = 0;
 
-    if (n==0) 
+    if (n==0)
       return(list->next);
     else {
       while (count != n) {
@@ -212,7 +212,7 @@ ListReverse(LIST *list) {
 
 if ( list )
     return _reverse(list, NULL);
-else   
+else
     return NULL;
 
 }
@@ -227,7 +227,7 @@ else
  *********************************/
 STR_LIST *
 StrListCons(char *x, STR_LIST *l, MEMORY hd)
-{     
+{
   return((STR_LIST *) _cons((char *) x, (LIST *) l, L_STRING, hd));
 }
 
@@ -252,8 +252,8 @@ StrListLen(STR_LIST  *list) {
 BBOOL
 StrListMember(STR_LIST *pelist, char *item) {
 
-  if (pelist) 
-    if (strcmp(pelist->item, item)) 
+  if (pelist)
+    if (strcmp(pelist->item, item))
       return(StrListMember(pelist->next, item));
     else
       return(BTRUE);
@@ -274,11 +274,11 @@ StrListPosn(char *item, STR_LIST *list)
     int          i   = 0;
 
     while (tmp) {
-	  if (strcmp(StrListHead(tmp), item) != 0) {
+          if (strcmp(StrListHead(tmp), item) != 0) {
        tmp = StrListTail(tmp);
        i++;
-	  }
-	  else
+          }
+          else
        return(i);
     }
     return(-1);

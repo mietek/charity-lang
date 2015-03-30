@@ -53,11 +53,11 @@ BBOOL     printCT_EXPR = BFALSE;
 
 static CT_TERM   *ctPreTranslateTerm   (CT_TERM   *term);       /* [#@] */
 static CT_FOLD   *ctPreTranslateFold   (CT_FOLD   *fold,
-					int        self,
-					CT_EXPR   *context);
+                                        int        self,
+                                        CT_EXPR   *context);
 static CT_UNFOLD *ctPreTranslateUnfold (CT_UNFOLD *unfold,
-					int        self,
-					CT_EXPR   *context);
+                                        int        self,
+                                        CT_EXPR   *context);
 
 static BBOOL        _isIdentity(char *vb1, char *vb2);
 static BBOOL        _varOccurs(char *var, CT_VAR_BASE *var_base);
@@ -78,55 +78,55 @@ static COMB_EXPR *_transStructor (MEMORY heapDesc, char *struct_name);
 static COMB_EXPR *_transFunction (MEMORY heapDesc, CT_VAR_BASE *var_base, CT_FUNCTION *function);
 static COMB_EXPR *_transFunctionName(MEMORY heapDesc, char *function_name);
 static COMB_EXPR *_transMacro    (MEMORY heapDesc, char *macroName,
-				  CT_VAR_BASE *var_base, CT_MACROS   *macros);
+                                  CT_VAR_BASE *var_base, CT_MACROS   *macros);
 static COMB_EXPR *_transMacroName(MEMORY heapDesc, char *macro_name);
 
 static COMB_EXPR *_transCata (MEMORY       heapDesc,     /* [#@] */
-			      CT_VAR_BASE *var_base,
-			      CT_CATA     *cata);
+                              CT_VAR_BASE *var_base,
+                              CT_CATA     *cata);
 static COMB_EXPR *_transAna  (MEMORY       heapDesc,
-			      CT_VAR_BASE *var_base,
-			      CT_ANA      *ana);
+                              CT_VAR_BASE *var_base,
+                              CT_ANA      *ana);
 
 static COMB_EXPR *_ctTranslate   (MEMORY heapDesc, CT_VAR_BASE *var_base, CT_EXPR *expr);
 
 static COMB_EXPR *_CombinatorTemplate(MEMORY heapDesc, char *type, char *comb);
 
 static COMB_EXPR *_transBuiltin (MEMORY      heapDesc,     /* [BI] ADDED (SEE BELOW) */
-				 CT_BUILTIN *builtin);
+                                 CT_BUILTIN *builtin);
 
 /* mapEi(): */
 
 static COMB_EXPR *_makeMap1    (MEMORY heapDesc);
 static COMB_EXPR *_makeMapProd (MEMORY     heapDesc,
-				COMB_EXPR *l,
-				COMB_EXPR *r);
+                                COMB_EXPR *l,
+                                COMB_EXPR *r);
 
 /* [H-O] ALTERED THESE PROTOTYPES (SEE BELOW): */
 
 static COMB_EXPR *_makeMapUserData (MEMORY       heapDesc,
-				    ST_TYPE     *type,  
-				    COMB_PHR   **parametric,
-				    COMB_EXPR   *state,
-				    V_VARIANCE   variance);
+                                    ST_TYPE     *type,
+                                    COMB_PHR   **parametric,
+                                    COMB_EXPR   *state,
+                                    V_VARIANCE   variance);
 static COMB_EXPR *_mapEi           (MEMORY       heapDesc,
-				    ST_TYPE     *type,
-				    COMB_PHR   **parametric,
-				    COMB_EXPR   *state,
-				    V_VARIANCE   variance);
+                                    ST_TYPE     *type,
+                                    COMB_PHR   **parametric,
+                                    COMB_EXPR   *state,
+                                    V_VARIANCE   variance);
 
 
 /* [#@] */
 
 static CT_TERM *ct_map1        (void);
 static CT_TERM *ct_mapProd     (CT_TERM *l,
-				CT_TERM *r);
+                                CT_TERM *r);
 static CT_TERM *ct_mapUserData (ST_TYPE *type,
-				int      self,
-				CT_EXPR *context);
+                                int      self,
+                                CT_EXPR *context);
 static CT_TERM *ct_mapEi       (ST_TYPE *type,
-				int      self,
-				CT_EXPR *context);
+                                int      self,
+                                CT_EXPR *context);
 
 
 static void       _CombExprPrint(COMB_EXPR *expr);
@@ -167,28 +167,28 @@ static BBOOL      isFunctionMacro(char *name);
 /* [#@] */
 
 static CT_EXPR *makeExprFromVarBase (MEMORY       heapDesc,
-				     CT_VAR_BASE *varBase);
+                                     CT_VAR_BASE *varBase);
 
 static CT_VAR_BASE *_makeVarBase    (MEMORY       heapDesc,
-				     char        *var);
+                                     char        *var);
 static CT_VAR_BASE *_make0tupleBase (MEMORY       heapDesc);
 static CT_VAR_BASE *_make2tupleBase (MEMORY       heapDesc,
-				     CT_VAR_BASE *v0,
-				     CT_VAR_BASE *v1);
+                                     CT_VAR_BASE *v0,
+                                     CT_VAR_BASE *v1);
 
 static CT_EXPR *_makeVarExpr    (MEMORY   heapDesc,
-				 char    *var);
+                                 char    *var);
 static CT_EXPR *_make0tupleExpr (MEMORY   heapDesc);
 static CT_EXPR *_make2tupleExpr (MEMORY   heapDesc,
-				 CT_EXPR *t0,
-				 CT_EXPR *t1);
+                                 CT_EXPR *t0,
+                                 CT_EXPR *t1);
 static CT_EXPR *_makeAppExpr    (MEMORY   heapDesc,
-				 CT_TERM *f,
-				 CT_EXPR *t);
+                                 CT_TERM *f,
+                                 CT_EXPR *t);
 
 static CT_TERM *_makeAbsTerm (MEMORY       heapDesc,
-			      CT_VAR_BASE *varBase,
-			      CT_EXPR     *expr);
+                              CT_VAR_BASE *varBase,
+                              CT_EXPR     *expr);
 
 static CT_TERM *_makeId (MEMORY heapDesc);
 
@@ -227,7 +227,7 @@ ctTranslateConstruct(void)
  *    TranslateDestruct          *
  *                               *
  *********************************/
-void          
+void
 ctTranslateDestruct(void)
 {
 }
@@ -275,7 +275,7 @@ void
 _translateError(void)
 {
      if (functionName) {
-	  st_RemoveEntry(st_NameToKey(functionName));
+          st_RemoveEntry(st_NameToKey(functionName));
      }
      ct_TranslateClose();
 }
@@ -290,7 +290,7 @@ BBOOL
 _isIdentity(char *vb1, char *vb2)
 {
      if (strcmp(vb1, vb2) == 0)
-	  return(BTRUE);
+          return(BTRUE);
 
      return(BFALSE);
 }
@@ -300,7 +300,7 @@ _isIdentity(char *vb1, char *vb2)
  *    _ExprBang           *
  *                        *
  **************************/
-static 
+static
 CT_EXPR
 *_ExprBang(void)
 {
@@ -327,20 +327,20 @@ _varOccurs(char *var, CT_VAR_BASE *var_base)
      assert(var_base);
 
      switch (var_base->tag) {
-	case CT_VB_BANG:
-	  result = BFALSE;
-	  break;
-	case CT_VB_PAIR:
-	  if (! (result = _varOccurs(var, var_base->info.pair.l))) 
-	       result = _varOccurs(var, var_base->info.pair.r);
-	  break;
-	case CT_VB_VAR:
-	  if (strcmp(var, var_base->info.var) == 0)
-	       result = BTRUE;
-	  break;
-	default:
-	  assert (BFALSE);
-	  break;
+        case CT_VB_BANG:
+          result = BFALSE;
+          break;
+        case CT_VB_PAIR:
+          if (! (result = _varOccurs(var, var_base->info.pair.l)))
+               result = _varOccurs(var, var_base->info.pair.r);
+          break;
+        case CT_VB_VAR:
+          if (strcmp(var, var_base->info.var) == 0)
+               result = BTRUE;
+          break;
+        default:
+          assert (BFALSE);
+          break;
      }
 
      return(result);
@@ -359,18 +359,18 @@ _bangOccurs(CT_VAR_BASE *var_base)
      assert(var_base);
 
      switch (var_base->tag) {
-	case CT_VB_BANG:
-	  result = BTRUE;
-	  break;
-	case CT_VB_PAIR:
-	  if (! (result = _bangOccurs(var_base->info.pair.l))) 
-	       result = _bangOccurs(var_base->info.pair.r);
-	  break;
-	case CT_VB_VAR:
-	       result = BFALSE;
-	  break;
-	default:
-	  break;
+        case CT_VB_BANG:
+          result = BTRUE;
+          break;
+        case CT_VB_PAIR:
+          if (! (result = _bangOccurs(var_base->info.pair.l)))
+               result = _bangOccurs(var_base->info.pair.r);
+          break;
+        case CT_VB_VAR:
+               result = BFALSE;
+          break;
+        default:
+          break;
      }
 
      return(result);
@@ -388,7 +388,7 @@ _bangOccurs(CT_VAR_BASE *var_base)
 static
 CT_EXPR *
 makeExprFromVarBase (MEMORY       heapDesc,
-		     CT_VAR_BASE *varBase)
+                     CT_VAR_BASE *varBase)
 {
   CT_EXPR *result = (CT_EXPR *)MHA (heapDesc, 1, sizeof (CT_EXPR));
 
@@ -433,7 +433,7 @@ CT_EXPR
 *_makeVarExpr(MEMORY heapDesc, char *var)
 {
      CT_EXPR *result = (CT_EXPR *) MemHeapAlloc(heapDesc, 1, sizeof(CT_EXPR));
-     
+
      result->tag = CT_VAR;
      result->info.var = var;
      return(result);
@@ -473,8 +473,8 @@ _make0tupleExpr (MEMORY heapDesc)
 static
 CT_EXPR *
 _make2tupleExpr (MEMORY   heapDesc,
-		  CT_EXPR *t0,
-		  CT_EXPR *t1)
+                  CT_EXPR *t0,
+                  CT_EXPR *t1)
 {
   CT_EXPR *expr = (CT_EXPR *)MHA (heapDesc, 1, sizeof (CT_EXPR));
 
@@ -501,8 +501,8 @@ _make2tupleExpr (MEMORY   heapDesc,
 static
 CT_EXPR *
 _makeAppExpr (MEMORY   heapDesc,
-	       CT_TERM *f,
-	       CT_EXPR *t)
+               CT_TERM *f,
+               CT_EXPR *t)
 {
   CT_EXPR *expr = (CT_EXPR *)MHA (heapDesc, 1, sizeof (CT_EXPR));
 
@@ -529,8 +529,8 @@ _makeAppExpr (MEMORY   heapDesc,
 static
 CT_TERM *
 _makeAbsTerm (MEMORY       heapDesc,
-	      CT_VAR_BASE *varBase,
-	      CT_EXPR     *expr)
+              CT_VAR_BASE *varBase,
+              CT_EXPR     *expr)
 {
   CT_TERM *term = (CT_TERM *)MHA (heapDesc, 1, sizeof (CT_TERM));
 
@@ -565,8 +565,8 @@ _makeId (MEMORY heapDesc)
   CT_TERM *id = NULL;
 
   id = _makeAbsTerm (heapDesc,
-		     _makeVarBase (heapDesc, "x"),
-		     _makeVarExpr (heapDesc, "x"));
+                     _makeVarBase (heapDesc, "x"),
+                     _makeVarExpr (heapDesc, "x"));
 
   return id;
 }
@@ -583,7 +583,7 @@ _makeId (MEMORY heapDesc)
 static
 CT_VAR_BASE *
 _makeVarBase (MEMORY  heapDesc,
-	      char   *var)
+              char   *var)
 {
   CT_VAR_BASE *varBase = (CT_VAR_BASE *)MHA (heapDesc, 1, sizeof (CT_VAR_BASE));
 
@@ -628,8 +628,8 @@ CT_VAR_BASE *_make0tupleBase (MEMORY heapDesc)
 
 static
 CT_VAR_BASE *_make2tupleBase (MEMORY       heapDesc,
-			      CT_VAR_BASE *v0,
-			      CT_VAR_BASE *v1)
+                              CT_VAR_BASE *v0,
+                              CT_VAR_BASE *v1)
 {
   CT_VAR_BASE *varBase = (CT_VAR_BASE *)MHA (heapDesc, 1, sizeof (CT_VAR_BASE));
 
@@ -693,12 +693,12 @@ COMB_EXPR
  *                        *
  **************************/
 static
-COMB_EXPR 
+COMB_EXPR
 *_transFunction(MEMORY heapDesc, CT_VAR_BASE *var_base, CT_FUNCTION *function)
 {
      COMB_EXPR  *result  = CombExprAlloc(heapDesc);
      COMB_PHR  **parms   = NULL;
-     CT_PHRASE **phrases = NULL;     
+     CT_PHRASE **phrases = NULL;
      int         len     = 0;
      int         count   = 0;
 
@@ -708,7 +708,7 @@ COMB_EXPR
 
      result->tag                   = CTT_COMBINATOR;
      result->info.combinator.class = CC_FUNCTION;
-     result->info.combinator.name  = function->fun_name; 
+     result->info.combinator.name  = function->fun_name;
 
      /* Passing functions as parameters */
      /* !!!! Need to check for recursive calls */
@@ -716,34 +716,34 @@ COMB_EXPR
      result->info.combinator.numParams = len = PtrArrayLen((char **) function->macros);
 
      if (getNumMacros(function->fun_name) != len) {
-	  _translateError();
-	  printMsg(ERROR_MSG, "Illegal number of macros passed to function %s", function->fun_name);
+          _translateError();
+          printMsg(ERROR_MSG, "Illegal number of macros passed to function %s", function->fun_name);
      }
 
      /* [H-O] ALTERED parms TYPE TO BE COMB_PHR (SEE codetab.h): */
 
      if (len > 0)     /* any parameters */
        {
-	 result->info.combinator.param = parms =
-	   (COMB_PHR **)MemHeapAlloc (heapDesc,
-				      len + 1,
-				      sizeof (COMB_PHR *));
+         result->info.combinator.param = parms =
+           (COMB_PHR **)MemHeapAlloc (heapDesc,
+                                      len + 1,
+                                      sizeof (COMB_PHR *));
 
-	  for (count = 0; count < len; count++)
-	    {
-	      parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						       1,
-						       sizeof (COMB_PHR));
+          for (count = 0; count < len; count++)
+            {
+              parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                       1,
+                                                       sizeof (COMB_PHR));
 
-	      parms[count]->positive =
-		_ctTranslate (heapDesc,
-			      VarBasePairNew (tmpHD,
-					      phrases[count]->var_base,
-					      var_base),
-			      phrases[count]->expr);
+              parms[count]->positive =
+                _ctTranslate (heapDesc,
+                              VarBasePairNew (tmpHD,
+                                              phrases[count]->var_base,
+                                              var_base),
+                              phrases[count]->expr);
 
-	      parms[count]->negative = NULL;
-	    }
+              parms[count]->negative = NULL;
+            }
        }
 
      return (result);
@@ -766,19 +766,19 @@ COMB_EXPR
 
      result->tag                       = CTT_COMBINATOR;
      result->info.combinator.class     = CC_MACRO;
-     result->info.combinator.name      = lb_BuildMacroName(heapDesc, 
-							   functionName, macro_name);
+     result->info.combinator.name      = lb_BuildMacroName(heapDesc,
+                                                           functionName, macro_name);
      result->info.combinator.numParams = 0;
      result->info.combinator.param     = NULL;
 
 /*
      result->info.combinator.param     = (COMB_EXPR **) MemHeapAlloc(heapDesc,
-								     2,
-								     sizeof(COMB_EXPR));
+                                                                     2,
+                                                                     sizeof(COMB_EXPR));
      result->info.combinator.param[0]  = CombExprPair(heapDesc,
-						      CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL),
-						      _makeIdentity(heapDesc)
-						      );
+                                                      CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL),
+                                                      _makeIdentity(heapDesc)
+                                                      );
 */
      result->info.combinator.parameter = _macroPosition(result->info.combinator.name);
 
@@ -826,7 +826,7 @@ _macroPosition(char *macro_name)
  *                        *
  **************************/
 static
-COMB_EXPR 
+COMB_EXPR
 *_transMacro(MEMORY heapDesc, char *macroName, CT_VAR_BASE *var_base, CT_MACROS *macros)
 {
      COMB_EXPR   *result  = CombExprAlloc(heapDesc);
@@ -842,8 +842,8 @@ COMB_EXPR
      result->tag                       = CTT_COMBINATOR;
      result->info.combinator.class     = CC_MACRO;
      result->info.combinator.name      = lb_BuildMacroName(heapDesc,
-							   functionName,
-							   macroName);
+                                                           functionName,
+                                                           macroName);
      result->info.combinator.parameter = _macroPosition(result->info.combinator.name);
 
      /* Load up the function parameters for a macro */
@@ -854,26 +854,26 @@ COMB_EXPR
 
      if (len > 0)     /* any parameters */
        {
-	 phrases = macros->macros;
+         phrases = macros->macros;
 
-	 result->info.combinator.param = parms =
-	   (COMB_PHR **)MemHeapAlloc (heapDesc, len + 1, sizeof (COMB_PHR *));
+         result->info.combinator.param = parms =
+           (COMB_PHR **)MemHeapAlloc (heapDesc, len + 1, sizeof (COMB_PHR *));
 
-	 for (count = 0; count < len; count++)
-	   {
-	     parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						      1,
-						      sizeof (COMB_PHR));
+         for (count = 0; count < len; count++)
+           {
+             parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                      1,
+                                                      sizeof (COMB_PHR));
 
-	     parms[count]->positive =
-	       _ctTranslate (heapDesc,
-			     VarBasePairNew(tmpHD,
-					    phrases[count]->var_base,
-					    var_base),
-			     phrases[count]->expr);
+             parms[count]->positive =
+               _ctTranslate (heapDesc,
+                             VarBasePairNew(tmpHD,
+                                            phrases[count]->var_base,
+                                            var_base),
+                             phrases[count]->expr);
 
-	     parms[count]->negative = NULL;
-	   }
+             parms[count]->negative = NULL;
+           }
        }
 
      return (result);
@@ -931,9 +931,9 @@ COMB_EXPR
 CT_VAR_BASE
 *VarBasePairNew(MEMORY heapDesc, CT_VAR_BASE *l, CT_VAR_BASE *r)
 {
-     CT_VAR_BASE *result = 
-	  (CT_VAR_BASE *) MemHeapAlloc(heapDesc, 1, sizeof(CT_VAR_BASE));
-     
+     CT_VAR_BASE *result =
+          (CT_VAR_BASE *) MemHeapAlloc(heapDesc, 1, sizeof(CT_VAR_BASE));
+
      assert(l);
      assert(r);
      assert(result);
@@ -956,10 +956,10 @@ CT_VAR_BASE
 
 COMB_EXPR *
 CombExprNew (MEMORY       heapDesc,
-	     COMB_CLASS   class,
-	     char        *name,
-	     int          numParms,
-	     COMB_PHR   **parms)
+             COMB_CLASS   class,
+             char        *name,
+             int          numParms,
+             COMB_PHR   **parms)
 {
   COMB_EXPR *result = CombExprAlloc (heapDesc);
 
@@ -1011,8 +1011,8 @@ COMB_EXPR
 
 COMB_EXPR
 *CombExprPair (MEMORY     heapDesc,
-	       COMB_EXPR *l,
-	       COMB_EXPR *r)
+               COMB_EXPR *l,
+               COMB_EXPR *r)
 {
   COMB_EXPR *result = CombExprAlloc (heapDesc);
 
@@ -1027,7 +1027,7 @@ COMB_EXPR
 
   /* [H-O] ALTERED param TYPE TO BE COMB_PHR (SEE codetab.h): */
 
-  result->info.combinator.param = 
+  result->info.combinator.param =
     (COMB_PHR **)MemHeapAlloc (heapDesc, 3, sizeof (COMB_PHR *));
 
   result->info.combinator.param[0] =
@@ -1064,10 +1064,10 @@ COMB_EXPR
 
      result->tag = CTT_COMBINATOR;
      if (strcmp(comb, RES_MAP) == 0) {
-	  result->info.combinator.numParams = getNumParams(type);
+          result->info.combinator.numParams = getNumParams(type);
      }
      else {
-	  result->info.combinator.numParams = getNumStructors(type);
+          result->info.combinator.numParams = getNumStructors(type);
      }
      result->info.combinator.name       = lb_BuildCombString(heapDesc, comb, type);
      result->info.combinator.parentName = type;
@@ -1087,8 +1087,8 @@ COMB_EXPR
 static
 COMB_EXPR *
 _transMap (MEMORY       heapDesc,
-	   CT_VAR_BASE *var_base,
-	   CT_MAP      *maps)
+           CT_VAR_BASE *var_base,
+           CT_MAP      *maps)
 {
   COMB_EXPR      *result  = NULL;
   COMB_PHR      **params  = NULL;
@@ -1107,8 +1107,8 @@ _transMap (MEMORY       heapDesc,
 
   result->info.combinator.param = params =
     (COMB_PHR **)MemHeapAlloc (heapDesc,
-			       result->info.combinator.numParams + 1,
-			       sizeof (COMB_PHR *));
+                               result->info.combinator.numParams + 1,
+                               sizeof (COMB_PHR *));
 
   assert (params);
 
@@ -1117,30 +1117,30 @@ _transMap (MEMORY       heapDesc,
   for (count = 0; count < result->info.combinator.numParams; count++)
     {
       params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						1,
-						sizeof (COMB_PHR));
+                                                1,
+                                                sizeof (COMB_PHR));
 
       assert (params[count]);
 
       if (phrases[count]->var_base)
-	params[count]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (tmpHD,
-					phrases[count]->var_base,
-					var_base),
-			phrases[count]->expr);
+        params[count]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        phrases[count]->var_base,
+                                        var_base),
+                        phrases[count]->expr);
       else
-	params[count]->positive = NULL;
+        params[count]->positive = NULL;
 
       if (phrases[count]->neg_var_base)
-	params[count]->negative =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (tmpHD,
-					phrases[count]->neg_var_base,
-					var_base),
-			phrases[count]->neg_expr);
+        params[count]->negative =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        phrases[count]->neg_var_base,
+                                        var_base),
+                        phrases[count]->neg_expr);
       else
-	params[count]->negative = NULL;
+        params[count]->negative = NULL;
     }
 
   return result;
@@ -1158,8 +1158,8 @@ _transMap (MEMORY       heapDesc,
 static
 COMB_EXPR *
 _transAna (MEMORY       heapDesc,
-	   CT_VAR_BASE *var_base,
-	   CT_ANA      *ana)
+           CT_VAR_BASE *var_base,
+           CT_ANA      *ana)
 {
   COMB_EXPR  *result    = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
   int         numParams = 0;
@@ -1195,21 +1195,21 @@ _transAna (MEMORY       heapDesc,
       assert (result->info.combinator.param[index]);
 
       if (unfolds[index]->var_base2)
-	result->info.combinator.param[index]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (heapDesc,
-					unfolds[index]->var_base2,
-					VarBasePairNew (heapDesc,
-							unfolds[index]->var_base,
-							var_base)),
-			unfolds[index]->expr);
+        result->info.combinator.param[index]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (heapDesc,
+                                        unfolds[index]->var_base2,
+                                        VarBasePairNew (heapDesc,
+                                                        unfolds[index]->var_base,
+                                                        var_base)),
+                        unfolds[index]->expr);
       else
-	result->info.combinator.param[index]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (heapDesc,
-					unfolds[index]->var_base,
-					var_base),
-			unfolds[index]->expr);
+        result->info.combinator.param[index]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (heapDesc,
+                                        unfolds[index]->var_base,
+                                        var_base),
+                        unfolds[index]->expr);
 
       result->info.combinator.param[index]->negative = NULL;
     }
@@ -1231,8 +1231,8 @@ _transAna (MEMORY       heapDesc,
 static
 COMB_EXPR *
 _transCata (MEMORY       heapDesc,
-	    CT_VAR_BASE *var_base,
-	    CT_CATA     *cata)
+            CT_VAR_BASE *var_base,
+            CT_CATA     *cata)
 {
   COMB_EXPR  *result    = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
   int         numParams = 0;
@@ -1268,11 +1268,11 @@ _transCata (MEMORY       heapDesc,
       assert (result->info.combinator.param[index]);
 
       result->info.combinator.param[index]->positive =
-	_ctTranslate (heapDesc,
-		      VarBasePairNew (heapDesc,
-				      folds[index]->var_base,
-				      var_base),
-		      folds[index]->expr);
+        _ctTranslate (heapDesc,
+                      VarBasePairNew (heapDesc,
+                                      folds[index]->var_base,
+                                      var_base),
+                      folds[index]->expr);
 
       result->info.combinator.param[index]->negative = NULL;
     }
@@ -1312,25 +1312,25 @@ COMB_EXPR
 
      result->info.combinator.param = params =
        (COMB_PHR **)MemHeapAlloc (heapDesc,
-				  result->info.combinator.numParams + 1,
-				  sizeof (COMB_PHR *));
+                                  result->info.combinator.numParams + 1,
+                                  sizeof (COMB_PHR *));
 
      assert (params);
 
      for (count = 0; count < result->info.combinator.numParams; count++)
        {
-	 params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						   1,
-						   sizeof (COMB_PHR));
+         params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                   1,
+                                                   sizeof (COMB_PHR));
 
-	 params[count]->positive
-	   = _ctTranslate (heapDesc,
-			   VarBasePairNew (tmpHD,
-					   folds[count]->var_base,
-					   var_base),
-			   folds[count]->expr);
+         params[count]->positive
+           = _ctTranslate (heapDesc,
+                           VarBasePairNew (tmpHD,
+                                           folds[count]->var_base,
+                                           var_base),
+                           folds[count]->expr);
 
-	 params[count]->negative = NULL;
+         params[count]->negative = NULL;
        }
 
      return (result);
@@ -1348,8 +1348,8 @@ COMB_EXPR
 static
 COMB_EXPR *
 _transUnfold (MEMORY        heapDesc,
-	      CT_VAR_BASE  *var_base,
-	      CT_UNFOLD   **unfolds)
+              CT_VAR_BASE  *var_base,
+              CT_UNFOLD   **unfolds)
 {
   COMB_EXPR  *result     = NULL;
   COMB_PHR  **params     = NULL;
@@ -1367,37 +1367,37 @@ _transUnfold (MEMORY        heapDesc,
 
   result->info.combinator.param = params =
     (COMB_PHR **)MemHeapAlloc (heapDesc,
-			       result->info.combinator.numParams + 1,
-			       sizeof (COMB_PHR *));
+                               result->info.combinator.numParams + 1,
+                               sizeof (COMB_PHR *));
 
   assert (params);
 
   for (count = 0; count < result->info.combinator.numParams; count++)
     {
       params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						1,
-						sizeof (COMB_PHR));
+                                                1,
+                                                sizeof (COMB_PHR));
 
       assert (params[count]);
 
       params[count]->negative = NULL;
 
       if (unfolds[count]->var_base2)
-	params[count]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (tmpHD,
-					unfolds[count]->var_base2,
-					VarBasePairNew (tmpHD,
-							unfolds[count]->var_base,
-							var_base)),
-			unfolds[count]->expr);
+        params[count]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        unfolds[count]->var_base2,
+                                        VarBasePairNew (tmpHD,
+                                                        unfolds[count]->var_base,
+                                                        var_base)),
+                        unfolds[count]->expr);
       else
-	params[count]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (tmpHD,
-					unfolds[count]->var_base,
-					var_base),
-			unfolds[count]->expr);
+        params[count]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        unfolds[count]->var_base,
+                                        var_base),
+                        unfolds[count]->expr);
     }
 
   return result;
@@ -1410,7 +1410,7 @@ _transUnfold (MEMORY        heapDesc,
  *                        *
  **************************/
 static
-COMB_EXPR 
+COMB_EXPR
 *_transCase(MEMORY heapDesc, CT_VAR_BASE *var_base, CT_CASE **cases)
 {
      COMB_EXPR  *result       = NULL;
@@ -1430,27 +1430,27 @@ COMB_EXPR
 
      result->info.combinator.param = params =
        (COMB_PHR **)MemHeapAlloc (heapDesc,
-				  result->info.combinator.numParams + 1,
-				  sizeof (COMB_PHR *));
+                                  result->info.combinator.numParams + 1,
+                                  sizeof (COMB_PHR *));
 
      assert (params);
 
      for (count = 0; count < result->info.combinator.numParams; count++)
        {
-	 params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						   1,
-						   sizeof (COMB_PHR));
+         params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                   1,
+                                                   sizeof (COMB_PHR));
 
-	 assert (params[count]);
+         assert (params[count]);
 
-	 params[count]->positive =
-	   _ctTranslate(heapDesc,
-			VarBasePairNew (tmpHD,
-					cases[count]->var_base,
-					var_base),
-			cases[count]->expr);
+         params[count]->positive =
+           _ctTranslate(heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        cases[count]->var_base,
+                                        var_base),
+                        cases[count]->expr);
 
-	 params[count]->negative = NULL;
+         params[count]->negative = NULL;
        }
 
      assert (result);
@@ -1469,8 +1469,8 @@ COMB_EXPR
 static
 COMB_EXPR *
 _transRecord (MEMORY        heapDesc,
-	      CT_VAR_BASE  *var_base,
-	      CT_RECORD   **records)
+              CT_VAR_BASE  *var_base,
+              CT_RECORD   **records)
 {
   COMB_EXPR  *result     = NULL;
   COMB_PHR  **params     = NULL;
@@ -1487,31 +1487,31 @@ _transRecord (MEMORY        heapDesc,
 
   result->info.combinator.param = params =
     (COMB_PHR **)MemHeapAlloc (heapDesc,
-			       result->info.combinator.numParams + 1,
-			       sizeof (COMB_PHR *));
+                               result->info.combinator.numParams + 1,
+                               sizeof (COMB_PHR *));
 
   assert (params);
 
   for (count = 0; count < result->info.combinator.numParams; count++)
     {
       params[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						1,
-						sizeof (COMB_PHR));
+                                                1,
+                                                sizeof (COMB_PHR));
 
       assert (params[count]);
 
       params[count]->negative = NULL;
 
       if (records[count]->var_base)
-	params[count]->positive =
-	  _ctTranslate (heapDesc,
-			VarBasePairNew (tmpHD,
-					records[count]->var_base,
-					var_base),
-			records[count]->expr);
+        params[count]->positive =
+          _ctTranslate (heapDesc,
+                        VarBasePairNew (tmpHD,
+                                        records[count]->var_base,
+                                        var_base),
+                        records[count]->expr);
       else
-	params[count]->positive =
-	  _ctTranslate (heapDesc, var_base, records[count]->expr);
+        params[count]->positive =
+          _ctTranslate (heapDesc, var_base, records[count]->expr);
     }
 
   return result;
@@ -1528,13 +1528,13 @@ COMB_EXPR
 *_transAbs(MEMORY heapDesc, CT_VAR_BASE *var_base, CT_ABS *absn)
 {
      COMB_EXPR *result   = NULL;
-     
+
      assert(var_base);
      assert(absn);
 
-     result = _ctTranslate(heapDesc, 
-			   VarBasePairNew(tmpHD, absn->var_base, var_base), 
-			   absn->expr);
+     result = _ctTranslate(heapDesc,
+                           VarBasePairNew(tmpHD, absn->var_base, var_base),
+                           absn->expr);
 
      assert(result);
      return(result);
@@ -1552,22 +1552,22 @@ COMB_EXPR
      COMB_EXPR *result = NULL;
 
      if (isConstructor(struct_name)) {
-	  result = CombExprConstructor(heapDesc, struct_name);	  
+          result = CombExprConstructor(heapDesc, struct_name);
      }
      else if (isDestructor(struct_name)) {
-	  if (strcmp(struct_name, PROD0) == 0) {
-	       result = CombExprP0(heapDesc);
-	  }
-	  else if (strcmp(struct_name, PROD1) == 0) {
-     	       result = CombExprP1(heapDesc);
-	  }
-	  else {
-	       result = CombExprDestructor(heapDesc, struct_name);	  
-	  }
+          if (strcmp(struct_name, PROD0) == 0) {
+               result = CombExprP0(heapDesc);
+          }
+          else if (strcmp(struct_name, PROD1) == 0) {
+               result = CombExprP1(heapDesc);
+          }
+          else {
+               result = CombExprDestructor(heapDesc, struct_name);
+          }
      }
      else {
-	  _translateError();
-	  printMsg(ERROR_MSG, "unknown structor %s", struct_name);
+          _translateError();
+          printMsg(ERROR_MSG, "unknown structor %s", struct_name);
      }
      return(result);
 }
@@ -1580,9 +1580,9 @@ COMB_EXPR
 static
 BBOOL
 isFunctionMacro(char *name)
-{    
+{
      if (functionName)
-	  return(st_IsMacroByName(lb_BuildMacroName(tmpHD, functionName, name)));
+          return(st_IsMacroByName(lb_BuildMacroName(tmpHD, functionName, name)));
 
      return(BFALSE);
 }
@@ -1599,7 +1599,7 @@ COMB_EXPR
      COMB_EXPR *result = NULL;
      CT_TERM   *aterm  = NULL;
      CT_EXPR   *aexpr  = NULL;
-     
+
      assert(var_base);
      assert(expr);
      assert(expr->tag == CT_APP);
@@ -1610,174 +1610,174 @@ COMB_EXPR
      assert(aexpr);
 
      switch (aterm->tag) {
-	case CT_T_STRUCTOR:
-	  if (_varOccurs(aterm->info.struct_name, var_base)) {
-	       result = CombExprVar(heapDesc, var_base, 
-				    _makeVarExpr(heapDesc, aterm->info.struct_name));     
+        case CT_T_STRUCTOR:
+          if (_varOccurs(aterm->info.struct_name, var_base)) {
+               result = CombExprVar(heapDesc, var_base,
+                                    _makeVarExpr(heapDesc, aterm->info.struct_name));
           } else if (isFunctionMacro(aterm->info.struct_name)) {  /* Macro? */
-	       result = CombExprComposition(heapDesc, 
-					    _makeEnvSigma(heapDesc, var_base, aexpr),
-					    _transMacroName(heapDesc, aterm->info.struct_name));
-	  } else {
-	       result = CombExprComposition(heapDesc, 
-					    _ctTranslate(heapDesc, var_base, aexpr),
-					    _transStructor(heapDesc, aterm->info.struct_name));
-	  }
-	  break;
-	case CT_T_FUNCTION:
-	  if (strcmp (aterm->info.function->fun_name, AT_NAME) == 0)     /* [#@] */
-	    {
-	      COMB_EXPR *at = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
+               result = CombExprComposition(heapDesc,
+                                            _makeEnvSigma(heapDesc, var_base, aexpr),
+                                            _transMacroName(heapDesc, aterm->info.struct_name));
+          } else {
+               result = CombExprComposition(heapDesc,
+                                            _ctTranslate(heapDesc, var_base, aexpr),
+                                            _transStructor(heapDesc, aterm->info.struct_name));
+          }
+          break;
+        case CT_T_FUNCTION:
+          if (strcmp (aterm->info.function->fun_name, AT_NAME) == 0)     /* [#@] */
+            {
+              COMB_EXPR *at = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
 
-	      assert (at);
+              assert (at);
 
-	      at->tag                   = CTT_COMBINATOR;
-	      at->info.combinator.class = CC_AT;
+              at->tag                   = CTT_COMBINATOR;
+              at->info.combinator.class = CC_AT;
 
-	      at->info.combinator.name       = NULL;
-	      at->info.combinator.parentName = NULL;
-	      at->info.combinator.parameter  = 0;
-	      at->info.combinator.numParams  = 0;
-	      at->info.combinator.param      = NULL;
-	      at->info.combinator.i          = 0;
-	      at->info.combinator.c          = '\0';
-	      at->info.combinator.self       = 0;
+              at->info.combinator.name       = NULL;
+              at->info.combinator.parentName = NULL;
+              at->info.combinator.parameter  = 0;
+              at->info.combinator.numParams  = 0;
+              at->info.combinator.param      = NULL;
+              at->info.combinator.i          = 0;
+              at->info.combinator.c          = '\0';
+              at->info.combinator.self       = 0;
 
-	      result = CombExprComposition (heapDesc,
-					    _ctTranslate (heapDesc, var_base, aexpr),
-					    at);
-	    }
-	  else
-	    {
-	      if (_varOccurs(aterm->info.function->fun_name, var_base)) {
-		printMsg(WARN_MSG, "%s assumed to be a function or macro, not a variable",
-			 aterm->info.function->fun_name);
-	      }
+              result = CombExprComposition (heapDesc,
+                                            _ctTranslate (heapDesc, var_base, aexpr),
+                                            at);
+            }
+          else
+            {
+              if (_varOccurs(aterm->info.function->fun_name, var_base)) {
+                printMsg(WARN_MSG, "%s assumed to be a function or macro, not a variable",
+                         aterm->info.function->fun_name);
+              }
 
-	      if (isFunctionMacro(aterm->info.function->fun_name)) {  /* Macro? */
-		result = CombExprComposition(heapDesc, 
-					     _makeEnvSigma(heapDesc, var_base, aexpr),
-					     _transMacro(heapDesc, aterm->info.function->fun_name,
-							 var_base, aterm->info.macro));
-	      } else {
-		if (   aterm->info.function->macros == NULL
-		    || aterm->info.function->macros[0] == NULL) {
-		  result = CombExprComposition(heapDesc,
-					       _ctTranslate(heapDesc, var_base, aexpr),
-					       _transFunction(heapDesc, var_base, aterm->info.function));
-		}
-		else {
-		  result = CombExprComposition(heapDesc,
-					       _makeEnv(heapDesc, var_base, aexpr),
-					       _transFunction(heapDesc, var_base, aterm->info.function));
-		}
-	      }
-	    }
-	  break;
-	case CT_T_MACRO:
-	  if (_varOccurs(aterm->info.macro->macro_name, var_base)) {
-	       /* Spit out warning message since variable might shadow macro name */
-	       printMsg(WARN_MSG, "%s assumed to be a function macro, not a variable",
-			aterm->info.macro->macro_name);
-	  }
-	  if (isFunctionMacro(aterm->info.macro->macro_name)) {  /* Macro? */
-	       result = CombExprComposition(heapDesc,
-					    _makeEnvSigma(heapDesc, var_base, aexpr),
-					    _transMacro(heapDesc, aterm->info.macro->macro_name,
-							var_base, aterm->info.macro));
-	  } else {
-	       _translateError();
-	       printMsg(ERROR_MSG, "Macro/function %s undefined", aterm->info.macro->macro_name);
-	  }	  
-	  break;
-	case CT_T_MAP:
-	  result = CombExprComposition(heapDesc,
-				       _makeEnv(heapDesc, var_base, aexpr),
-				       _transMap(heapDesc, var_base, aterm->info.maps));
-	  break;
-	case CT_T_FOLD:
-	  result = CombExprComposition(heapDesc,
-				       _makeEnv(heapDesc, var_base, aexpr),
-				       _transFold(heapDesc, var_base, aterm->info.folds));
-	  break;
-	case CT_T_UNFOLD:
-	  result = CombExprComposition(heapDesc,
-				       _makeEnv(heapDesc, var_base, aexpr),
-				       _transUnfold(heapDesc, var_base, aterm->info.unfolds));
-	  break;
+              if (isFunctionMacro(aterm->info.function->fun_name)) {  /* Macro? */
+                result = CombExprComposition(heapDesc,
+                                             _makeEnvSigma(heapDesc, var_base, aexpr),
+                                             _transMacro(heapDesc, aterm->info.function->fun_name,
+                                                         var_base, aterm->info.macro));
+              } else {
+                if (   aterm->info.function->macros == NULL
+                    || aterm->info.function->macros[0] == NULL) {
+                  result = CombExprComposition(heapDesc,
+                                               _ctTranslate(heapDesc, var_base, aexpr),
+                                               _transFunction(heapDesc, var_base, aterm->info.function));
+                }
+                else {
+                  result = CombExprComposition(heapDesc,
+                                               _makeEnv(heapDesc, var_base, aexpr),
+                                               _transFunction(heapDesc, var_base, aterm->info.function));
+                }
+              }
+            }
+          break;
+        case CT_T_MACRO:
+          if (_varOccurs(aterm->info.macro->macro_name, var_base)) {
+               /* Spit out warning message since variable might shadow macro name */
+               printMsg(WARN_MSG, "%s assumed to be a function macro, not a variable",
+                        aterm->info.macro->macro_name);
+          }
+          if (isFunctionMacro(aterm->info.macro->macro_name)) {  /* Macro? */
+               result = CombExprComposition(heapDesc,
+                                            _makeEnvSigma(heapDesc, var_base, aexpr),
+                                            _transMacro(heapDesc, aterm->info.macro->macro_name,
+                                                        var_base, aterm->info.macro));
+          } else {
+               _translateError();
+               printMsg(ERROR_MSG, "Macro/function %s undefined", aterm->info.macro->macro_name);
+          }
+          break;
+        case CT_T_MAP:
+          result = CombExprComposition(heapDesc,
+                                       _makeEnv(heapDesc, var_base, aexpr),
+                                       _transMap(heapDesc, var_base, aterm->info.maps));
+          break;
+        case CT_T_FOLD:
+          result = CombExprComposition(heapDesc,
+                                       _makeEnv(heapDesc, var_base, aexpr),
+                                       _transFold(heapDesc, var_base, aterm->info.folds));
+          break;
+        case CT_T_UNFOLD:
+          result = CombExprComposition(heapDesc,
+                                       _makeEnv(heapDesc, var_base, aexpr),
+                                       _transUnfold(heapDesc, var_base, aterm->info.unfolds));
+          break;
 
-	case CT_T_CATA:     /* [#@] */
-	  {
-	    CT_EXPR *temp = makeExprFromVarBase (heapDesc, var_base);
+        case CT_T_CATA:     /* [#@] */
+          {
+            CT_EXPR *temp = makeExprFromVarBase (heapDesc, var_base);
 
-	    *aterm->info.cata->context = *temp;
+            *aterm->info.cata->context = *temp;
 
-	    result = CombExprComposition (heapDesc,
-					  _makeEnv (heapDesc, var_base, aexpr),
-					  _transCata (heapDesc, var_base, aterm->info.cata));
-	  }
+            result = CombExprComposition (heapDesc,
+                                          _makeEnv (heapDesc, var_base, aexpr),
+                                          _transCata (heapDesc, var_base, aterm->info.cata));
+          }
 
-	  break;
+          break;
 
-	case CT_T_ANA:     /* [#@] */
-	  {
-	    CT_EXPR *temp = makeExprFromVarBase (heapDesc, var_base);
+        case CT_T_ANA:     /* [#@] */
+          {
+            CT_EXPR *temp = makeExprFromVarBase (heapDesc, var_base);
 
-	    *aterm->info.ana->context = *temp;
+            *aterm->info.ana->context = *temp;
 
-	    result = CombExprComposition (heapDesc,
-					  _makeEnv (heapDesc, var_base, aexpr),
-					  _transAna (heapDesc, var_base, aterm->info.ana));
-	  }
+            result = CombExprComposition (heapDesc,
+                                          _makeEnv (heapDesc, var_base, aexpr),
+                                          _transAna (heapDesc, var_base, aterm->info.ana));
+          }
 
-	  break;
+          break;
 
-	case CT_T_SELF:     /* [#@] */
+        case CT_T_SELF:     /* [#@] */
 
-	  result = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
+          result = (COMB_EXPR *)MHA (heapDesc, 1, sizeof (COMB_EXPR));
 
-	  assert (result);
+          assert (result);
 
-	  result->tag                       = CTT_COMBINATOR;
-	  result->info.combinator.class     = CC_SELF;
-	  result->info.combinator.numParams = 0;
-	  result->info.combinator.self      = aterm->info.self;
+          result->tag                       = CTT_COMBINATOR;
+          result->info.combinator.class     = CC_SELF;
+          result->info.combinator.numParams = 0;
+          result->info.combinator.self      = aterm->info.self;
 
-	  result->info.combinator.name       = NULL;
-	  result->info.combinator.parentName = NULL;
-	  result->info.combinator.parameter  = 0;
+          result->info.combinator.name       = NULL;
+          result->info.combinator.parentName = NULL;
+          result->info.combinator.parameter  = 0;
 
-	  result = CombExprComposition (heapDesc,
-					_ctTranslate (heapDesc, var_base, aexpr),
-					result);
+          result = CombExprComposition (heapDesc,
+                                        _ctTranslate (heapDesc, var_base, aexpr),
+                                        result);
 
-	  break;
+          break;
 
-	case CT_T_CASE:
-	  result = CombExprComposition(heapDesc,
-				       _makeEnv(heapDesc, var_base, aexpr),
-				       _transCase(heapDesc, var_base, aterm->info.cases));
-	  break;
-	case CT_T_RECORD:
-	  result = _transRecord(heapDesc, var_base, aterm->info.records);
-	  break;
-	case CT_T_ABS:
-	  result = CombExprComposition(heapDesc,
-				       _makeEnv(heapDesc, var_base, aexpr),
-				       _transAbs(heapDesc, var_base, aterm->info.abs));
-	  break;
+        case CT_T_CASE:
+          result = CombExprComposition(heapDesc,
+                                       _makeEnv(heapDesc, var_base, aexpr),
+                                       _transCase(heapDesc, var_base, aterm->info.cases));
+          break;
+        case CT_T_RECORD:
+          result = _transRecord(heapDesc, var_base, aterm->info.records);
+          break;
+        case CT_T_ABS:
+          result = CombExprComposition(heapDesc,
+                                       _makeEnv(heapDesc, var_base, aexpr),
+                                       _transAbs(heapDesc, var_base, aterm->info.abs));
+          break;
 
-	case CT_T_BUILTIN:     /* [BI] ADDED (SEE BELOW) */
+        case CT_T_BUILTIN:     /* [BI] ADDED (SEE BELOW) */
 
-	  result = CombExprComposition (heapDesc,
-					_ctTranslate (heapDesc, var_base, aexpr),
-					_transBuiltin (heapDesc, aterm->info.builtin));
+          result = CombExprComposition (heapDesc,
+                                        _ctTranslate (heapDesc, var_base, aexpr),
+                                        _transBuiltin (heapDesc, aterm->info.builtin));
 
-	  break;
+          break;
 
-	default:
-	  printMsg(FATAL_MSG, "_translateApp - %d is not a valid tag", aterm->tag);
-	  break;
+        default:
+          printMsg(FATAL_MSG, "_translateApp - %d is not a valid tag", aterm->tag);
+          break;
      }
 
      assert(result);
@@ -1789,12 +1789,12 @@ COMB_EXPR
  *    CombExprVar         *
  *                        *
  **************************/
-COMB_EXPR 
+COMB_EXPR
 *CombExprVar(MEMORY heapDesc, CT_VAR_BASE *var_base, CT_EXPR *var_expr)
 {
      COMB_EXPR *result = NULL;
      char      *var    = NULL;
-     
+
      assert(var_base);
      assert(var_expr);
      assert(var_expr->tag == CT_VAR);
@@ -1802,34 +1802,34 @@ COMB_EXPR
      var = var_expr->info.var;
 
      switch (var_base->tag) {
-	case CT_VB_BANG:
-	  _translateError();
-	  printMsg(ERROR_MSG, "Type - Variable %s not within scope of function",var_expr->info.var);
-	  break;
-	case CT_VB_VAR:
-	  if (_isIdentity(var_base->info.var, var)) {
-	       result = _makeIdentity(heapDesc);
-	  }
-	  else {
-	       _translateError();
-	       printMsg(ERROR_MSG, "Type - Variable %s not within scope of function", var_expr->info.var);
-	  }
-	  break;
-	case CT_VB_PAIR:
-	  if (_varOccurs(var, var_base->info.pair.l)) {
-	       result = CombExprComposition(heapDesc,
-					    CombExprP0(heapDesc), 
-					    _ctTranslate(heapDesc, var_base->info.pair.l, var_expr));
-	  }
-	  else {
-	       result = CombExprComposition(heapDesc,
-					    CombExprP1(heapDesc), 
-					    _ctTranslate(heapDesc, var_base->info.pair.r, var_expr));
-	  }     
-	  break;
-	default:
-	  printMsg(FATAL_MSG, "CombExprVar - %d is not a known variable base", var_base->tag);
-	  break;
+        case CT_VB_BANG:
+          _translateError();
+          printMsg(ERROR_MSG, "Type - Variable %s not within scope of function",var_expr->info.var);
+          break;
+        case CT_VB_VAR:
+          if (_isIdentity(var_base->info.var, var)) {
+               result = _makeIdentity(heapDesc);
+          }
+          else {
+               _translateError();
+               printMsg(ERROR_MSG, "Type - Variable %s not within scope of function", var_expr->info.var);
+          }
+          break;
+        case CT_VB_PAIR:
+          if (_varOccurs(var, var_base->info.pair.l)) {
+               result = CombExprComposition(heapDesc,
+                                            CombExprP0(heapDesc),
+                                            _ctTranslate(heapDesc, var_base->info.pair.l, var_expr));
+          }
+          else {
+               result = CombExprComposition(heapDesc,
+                                            CombExprP1(heapDesc),
+                                            _ctTranslate(heapDesc, var_base->info.pair.r, var_expr));
+          }
+          break;
+        default:
+          printMsg(FATAL_MSG, "CombExprVar - %d is not a known variable base", var_base->tag);
+          break;
      }
 
      assert(result);
@@ -1853,22 +1853,22 @@ COMB_EXPR
      COMB_EXPR *result = NULL;
 
      if (_varOccurs(expr->info.var, var_base)) {     /* variable    */
-	  result = CombExprVar(heapDesc, var_base, expr);
+          result = CombExprVar(heapDesc, var_base, expr);
      } else if (isFunctionMacro(expr->info.var)) {  /* macro       */
-	  result = CombExprComposition(heapDesc, 
-				       _makeEnvSigma(heapDesc, var_base, _ExprBang()),
-				       _transMacroName(heapDesc, expr->info.var));
+          result = CombExprComposition(heapDesc,
+                                       _makeEnvSigma(heapDesc, var_base, _ExprBang()),
+                                       _transMacroName(heapDesc, expr->info.var));
      } else if (isStructor(expr->info.var)) {       /* structor    */
-	  result = CombExprComposition(heapDesc, 
-				       _ctTranslate(heapDesc, var_base, _ExprBang()),
-				       _transStructor(heapDesc, expr->info.var));
+          result = CombExprComposition(heapDesc,
+                                       _ctTranslate(heapDesc, var_base, _ExprBang()),
+                                       _transStructor(heapDesc, expr->info.var));
      } else if (isFunction(expr->info.var)) {       /* function    */
-	  result = CombExprComposition(heapDesc,
-				       _ctTranslate(heapDesc, var_base, _ExprBang()),
-				       _transFunctionName(heapDesc, expr->info.var));
+          result = CombExprComposition(heapDesc,
+                                       _ctTranslate(heapDesc, var_base, _ExprBang()),
+                                       _transFunctionName(heapDesc, expr->info.var));
      } else {                                       /* unbound var */
-	  _translateError();
-	  printMsg(ERROR_MSG, "Unbound Variable: %s", expr->info.var);
+          _translateError();
+          printMsg(ERROR_MSG, "Unbound Variable: %s", expr->info.var);
      }
      return(result);
 }
@@ -1886,59 +1886,59 @@ COMB_EXPR
      assert(var_base);
 
      if (expr) {
-	  switch (expr->tag) {
-	     case CT_VAR:
-	       result = _determineIdent(heapDesc, var_base, expr);
-	       break;
-	     case CT_BANG:
-	       if (var_base) {
-		    switch (var_base->tag) {
-		       case CT_VB_BANG:  /* T[ () => () ] */
-			 result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_ID1, 0, NULL);
-			 break;
-		       case CT_VB_VAR:   /* T[ x => () ] */
-			 result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL);	
-			 break;
-		       case CT_VB_PAIR:  /* T[ (x, y) => () ] where x, y is a var or () */
-			 if (_bangOccurs(var_base->info.pair.l)) /* T[ ((), x) => () ] */
-			      result = CombExprComposition(heapDesc, 
-							   CombExprP0(heapDesc),
-							   _ctTranslate(heapDesc, 
-									var_base->info.pair.l,
-									expr)
-							   );
-			 else if (_bangOccurs(var_base->info.pair.r)) /* T[ (x, ()) => ()] */
-			      result = CombExprComposition(heapDesc, 
-							   CombExprP1(heapDesc),
-							   _ctTranslate(heapDesc, 
-									var_base->info.pair.r,
-									expr)
-							   ); 
-			 else  /* T[ x => () ] */
-			      result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL);	
-			 break;
-		       default:
-			 /* should never reach this point */
-			 printMsg(FATAL_MSG, "_ctTranslate: Unknown tag field");
-		    }
-	       }
-	       else result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_ID1, 0, NULL);
-	       break;
-	     case CT_PAIR:
-	       result = CombExprPair(heapDesc,
-				     _ctTranslate(heapDesc, var_base, expr->info.pair.l),
-				     _ctTranslate(heapDesc, var_base, expr->info.pair.r));
-		    break;
-	     case CT_APP:
-	       result = _translateApp(heapDesc, var_base, expr);
-	       break;
+          switch (expr->tag) {
+             case CT_VAR:
+               result = _determineIdent(heapDesc, var_base, expr);
+               break;
+             case CT_BANG:
+               if (var_base) {
+                    switch (var_base->tag) {
+                       case CT_VB_BANG:  /* T[ () => () ] */
+                         result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_ID1, 0, NULL);
+                         break;
+                       case CT_VB_VAR:   /* T[ x => () ] */
+                         result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL);
+                         break;
+                       case CT_VB_PAIR:  /* T[ (x, y) => () ] where x, y is a var or () */
+                         if (_bangOccurs(var_base->info.pair.l)) /* T[ ((), x) => () ] */
+                              result = CombExprComposition(heapDesc,
+                                                           CombExprP0(heapDesc),
+                                                           _ctTranslate(heapDesc,
+                                                                        var_base->info.pair.l,
+                                                                        expr)
+                                                           );
+                         else if (_bangOccurs(var_base->info.pair.r)) /* T[ (x, ()) => ()] */
+                              result = CombExprComposition(heapDesc,
+                                                           CombExprP1(heapDesc),
+                                                           _ctTranslate(heapDesc,
+                                                                        var_base->info.pair.r,
+                                                                        expr)
+                                                           );
+                         else  /* T[ x => () ] */
+                              result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_BANG, 0, NULL);
+                         break;
+                       default:
+                         /* should never reach this point */
+                         printMsg(FATAL_MSG, "_ctTranslate: Unknown tag field");
+                    }
+               }
+               else result = CombExprNew(heapDesc, CC_PRIMITIVE, RES_ID1, 0, NULL);
+               break;
+             case CT_PAIR:
+               result = CombExprPair(heapDesc,
+                                     _ctTranslate(heapDesc, var_base, expr->info.pair.l),
+                                     _ctTranslate(heapDesc, var_base, expr->info.pair.r));
+                    break;
+             case CT_APP:
+               result = _translateApp(heapDesc, var_base, expr);
+               break;
 
-	     default:
-	       printMsg(FATAL_MSG, "ctTranslate - Unable to translate term logic");
-	       break;
-	  }
-     } else 
-	  printMsg(FATAL_MSG, "_ctTranslate:  invalid expression");
+             default:
+               printMsg(FATAL_MSG, "ctTranslate - Unable to translate term logic");
+               break;
+          }
+     } else
+          printMsg(FATAL_MSG, "_ctTranslate:  invalid expression");
 
      assert(result);
      return(result);
@@ -1956,7 +1956,7 @@ COMB_EXPR
 
      functionName   = funName;
      result         = _ctTranslate(tmpHD, var_base, expr);
-     functionName   = NULL; 
+     functionName   = NULL;
 #if DEBUG
      printf("%s -> ", funName); CombExprPrint(result); printf("\n"); */
 #endif
@@ -1975,7 +1975,7 @@ COMB_EXPR
 static
 COMB_EXPR *
 _transBuiltin (MEMORY      heapDesc,
-	       CT_BUILTIN *builtin)
+               CT_BUILTIN *builtin)
 {
   COMB_EXPR *result = NULL;
 
@@ -2011,7 +2011,7 @@ _transBuiltin (MEMORY      heapDesc,
 
 COMB_EXPR *
 CombInt (MEMORY heapDesc,
-	 int    i)
+         int    i)
 {
   COMB_EXPR *result = (COMB_EXPR *)MemHeapAlloc (heapDesc, 1, sizeof (COMB_EXPR));
 
@@ -2039,7 +2039,7 @@ CombInt (MEMORY heapDesc,
 
 COMB_EXPR *
 CombChar (MEMORY heapDesc,
-	  char   c)
+          char   c)
 {
   COMB_EXPR *result = (COMB_EXPR *)MemHeapAlloc (heapDesc, 1, sizeof (COMB_EXPR));
 
@@ -2066,7 +2066,7 @@ CombChar (MEMORY heapDesc,
 static
 COMB_EXPR *
 _CombDup (MEMORY     heapDesc,
-	  COMB_EXPR *expr)
+          COMB_EXPR *expr)
 {
   COMB_EXPR  *result = NULL;
   COMB_PHR  **parms  = NULL;
@@ -2079,38 +2079,38 @@ _CombDup (MEMORY     heapDesc,
   if (expr->info.combinator.numParams)
     {
       parms = (COMB_PHR **)MemHeapAlloc (heapDesc,
-					 expr->info.combinator.numParams + 1,
-					 sizeof (COMB_PHR *));
+                                         expr->info.combinator.numParams + 1,
+                                         sizeof (COMB_PHR *));
 
       assert (parms);
 
       for (count = 0; count < expr->info.combinator.numParams; count++)
-	{
-	  parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
-						   1,
-						   sizeof (COMB_PHR));
+        {
+          parms[count] = (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                                   1,
+                                                   sizeof (COMB_PHR));
 
-	  if (expr->info.combinator.param[count]->positive)
-	    parms[count]->positive =
-	      CombExprDuplicate (heapDesc,
-				 expr->info.combinator.param[count]->positive);
-	  else
-	    parms[count]->positive = NULL;
+          if (expr->info.combinator.param[count]->positive)
+            parms[count]->positive =
+              CombExprDuplicate (heapDesc,
+                                 expr->info.combinator.param[count]->positive);
+          else
+            parms[count]->positive = NULL;
 
-	  if (expr->info.combinator.param[count]->negative)
-	    parms[count]->negative =
-	      CombExprDuplicate (heapDesc,
-				 expr->info.combinator.param[count]->negative);
-	  else
-	    parms[count]->negative = NULL;
-	}
+          if (expr->info.combinator.param[count]->negative)
+            parms[count]->negative =
+              CombExprDuplicate (heapDesc,
+                                 expr->info.combinator.param[count]->negative);
+          else
+            parms[count]->negative = NULL;
+        }
     }
 
   result = CombExprNew (heapDesc,
-			expr->info.combinator.class,
-			expr->info.combinator.name,
-			expr->info.combinator.numParams,
-			parms);
+                        expr->info.combinator.class,
+                        expr->info.combinator.name,
+                        expr->info.combinator.numParams,
+                        parms);
 
   result->info.combinator.parentName = expr->info.combinator.parentName;
   result->info.combinator.parameter  = expr->info.combinator.parameter;
@@ -2136,8 +2136,8 @@ COMB_EXPR
      switch (expr->tag) {
         case CTT_COMPOSITION:
           result = CombExprComposition(heapDesc,
-				       CombExprDuplicate(heapDesc, expr->info.composition.l), 
-				       CombExprDuplicate(heapDesc, expr->info.composition.r));
+                                       CombExprDuplicate(heapDesc, expr->info.composition.l),
+                                       CombExprDuplicate(heapDesc, expr->info.composition.r));
           break;
         case CTT_COMBINATOR:
           result = _CombDup(heapDesc, expr);
@@ -2164,29 +2164,29 @@ COMB_EXPR
 static
 void
 _CombParmsPrint (int        num,
-		 COMB_PHR **parms)
+                 COMB_PHR **parms)
 {
   int count = 0;
 
   for (count = 0; count < num; count++)
     {
       if (count > 0)
-	printf (", ");
+        printf (", ");
 
       if (parms[count]->positive)
-	if (parms[count]->negative)
-	  {
-	    _CombExprPrint (parms[count]->positive);
-	    printf (" & ");
-	    _CombExprPrint (parms[count]->negative);
-	  }
-	else
-	  _CombExprPrint (parms[count]->positive);
+        if (parms[count]->negative)
+          {
+            _CombExprPrint (parms[count]->positive);
+            printf (" & ");
+            _CombExprPrint (parms[count]->negative);
+          }
+        else
+          _CombExprPrint (parms[count]->positive);
       else
-	if (parms[count]->negative)
-	  _CombExprPrint (parms[count]->negative);
-	else
-	  printf ("_");
+        if (parms[count]->negative)
+          _CombExprPrint (parms[count]->negative);
+        else
+          printf ("_");
     }
 }
 
@@ -2207,64 +2207,64 @@ _CombinatorPrint (COMB_EXPR *expr)
      assert(expr->tag == CTT_COMBINATOR);
 
      switch (expr->info.combinator.class) {
-	case CC_PRIMITIVE:
-	  if (strcmp(expr->info.combinator.name, RES_PAIR) == 0) {
-	       printf("<");
-	       _CombExprPrint(expr->info.combinator.param[0]->positive);
-	       printf(", ");
-	       _CombExprPrint(expr->info.combinator.param[1]->positive);
-	       printf(">");
-	  }
-	  else if (strcmp(expr->info.combinator.name, MAP_PROD) == 0) {
-	       printf("map_prod(");
-	       _CombExprPrint(expr->info.combinator.param[0]->positive);
-	       printf(", ");
-	       _CombExprPrint(expr->info.combinator.param[1]->positive);
-	       printf(")");
-	  }
-	  else {
-	       printf("%s", expr->info.combinator.name);
-	  }
-	  break;
-	case CC_CONSTRUCTOR:
-	case CC_DESTRUCTOR:
-	  printf("%s", expr->info.combinator.name);
-	  break;
-	case CC_FOLD:
-	case CC_CASE:
-	case CC_MAP_I:
-	case CC_UNFOLD:
-	case CC_RECORD:
-	case CC_MAP_C:
-	  printf("%s(", expr->info.combinator.name);
-	  _CombParmsPrint(expr->info.combinator.numParams, 
-			  expr->info.combinator.param);
-	  printf(")");
-	  break;
-	case CC_FUNCTION:
-	  printf("FUNCTION(%s){", expr->info.combinator.name);
-	  _CombParmsPrint(expr->info.combinator.numParams, 
-			  expr->info.combinator.param);
-	  printf("}");
-	  break;
-	case CC_MACRO:
-	  printf("PARM(%s, %d)", expr->info.combinator.name,
-		 expr->info.combinator.parameter);
-	  break;
+        case CC_PRIMITIVE:
+          if (strcmp(expr->info.combinator.name, RES_PAIR) == 0) {
+               printf("<");
+               _CombExprPrint(expr->info.combinator.param[0]->positive);
+               printf(", ");
+               _CombExprPrint(expr->info.combinator.param[1]->positive);
+               printf(">");
+          }
+          else if (strcmp(expr->info.combinator.name, MAP_PROD) == 0) {
+               printf("map_prod(");
+               _CombExprPrint(expr->info.combinator.param[0]->positive);
+               printf(", ");
+               _CombExprPrint(expr->info.combinator.param[1]->positive);
+               printf(")");
+          }
+          else {
+               printf("%s", expr->info.combinator.name);
+          }
+          break;
+        case CC_CONSTRUCTOR:
+        case CC_DESTRUCTOR:
+          printf("%s", expr->info.combinator.name);
+          break;
+        case CC_FOLD:
+        case CC_CASE:
+        case CC_MAP_I:
+        case CC_UNFOLD:
+        case CC_RECORD:
+        case CC_MAP_C:
+          printf("%s(", expr->info.combinator.name);
+          _CombParmsPrint(expr->info.combinator.numParams,
+                          expr->info.combinator.param);
+          printf(")");
+          break;
+        case CC_FUNCTION:
+          printf("FUNCTION(%s){", expr->info.combinator.name);
+          _CombParmsPrint(expr->info.combinator.numParams,
+                          expr->info.combinator.param);
+          printf("}");
+          break;
+        case CC_MACRO:
+          printf("PARM(%s, %d)", expr->info.combinator.name,
+                 expr->info.combinator.parameter);
+          break;
 
-	case CC_BUILTIN_INT:
-	  printf ("INT(%d)", expr->info.combinator.i);           /* [BI] PRINT BULITIN INTEGERS   */
+        case CC_BUILTIN_INT:
+          printf ("INT(%d)", expr->info.combinator.i);           /* [BI] PRINT BULITIN INTEGERS   */
 
-	  break;
+          break;
 
-	case CC_BUILTIN_CHAR:
-	  printf ("CHAR(%d)", (int)expr->info.combinator.c);     /* [BI] PRINT BUILTIN CHARACTERS */
+        case CC_BUILTIN_CHAR:
+          printf ("CHAR(%d)", (int)expr->info.combinator.c);     /* [BI] PRINT BUILTIN CHARACTERS */
 
-	  break;
+          break;
 
-	default:
-	  printMsg(FATAL_MSG, "_CombinatorPrint: Unrecognized command");
-	  break;
+        default:
+          printMsg(FATAL_MSG, "_CombinatorPrint: Unrecognized command");
+          break;
      }
 }
 
@@ -2278,22 +2278,22 @@ void
 _CombExprPrint(COMB_EXPR *expr)
 {
      assert(expr);
-     
+
      switch (expr->tag) {
-	case CTT_COMPOSITION:
-	  _CombExprPrint(expr->info.composition.l);
-	  printf(";");
-	  _CombExprPrint(expr->info.composition.r);
-	  break;
-	case CTT_COMBINATOR:	  
-	  _CombinatorPrint(expr);
-	  break;
-	case CTT_CLOSURE:
-	  printf("CLOSURE");
-	  break;
-	default:
-	  printMsg(FATAL_MSG, "CombExprPrint: Unrecognized combinator.");
-	  break;
+        case CTT_COMPOSITION:
+          _CombExprPrint(expr->info.composition.l);
+          printf(";");
+          _CombExprPrint(expr->info.composition.r);
+          break;
+        case CTT_COMBINATOR:
+          _CombinatorPrint(expr);
+          break;
+        case CTT_CLOSURE:
+          printf("CLOSURE");
+          break;
+        default:
+          printMsg(FATAL_MSG, "CombExprPrint: Unrecognized combinator.");
+          break;
      }
 }
 
@@ -2343,8 +2343,8 @@ _makeMap1 (MEMORY heapDesc)
 static
 COMB_EXPR *
 _makeMapProd (MEMORY     heapDesc,
-	      COMB_EXPR *l,
-	      COMB_EXPR *r)
+              COMB_EXPR *l,
+              COMB_EXPR *r)
 {
   COMB_EXPR *result = CombExprAlloc (heapDesc);
 
@@ -2392,10 +2392,10 @@ _makeMapProd (MEMORY     heapDesc,
 static
 COMB_EXPR *
 _makeMapUserData (MEMORY       heapDesc,
-		  ST_TYPE     *type,
-		  COMB_PHR   **parametric,
-		  COMB_EXPR   *state,          /* MAY BE NULL */
-		  V_VARIANCE   variance)
+                  ST_TYPE     *type,
+                  COMB_PHR   **parametric,
+                  COMB_EXPR   *state,          /* MAY BE NULL */
+                  V_VARIANCE   variance)
 {
   COMB_EXPR  *result = CombExprAlloc (heapDesc);
   int         count  = 0;
@@ -2412,8 +2412,8 @@ _makeMapUserData (MEMORY       heapDesc,
 
   result->info.combinator.name =
     lb_BuildCombString (heapDesc,
-			RES_MAP,
-			type->info.user_data.name);
+                        RES_MAP,
+                        type->info.user_data.name);
 
   result->info.combinator.parentName = type->info.user_data.name;
   result->info.combinator.numParams  = getNumParams (type->info.user_data.name);
@@ -2422,8 +2422,8 @@ _makeMapUserData (MEMORY       heapDesc,
 
   result->info.combinator.param =
     (COMB_PHR **) MemHeapAlloc(heapDesc,
-			       result->info.combinator.numParams + 1,
-			       sizeof (COMB_PHR *));
+                               result->info.combinator.numParams + 1,
+                               sizeof (COMB_PHR *));
 
   assert (result->info.combinator.param);
 
@@ -2434,61 +2434,61 @@ _makeMapUserData (MEMORY       heapDesc,
   for (count = 0; count < result->info.combinator.numParams; count++)
     {
       result->info.combinator.param[count] =
-	(COMB_PHR *)MemHeapAlloc (heapDesc,
-				  1,
-				  sizeof (COMB_PHR));
+        (COMB_PHR *)MemHeapAlloc (heapDesc,
+                                  1,
+                                  sizeof (COMB_PHR));
 
       assert (result->info.combinator.param[count]);
 
       switch (varity[count])
-	{
-	case V_NEITHER:
-	  result->info.combinator.param[count]->positive = NULL;
-	  result->info.combinator.param[count]->negative = NULL;
+        {
+        case V_NEITHER:
+          result->info.combinator.param[count]->positive = NULL;
+          result->info.combinator.param[count]->negative = NULL;
 
-	  break;
+          break;
 
-	case V_POSITIVE:
-	  result->info.combinator.param[count]->positive =
-	    _mapEi (heapDesc,
-		    type->info.user_data.args[count],
-		    parametric,
-		    state,
-		    variance);
+        case V_POSITIVE:
+          result->info.combinator.param[count]->positive =
+            _mapEi (heapDesc,
+                    type->info.user_data.args[count],
+                    parametric,
+                    state,
+                    variance);
 
-	  result->info.combinator.param[count]->negative = NULL;
+          result->info.combinator.param[count]->negative = NULL;
 
-	  break;
+          break;
 
-	case V_NEGATIVE:
-	  result->info.combinator.param[count]->positive = NULL;
+        case V_NEGATIVE:
+          result->info.combinator.param[count]->positive = NULL;
 
-	  result->info.combinator.param[count]->negative =
-	    _mapEi (heapDesc,
-		    type->info.user_data.args[count],
-		    parametric,
-		    state,
-		    Flip (variance));
+          result->info.combinator.param[count]->negative =
+            _mapEi (heapDesc,
+                    type->info.user_data.args[count],
+                    parametric,
+                    state,
+                    Flip (variance));
 
-	  break;
+          break;
 
-	case V_BOTH:
-	  result->info.combinator.param[count]->positive =
-	    _mapEi (heapDesc,
-		    type->info.user_data.args[count],
-		    parametric,
-		    state,
-		    variance);
+        case V_BOTH:
+          result->info.combinator.param[count]->positive =
+            _mapEi (heapDesc,
+                    type->info.user_data.args[count],
+                    parametric,
+                    state,
+                    variance);
 
-	  result->info.combinator.param[count]->negative =
-	    _mapEi (heapDesc,
-		    type->info.user_data.args[count],
-		    parametric,
-		    state,
-		    Flip (variance));
+          result->info.combinator.param[count]->negative =
+            _mapEi (heapDesc,
+                    type->info.user_data.args[count],
+                    parametric,
+                    state,
+                    Flip (variance));
 
-	  break;
-	}
+          break;
+        }
     }
 
   result->info.combinator.param[count] = NULL;
@@ -2508,10 +2508,10 @@ _makeMapUserData (MEMORY       heapDesc,
 static
 COMB_EXPR *
 _mapEi (MEMORY       heapDesc,
-	ST_TYPE     *type,
-	COMB_PHR   **parametric,
-	COMB_EXPR   *state,          /* MAY BE NULL */
-	V_VARIANCE   variance)
+        ST_TYPE     *type,
+        COMB_PHR   **parametric,
+        COMB_EXPR   *state,          /* MAY BE NULL */
+        V_VARIANCE   variance)
 {
   COMB_EXPR *result = NULL;
 
@@ -2528,32 +2528,32 @@ _mapEi (MEMORY       heapDesc,
 
     case TYPE_PROD:
       result = _makeMapProd (heapDesc,
-			     _mapEi (heapDesc,
-				     type->info.prod.l,
-				     parametric,
-				     state,
-				     variance),
-			     _mapEi (heapDesc,
-				     type->info.prod.r,
-				     parametric,
-				     state,
-				     variance));
+                             _mapEi (heapDesc,
+                                     type->info.prod.l,
+                                     parametric,
+                                     state,
+                                     variance),
+                             _mapEi (heapDesc,
+                                     type->info.prod.r,
+                                     parametric,
+                                     state,
+                                     variance));
 
       break;
 
     case TYPE_PARAMETRIC_VAR:
       switch (variance)
-	{
-	case V_POSITIVE:
-	  result = parametric[type->info.parametric_var]->positive;
+        {
+        case V_POSITIVE:
+          result = parametric[type->info.parametric_var]->positive;
 
-	  break;
+          break;
 
-	case V_NEGATIVE:
-	  result = parametric[type->info.parametric_var]->negative;
+        case V_NEGATIVE:
+          result = parametric[type->info.parametric_var]->negative;
 
-	  break;
-	}
+          break;
+        }
 
       break;
 
@@ -2602,7 +2602,7 @@ mapEi (MEMORY      heapDesc,
   ST_TYPE *type = NULL;
 
   assert (structor);
-  assert (parametric); 
+  assert (parametric);
   assert (state);
 
   type = getStructorType (structor);
@@ -2623,13 +2623,13 @@ mapEi (MEMORY      heapDesc,
 
 COMB_EXPR *
 mapEiHO (MEMORY      heapDesc,
-	 char       *structor,
-	 COMB_PHR  **parametric)
+         char       *structor,
+         COMB_PHR  **parametric)
 {
   ST_TYPE_SIG *type = NULL;
 
   assert (structor);
-  assert (parametric); 
+  assert (parametric);
 
   type = getStructorTypeSig (structor);
 
@@ -2639,10 +2639,10 @@ mapEiHO (MEMORY      heapDesc,
   assert (type->domain->info.prod.l);
 
   return _mapEi (heapDesc,
-		 type->domain->info.prod.l,
-		 parametric,
-		 NULL,
-		 V_NEGATIVE);
+                 type->domain->info.prod.l,
+                 parametric,
+                 NULL,
+                 V_NEGATIVE);
 }
 
 
@@ -2657,43 +2657,43 @@ int
 _showCT_expr(CT_EXPR *expr, int indent) {
 
      switch (expr->tag) {
-	case CT_VAR:
-	  appendBuff(expr->info.var); 
-	  indent += strlen(expr->info.var);
-	  break;
-	case CT_PAIR:
-	  appendBuff("(");     indent++;
-	  indent = _showCT_expr(expr->info.pair.l, indent);
-	  appendBuff(", ");    indent +=2;
-	  indent = _showCT_expr(expr->info.pair.r, indent);
-	  appendBuff(")");     indent++;
-	  break;
-	case CT_APP:
-	  indent = _showCT_term(expr->info.app.term, indent);
+        case CT_VAR:
+          appendBuff(expr->info.var);
+          indent += strlen(expr->info.var);
+          break;
+        case CT_PAIR:
+          appendBuff("(");     indent++;
+          indent = _showCT_expr(expr->info.pair.l, indent);
+          appendBuff(", ");    indent +=2;
+          indent = _showCT_expr(expr->info.pair.r, indent);
+          appendBuff(")");     indent++;
+          break;
+        case CT_APP:
+          indent = _showCT_term(expr->info.app.term, indent);
           switch ( expr->info.app.expr->tag ) {
           case CT_APP:
-          case CT_VAR:  
+          case CT_VAR:
               appendBuff(" ");  indent++;
               /* break missing on purpose */
-          case CT_PAIR:                   
+          case CT_PAIR:
               indent = _showCT_expr(expr->info.app.expr, indent);
               break;
           case CT_BANG:
               if ( expr->info.app.term->tag != CT_T_STRUCTOR &&
-                   expr->info.app.term->tag != CT_T_RECORD )   
+                   expr->info.app.term->tag != CT_T_RECORD )
                   indent = _showCT_expr(expr->info.app.expr, indent);
               break;
           default:
-	    printMsg(FATAL_MSG, "_showCT_expr - unknown expr (%d)", expr->tag);
-	    break;
-	  }   /*  hctiws  */
-	  break;
-	case CT_BANG:
-	  appendBuff("()");     indent += 2;
-	  break;
-	default:
-	  printMsg(FATAL_MSG, "_showCT_expr - unknown expr (%d)", expr->tag);
-	  break;
+            printMsg(FATAL_MSG, "_showCT_expr - unknown expr (%d)", expr->tag);
+            break;
+          }   /*  hctiws  */
+          break;
+        case CT_BANG:
+          appendBuff("()");     indent += 2;
+          break;
+        default:
+          printMsg(FATAL_MSG, "_showCT_expr - unknown expr (%d)", expr->tag);
+          break;
      }
 
     return indent;
@@ -2710,70 +2710,70 @@ static
 int
 _showCT_term(CT_TERM *term, int indent) {
      switch (term->tag) {
-	case CT_T_STRUCTOR:
-	  appendBuff(term->info.struct_name);
+        case CT_T_STRUCTOR:
+          appendBuff(term->info.struct_name);
           indent += strlen(term->info.struct_name);
-	  break;
-	case CT_T_FUNCTION:
-	  indent = _showCT_map((CT_MAP *)term->info.function, indent);
-	  break;
-	case CT_T_MACRO:
-	  indent = _showCT_map((CT_MAP *)term->info.macro, indent);
-	  break;
-	case CT_T_MAP:
-	  indent = _showCT_map(term->info.maps, indent);
-	  break;
-	case CT_T_CASE:
-	  indent = _showCT_case(term->info.cases, indent);
-	  break;
-	case CT_T_ABS:
-	  indent = _showCT_abs(term->info.abs, indent);
-	  break;
-	case CT_T_FOLD:
-	  indent = _showCT_fold(term->info.folds, indent);
-	  break;
-	case CT_T_CATA:                                                 /* [#@] */
-	  indent = _showCT_fold(term->info.cata->folds, indent);
-	  break;
-	case CT_T_ANA:                                                  /* [#@] */
-	  indent = _showCT_unfold(term->info.ana->unfolds, indent);
-	  break;
-	case CT_T_SELF:                                                 /* [#@] */
-	  appendBuff ("REC");
-	  break;
-	case CT_T_UNFOLD:
-	  indent = _showCT_unfold(term->info.unfolds, indent);
-	  break;
-	case CT_T_RECORD:
-	  indent = _showCT_record(term->info.records, indent);
-	  break;
+          break;
+        case CT_T_FUNCTION:
+          indent = _showCT_map((CT_MAP *)term->info.function, indent);
+          break;
+        case CT_T_MACRO:
+          indent = _showCT_map((CT_MAP *)term->info.macro, indent);
+          break;
+        case CT_T_MAP:
+          indent = _showCT_map(term->info.maps, indent);
+          break;
+        case CT_T_CASE:
+          indent = _showCT_case(term->info.cases, indent);
+          break;
+        case CT_T_ABS:
+          indent = _showCT_abs(term->info.abs, indent);
+          break;
+        case CT_T_FOLD:
+          indent = _showCT_fold(term->info.folds, indent);
+          break;
+        case CT_T_CATA:                                                 /* [#@] */
+          indent = _showCT_fold(term->info.cata->folds, indent);
+          break;
+        case CT_T_ANA:                                                  /* [#@] */
+          indent = _showCT_unfold(term->info.ana->unfolds, indent);
+          break;
+        case CT_T_SELF:                                                 /* [#@] */
+          appendBuff ("REC");
+          break;
+        case CT_T_UNFOLD:
+          indent = _showCT_unfold(term->info.unfolds, indent);
+          break;
+        case CT_T_RECORD:
+          indent = _showCT_record(term->info.records, indent);
+          break;
 
-	case CT_T_BUILTIN:     /* [BI] ADDED TO DISPLAY BUILTINS */
-	  {
-	    char s[10];
+        case CT_T_BUILTIN:     /* [BI] ADDED TO DISPLAY BUILTINS */
+          {
+            char s[10];
 
-	    switch (term->info.builtin->tag)
-	      {
-	      case CT_INT:
-		sprintf (s, "%d", term->info.builtin->info.i);
-		break;
+            switch (term->info.builtin->tag)
+              {
+              case CT_INT:
+                sprintf (s, "%d", term->info.builtin->info.i);
+                break;
 
-	      case CT_CHAR:
-		sprintf (s, "\\d%d", (int)term->info.builtin->info.c);
-		break;
+              case CT_CHAR:
+                sprintf (s, "\\d%d", (int)term->info.builtin->info.c);
+                break;
 
-	      default:
-		assert (BFALSE);
-	      }
+              default:
+                assert (BFALSE);
+              }
 
-	    appendBuff (s);
-	  }
+            appendBuff (s);
+          }
 
-	  break;
+          break;
 
-	default:
-	  printMsg(FATAL_MSG, "_showCT_term - unknown term (%d)", term->tag);
-	  break;
+        default:
+          printMsg(FATAL_MSG, "_showCT_term - unknown term (%d)", term->tag);
+          break;
      }
 
     return indent;
@@ -2798,7 +2798,7 @@ void _appendCharsToBuff(char *s, int iters) {
  *    _showCT_map        *
  *                        *
  **************************/
-static 
+static
 int  _showCT_map(CT_MAP *maps, int indent) {
 
      int count = 0;
@@ -2809,17 +2809,17 @@ int  _showCT_map(CT_MAP *maps, int indent) {
 
      while (maps->phrases[count]) {
           indent = oldIndent;
-	  if (count) {
+          if (count) {
               appendBuff(",\n");
               _appendCharsToBuff(" ", oldIndent);
-	    }   /*  fi  */
+            }   /*  fi  */
           else {
               appendBuff("{");     indent++;   oldIndent++;
           }   /*  esle  */
-	  indent += _showCT_VarBase(maps->phrases[count]->var_base, BFALSE);
-	  appendBuff(" => ");       indent += 4;
-	  indent = _showCT_expr(maps->phrases[count]->expr, indent);
-	  count++;
+          indent += _showCT_VarBase(maps->phrases[count]->var_base, BFALSE);
+          appendBuff(" => ");       indent += 4;
+          indent = _showCT_expr(maps->phrases[count]->expr, indent);
+          count++;
      }
      if (count == 1)    {
          appendBuff("}");  indent++;
@@ -2849,7 +2849,7 @@ int _showCT_fold(CT_FOLD **folds, int indent) {
 
      for (count = 0; count < num; count++) {
          indent = oldIndent;
-	  if (count) { 
+          if (count) {
               appendBuff("\n");
               _appendCharsToBuff(" ", oldIndent);
               appendBuff(" | ");    indent += 3;
@@ -2857,12 +2857,12 @@ int _showCT_fold(CT_FOLD **folds, int indent) {
           else {
               appendBuff("{| ");    indent += 3;
           }   /*  esle  */
-	  appendBuff(folds[count]->constr);   
+          appendBuff(folds[count]->constr);
           indent += strlen(folds[count]->constr);
-	  appendBuff(" : ");   indent += 3;
-	  indent += _showCT_VarBase(folds[count]->var_base, BFALSE);
-	  appendBuff(" => ");  indent += 4;
-	  _showCT_expr(folds[count]->expr, indent);
+          appendBuff(" : ");   indent += 3;
+          indent += _showCT_VarBase(folds[count]->var_base, BFALSE);
+          appendBuff(" => ");  indent += 4;
+          _showCT_expr(folds[count]->expr, indent);
      }   /*  rof  */
 
      appendBuff("\n");
@@ -2885,22 +2885,22 @@ int _showCT_record(CT_RECORD **records, int indent) {
      num = getNumStructors(getStructorParent(records[0]->destr));
 
      for (count = 0; count < num; count++) {
-	  if (count) {
+          if (count) {
               appendBuff(", ");     indent += 2;
           }   /*  fi  */
           else {
               appendBuff("(");     indent++;
           }   /*  esle  */
-	  appendBuff(records[count]->destr);
+          appendBuff(records[count]->destr);
           indent += strlen(records[count]->destr);
-	  appendBuff(": ");    indent += 2;
+          appendBuff(": ");    indent += 2;
 
           if ( records[count]->var_base != NULL ) {
               indent += _showCT_VarBase(records[count]->var_base, BFALSE);
               appendBuff(" => ");     indent +=4;
           }   /*  fi  */
 
-	  indent = _showCT_expr(records[count]->expr, indent);
+          indent = _showCT_expr(records[count]->expr, indent);
      }
 
      appendBuff(")");    indent++;
@@ -2925,7 +2925,7 @@ int _showCT_unfold(CT_UNFOLD **unfolds, int indent) {
 
      for (count = 0; count < num; count++) {
           indent = oldIndent;
-	  if (count) {
+          if (count) {
               appendBuff("\n");
               _appendCharsToBuff(" ", oldIndent);
               appendBuff(" | ");    indent += 3;
@@ -2939,10 +2939,10 @@ int _showCT_unfold(CT_UNFOLD **unfolds, int indent) {
                   indent += vbLen;
               }   /*  fi  */
           }   /*  esle  */
-	  appendBuff(unfolds[count]->destr);
+          appendBuff(unfolds[count]->destr);
           indent += strlen(unfolds[count]->destr);
-	  appendBuff(" : ");     indent += 3;
-	  _showCT_expr(unfolds[count]->expr, indent);
+          appendBuff(" : ");     indent += 3;
+          _showCT_expr(unfolds[count]->expr, indent);
      }
 
      appendBuff("\n");
@@ -2970,21 +2970,21 @@ _showCT_case(CT_CASE **cases, int indent)
 
      for (count = 0; count < num; count++) {
           indent = oldIndent;
-	  if (count) {
+          if (count) {
               appendBuff("\n");
               _appendCharsToBuff(" ", oldIndent);
               appendBuff("| ");    indent +=2;
-	    }   /*  fi  */
+            }   /*  fi  */
           else {
               appendBuff("{ ");   indent += 2;
-	  }   /*  esle  */
-	  appendBuff(cases[count]->constr);
+          }   /*  esle  */
+          appendBuff(cases[count]->constr);
           indent += strlen(cases[count]->constr);
-	  indent += _showCT_VarBase(cases[count]->var_base, BTRUE);
-	  appendBuff(" => ");     indent +=4;
-	  _showCT_expr(cases[count]->expr, indent);
+          indent += _showCT_VarBase(cases[count]->var_base, BTRUE);
+          appendBuff(" => ");     indent +=4;
+          _showCT_expr(cases[count]->expr, indent);
      }   /*  rof  */
-     appendBuff("\n");   _appendCharsToBuff(" ", oldIndent);   
+     appendBuff("\n");   _appendCharsToBuff(" ", oldIndent);
      appendBuff("}");    oldIndent++;
 
     return oldIndent;
@@ -3032,7 +3032,7 @@ _showCT_VarBase(CT_VAR_BASE *var_base, BBOOL spaceBeforeVar) {
                if ( spaceBeforeVar ) {
                    appendBuff(" ");
                    length++;
-   	       }   /*  fi  */
+               }   /*  fi  */
                appendBuff(var_base->info.var);
                length = length + strlen(var_base->info.var);
                break;
@@ -3087,16 +3087,16 @@ ctPreTranslate (CT_EXPR *expr)     /* MAY BE NULL */
     switch (expr->tag)
       {
       case CT_APP:
-	expr->info.app.term = ctPreTranslateTerm (expr->info.app.term);
-	expr->info.app.expr = ctPreTranslate     (expr->info.app.expr);
+        expr->info.app.term = ctPreTranslateTerm (expr->info.app.term);
+        expr->info.app.expr = ctPreTranslate     (expr->info.app.expr);
 
-	break;
+        break;
 
       case CT_PAIR:
-	expr->info.pair.l = ctPreTranslate (expr->info.pair.l);
-	expr->info.pair.r = ctPreTranslate (expr->info.pair.r);
+        expr->info.pair.l = ctPreTranslate (expr->info.pair.l);
+        expr->info.pair.r = ctPreTranslate (expr->info.pair.r);
 
-	break;
+        break;
       }
 
   return expr;
@@ -3125,69 +3125,69 @@ ctPreTranslateTerm (CT_TERM *term)
     {
     case CT_T_FUNCTION:
       {
-	CT_PHRASE **phrase = term->info.function->macros;
+        CT_PHRASE **phrase = term->info.function->macros;
 
-	while (*phrase)
-	  {
-	    (*phrase)->expr = ctPreTranslate ((*phrase)->expr);
-	    phrase++;
-	  }
+        while (*phrase)
+          {
+            (*phrase)->expr = ctPreTranslate ((*phrase)->expr);
+            phrase++;
+          }
       }
 
       break;
 
     case CT_T_MACRO:
       {
-	CT_PHRASE **phrase = term->info.macro->macros;
+        CT_PHRASE **phrase = term->info.macro->macros;
 
-	while (*phrase)
-	  {
-	    (*phrase)->expr = ctPreTranslate ((*phrase)->expr);
-	    phrase++;
-	  }
+        while (*phrase)
+          {
+            (*phrase)->expr = ctPreTranslate ((*phrase)->expr);
+            phrase++;
+          }
       }
 
       break;
 
     case CT_T_MAP:
       {
-	CT_MAP_PHRASE **phrase = term->info.maps->phrases;
+        CT_MAP_PHRASE **phrase = term->info.maps->phrases;
 
-	while (*phrase)
-	  {
-	    (*phrase)->expr     = ctPreTranslate ((*phrase)->expr);
+        while (*phrase)
+          {
+            (*phrase)->expr     = ctPreTranslate ((*phrase)->expr);
 
-	    if ((*phrase)->neg_expr)
-	      (*phrase)->neg_expr = ctPreTranslate ((*phrase)->neg_expr);
+            if ((*phrase)->neg_expr)
+              (*phrase)->neg_expr = ctPreTranslate ((*phrase)->neg_expr);
 
-	    phrase++;
-	  }
+            phrase++;
+          }
       }
 
       break;
 
     case CT_T_CASE:
       {
-	CT_CASE **cse = term->info.cases;
+        CT_CASE **cse = term->info.cases;
 
-	while (*cse)
-	  {
-	    (*cse)->expr = ctPreTranslate ((*cse)->expr);
-	    cse++;
-	  }
+        while (*cse)
+          {
+            (*cse)->expr = ctPreTranslate ((*cse)->expr);
+            cse++;
+          }
       }
 
       break;
 
     case CT_T_RECORD:
       {
-	CT_RECORD **record = term->info.records;
+        CT_RECORD **record = term->info.records;
 
-	while (*record)
-	  {
-	    (*record)->expr = ctPreTranslate ((*record)->expr);
-	    record++;
-	  }
+        while (*record)
+          {
+            (*record)->expr = ctPreTranslate ((*record)->expr);
+            record++;
+          }
       }
 
       break;
@@ -3199,54 +3199,54 @@ ctPreTranslateTerm (CT_TERM *term)
 
     case CT_T_FOLD:
       {
-	CT_CATA *cata = (CT_CATA *)MHA (tmpHD, 1, sizeof (CT_CATA));
+        CT_CATA *cata = (CT_CATA *)MHA (tmpHD, 1, sizeof (CT_CATA));
 
-	assert (cata);
+        assert (cata);
 
-	parentType = getStructorParent (term->info.folds[0]->constr);
-	numParams  = getNumStructors (parentType);
+        parentType = getStructorParent (term->info.folds[0]->constr);
+        numParams  = getNumStructors (parentType);
 
-	cata->self    = getUniqueInt ();
-	cata->context = (CT_EXPR *)MHA (tmpHD, 1, sizeof (CT_EXPR));
-	cata->folds   = (CT_FOLD **)MHA (tmpHD, numParams + 1, sizeof (CT_FOLD *));
+        cata->self    = getUniqueInt ();
+        cata->context = (CT_EXPR *)MHA (tmpHD, 1, sizeof (CT_EXPR));
+        cata->folds   = (CT_FOLD **)MHA (tmpHD, numParams + 1, sizeof (CT_FOLD *));
 
-	assert (cata->context);
-	assert (cata->folds);
+        assert (cata->context);
+        assert (cata->folds);
 
-	for (index = 0; index < numParams; index++)
-	  cata->folds[index] = ctPreTranslateFold (term->info.folds[index], cata->self, cata->context);
+        for (index = 0; index < numParams; index++)
+          cata->folds[index] = ctPreTranslateFold (term->info.folds[index], cata->self, cata->context);
 
-	cata->folds[index] = NULL;
+        cata->folds[index] = NULL;
 
-	term->tag       = CT_T_CATA;
-	term->info.cata = cata;
+        term->tag       = CT_T_CATA;
+        term->info.cata = cata;
       }
 
       break;
 
     case CT_T_UNFOLD:
       {
-	CT_ANA *ana = (CT_ANA *)MHA (tmpHD, 1, sizeof (CT_ANA));
+        CT_ANA *ana = (CT_ANA *)MHA (tmpHD, 1, sizeof (CT_ANA));
 
-	assert (ana);
+        assert (ana);
 
-	parentType = getStructorParent (term->info.unfolds[0]->destr);
-	numParams  = getNumStructors (parentType);
+        parentType = getStructorParent (term->info.unfolds[0]->destr);
+        numParams  = getNumStructors (parentType);
 
-	ana->self    = getUniqueInt ();
-	ana->context = (CT_EXPR *)MHA (tmpHD, 1, sizeof (CT_EXPR));
-	ana->unfolds = (CT_UNFOLD **)MHA (tmpHD, numParams + 1, sizeof (CT_UNFOLD *));
+        ana->self    = getUniqueInt ();
+        ana->context = (CT_EXPR *)MHA (tmpHD, 1, sizeof (CT_EXPR));
+        ana->unfolds = (CT_UNFOLD **)MHA (tmpHD, numParams + 1, sizeof (CT_UNFOLD *));
 
-	assert (ana->context);
-	assert (ana->unfolds);
+        assert (ana->context);
+        assert (ana->unfolds);
 
-	for (index = 0; index < numParams; index++)
-	  ana->unfolds[index] = ctPreTranslateUnfold (term->info.unfolds[index], ana->self, ana->context);
+        for (index = 0; index < numParams; index++)
+          ana->unfolds[index] = ctPreTranslateUnfold (term->info.unfolds[index], ana->self, ana->context);
 
-	ana->unfolds[index] = NULL;
+        ana->unfolds[index] = NULL;
 
-	term->tag      = CT_T_ANA;
-	term->info.ana = ana;
+        term->tag      = CT_T_ANA;
+        term->info.ana = ana;
       }
 
       break;
@@ -3274,8 +3274,8 @@ ctPreTranslateTerm (CT_TERM *term)
 static
 CT_FOLD *
 ctPreTranslateFold (CT_FOLD *fold,
-		    int      self,
-		    CT_EXPR *context)
+                    int      self,
+                    CT_EXPR *context)
 {
   CT_FOLD *newFold = (CT_FOLD *)MHA (tmpHD, 1, sizeof (CT_FOLD));
 
@@ -3286,10 +3286,10 @@ ctPreTranslateFold (CT_FOLD *fold,
   newFold->constr   = fold->constr;
   newFold->var_base = _makeVarBase (tmpHD, HASH_NAME);
   newFold->expr     = _makeAppExpr (tmpHD,
-				    _makeAbsTerm (tmpHD, fold->var_base, fold->expr),
-				    _makeAppExpr (tmpHD,
-						  ct_mapEi (getStructorType (fold->constr), self, context),
-						  _makeVarExpr (tmpHD, HASH_NAME)));
+                                    _makeAbsTerm (tmpHD, fold->var_base, fold->expr),
+                                    _makeAppExpr (tmpHD,
+                                                  ct_mapEi (getStructorType (fold->constr), self, context),
+                                                  _makeVarExpr (tmpHD, HASH_NAME)));
 
   return newFold;
 }
@@ -3306,8 +3306,8 @@ ctPreTranslateFold (CT_FOLD *fold,
 static
 CT_UNFOLD *
 ctPreTranslateUnfold (CT_UNFOLD *unfold,
-		      int        self,
-		      CT_EXPR   *context)
+                      int        self,
+                      CT_EXPR   *context)
 {
   CT_UNFOLD *newUnfold = (CT_UNFOLD *)MHA (tmpHD, 1, sizeof (CT_UNFOLD));
 
@@ -3319,8 +3319,8 @@ ctPreTranslateUnfold (CT_UNFOLD *unfold,
   newUnfold->var_base  = unfold->var_base;
   newUnfold->var_base2 = unfold->var_base2;
   newUnfold->expr      = _makeAppExpr (tmpHD,
-				       ct_mapEi (getStructorType (unfold->destr), self, context),
-				       unfold->expr);
+                                       ct_mapEi (getStructorType (unfold->destr), self, context),
+                                       unfold->expr);
 
   return newUnfold;
 }
@@ -3339,8 +3339,8 @@ CT_TERM *
 ct_map1 (void)
 {
   return _makeAbsTerm (tmpHD,
-		       _make0tupleBase (tmpHD),
-		       _make0tupleExpr (tmpHD));
+                       _make0tupleBase (tmpHD),
+                       _make0tupleExpr (tmpHD));
 }
 
 
@@ -3355,18 +3355,18 @@ ct_map1 (void)
 static
 CT_TERM *
 ct_mapProd (CT_TERM *l,
-	    CT_TERM *r)
+            CT_TERM *r)
 {
   char *x = makeNewRsrvdVar (tmpHD);
   char *y = makeNewRsrvdVar (tmpHD);
 
   return _makeAbsTerm (tmpHD,
-		       _make2tupleBase (tmpHD,
-					_makeVarBase (tmpHD, x),
-					_makeVarBase (tmpHD, y)),
-		       _make2tupleExpr (tmpHD,
-					_makeAppExpr (tmpHD, l, _makeVarExpr (tmpHD, x)),
-					_makeAppExpr (tmpHD, r, _makeVarExpr (tmpHD, y))));
+                       _make2tupleBase (tmpHD,
+                                        _makeVarBase (tmpHD, x),
+                                        _makeVarBase (tmpHD, y)),
+                       _make2tupleExpr (tmpHD,
+                                        _makeAppExpr (tmpHD, l, _makeVarExpr (tmpHD, x)),
+                                        _makeAppExpr (tmpHD, r, _makeVarExpr (tmpHD, y))));
 }
 
 
@@ -3381,8 +3381,8 @@ ct_mapProd (CT_TERM *l,
 static
 CT_TERM *
 ct_mapUserData (ST_TYPE *type,
-		int      self,
-		CT_EXPR *context)
+                int      self,
+                CT_EXPR *context)
 {
   CT_TERM    *result    = (CT_TERM *)MHA (tmpHD, 1, sizeof (CT_TERM));
   int         index     = 0;
@@ -3416,76 +3416,76 @@ ct_mapUserData (ST_TYPE *type,
       assert (result->info.maps->phrases[index]);
 
       switch (varity[index])
-	{
-	case V_NEITHER:
-	  result->info.maps->phrases[index]->var_base = NULL;
-	  result->info.maps->phrases[index]->expr     = NULL;
+        {
+        case V_NEITHER:
+          result->info.maps->phrases[index]->var_base = NULL;
+          result->info.maps->phrases[index]->expr     = NULL;
 
-	  result->info.maps->phrases[index]->neg_var_base = NULL;
-	  result->info.maps->phrases[index]->neg_expr     = NULL;
+          result->info.maps->phrases[index]->neg_var_base = NULL;
+          result->info.maps->phrases[index]->neg_expr     = NULL;
 
-	  break;
+          break;
 
-	case V_POSITIVE:
-	  {
-	    char *x = makeNewRsrvdVar (tmpHD);
+        case V_POSITIVE:
+          {
+            char *x = makeNewRsrvdVar (tmpHD);
 
-	    assert (x);
+            assert (x);
 
-	    result->info.maps->phrases[index]->var_base = _makeVarBase (tmpHD, x);
-	    result->info.maps->phrases[index]->expr     =
-	      _makeAppExpr (tmpHD,
-			    ct_mapEi (type->info.user_data.args[index], self, context),
-			    _makeVarExpr (tmpHD, x));
+            result->info.maps->phrases[index]->var_base = _makeVarBase (tmpHD, x);
+            result->info.maps->phrases[index]->expr     =
+              _makeAppExpr (tmpHD,
+                            ct_mapEi (type->info.user_data.args[index], self, context),
+                            _makeVarExpr (tmpHD, x));
 
-	    result->info.maps->phrases[index]->neg_var_base = NULL;
-	    result->info.maps->phrases[index]->neg_expr     = NULL;
-	  }
+            result->info.maps->phrases[index]->neg_var_base = NULL;
+            result->info.maps->phrases[index]->neg_expr     = NULL;
+          }
 
-	  break;
+          break;
 
-	case V_NEGATIVE:
-	  {
-	    char *x = makeNewRsrvdVar (tmpHD);
+        case V_NEGATIVE:
+          {
+            char *x = makeNewRsrvdVar (tmpHD);
 
-	    assert (x);
+            assert (x);
 
-	    result->info.maps->phrases[index]->var_base = NULL;
-	    result->info.maps->phrases[index]->expr     = NULL;
+            result->info.maps->phrases[index]->var_base = NULL;
+            result->info.maps->phrases[index]->expr     = NULL;
 
-	    result->info.maps->phrases[index]->neg_var_base = _makeVarBase (tmpHD, x);
-	    result->info.maps->phrases[index]->neg_expr     =
-	      _makeAppExpr (tmpHD,
-			    ct_mapEi (type->info.user_data.args[index], self, context),
-			    _makeVarExpr (tmpHD, x));
-	  }
+            result->info.maps->phrases[index]->neg_var_base = _makeVarBase (tmpHD, x);
+            result->info.maps->phrases[index]->neg_expr     =
+              _makeAppExpr (tmpHD,
+                            ct_mapEi (type->info.user_data.args[index], self, context),
+                            _makeVarExpr (tmpHD, x));
+          }
 
-	  break;
+          break;
 
-	case V_BOTH:
-	  {
-	    char *x = makeNewRsrvdVar (tmpHD);
+        case V_BOTH:
+          {
+            char *x = makeNewRsrvdVar (tmpHD);
 
-	    assert (x);
+            assert (x);
 
-	    result->info.maps->phrases[index]->var_base = _makeVarBase (tmpHD, x);
-	    result->info.maps->phrases[index]->expr     =
-	      _makeAppExpr (tmpHD,
-			    ct_mapEi (type->info.user_data.args[index], self, context),
-			    _makeVarExpr (tmpHD, x));
+            result->info.maps->phrases[index]->var_base = _makeVarBase (tmpHD, x);
+            result->info.maps->phrases[index]->expr     =
+              _makeAppExpr (tmpHD,
+                            ct_mapEi (type->info.user_data.args[index], self, context),
+                            _makeVarExpr (tmpHD, x));
 
-	    result->info.maps->phrases[index]->neg_var_base = _makeVarBase (tmpHD, x);
-	    result->info.maps->phrases[index]->neg_expr     =
-	      _makeAppExpr (tmpHD,
-			    ct_mapEi (type->info.user_data.args[index], self, context),
-			    _makeVarExpr (tmpHD, x));
-	  }
+            result->info.maps->phrases[index]->neg_var_base = _makeVarBase (tmpHD, x);
+            result->info.maps->phrases[index]->neg_expr     =
+              _makeAppExpr (tmpHD,
+                            ct_mapEi (type->info.user_data.args[index], self, context),
+                            _makeVarExpr (tmpHD, x));
+          }
 
-	  break;
+          break;
 
-	default:
-	  assert (BFALSE);
-	}
+        default:
+          assert (BFALSE);
+        }
     }
 
   result->info.maps->phrases[index] = NULL;
@@ -3505,8 +3505,8 @@ ct_mapUserData (ST_TYPE *type,
 static
 CT_TERM *
 ct_mapEi (ST_TYPE *type,
-	  int      self,
-	  CT_EXPR *context)
+          int      self,
+          CT_EXPR *context)
 {
   CT_TERM *result = NULL;
 
@@ -3522,7 +3522,7 @@ ct_mapEi (ST_TYPE *type,
 
     case TYPE_PROD:
       result = ct_mapProd (ct_mapEi (type->info.prod.l, self, context),
-			   ct_mapEi (type->info.prod.r, self, context));
+                           ct_mapEi (type->info.prod.r, self, context));
 
       break;
 
@@ -3533,22 +3533,22 @@ ct_mapEi (ST_TYPE *type,
 
     case TYPE_STATE_VAR:
       {
-	CT_TERM *selfTerm = (CT_TERM *)MHA (tmpHD, 1, sizeof (CT_TERM));
-	char    *x        = makeNewRsrvdVar (tmpHD);
+        CT_TERM *selfTerm = (CT_TERM *)MHA (tmpHD, 1, sizeof (CT_TERM));
+        char    *x        = makeNewRsrvdVar (tmpHD);
 
-	assert (selfTerm);
+        assert (selfTerm);
 
-	selfTerm->tag       = CT_T_SELF;
-	selfTerm->info.self = self;
+        selfTerm->tag       = CT_T_SELF;
+        selfTerm->info.self = self;
 
-	result = _makeAbsTerm (tmpHD,
-			       _makeVarBase (tmpHD,
-					     x),
-			       _makeAppExpr (tmpHD,
-					     selfTerm,
-					     _make2tupleExpr (tmpHD,
-							      _makeVarExpr (tmpHD, x),
-							      context)));
+        result = _makeAbsTerm (tmpHD,
+                               _makeVarBase (tmpHD,
+                                             x),
+                               _makeAppExpr (tmpHD,
+                                             selfTerm,
+                                             _make2tupleExpr (tmpHD,
+                                                              _makeVarExpr (tmpHD, x),
+                                                              context)));
       }
 
       break;

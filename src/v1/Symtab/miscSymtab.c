@@ -29,14 +29,14 @@ static ST_ENTRY *LoadBuiltIn            (char        *name);
 static ST_ENTRY *LoadBuiltInConstructor (char        *name);
 static void      LoadBuiltinFunctions   (void);
 static void      LoadBuiltinFunction    (char        *name,
-					 ST_TYPE_SIG *typeSig,
-					 M_INSTR_TAG  instr);
+                                         ST_TYPE_SIG *typeSig,
+                                         M_INSTR_TAG  instr);
 
 static ST_ENTRY   *st_LoadBaseStructor(char *sName, ST_ENTRY *parent,int posn);
 static ST_ENTRY   *st_LoadBaseDatatype(char *tName,
-				   ST_DT_KIND class,
-				   int numParams, 
-				   int numStructs);
+                                   ST_DT_KIND class,
+                                   int numParams,
+                                   int numStructs);
 static void        loadProdDatatype(void);
 static void        loadTerminalDatatype(void);
 static void        loadIdentityCombinator(void);
@@ -47,8 +47,8 @@ static void        loadBIDatatype(char *typeName, char *constrName);
 static void        st_ShowDatatype(ST_KEY typeKey);
 static void        st_ShowAlias(ST_ENTRY *entry);
 static void        st_ShowStructor(ST_KEY structorKey);
-static void        st_ShowStructDomain(ST_TYPE *domain, 
-				       ST_TYPE  *parentTypeSig);
+static void        st_ShowStructDomain(ST_TYPE *domain,
+                                       ST_TYPE  *parentTypeSig);
 static void        st_ShowFunction(ST_KEY funKey);
 static void        st_ShowCombinator(ST_KEY key);
 static void        st_ShowMacro(ST_KEY macroKey);
@@ -73,7 +73,7 @@ static void st_ShowTypeParamsLessContext(ST_TYPE_SIG **params);
 static void st_ShowSigLessContext(ST_TYPE_SIG *sig);
 static void st_ShowDomainLessContext(ST_TYPE *st_type);
 
-/**************************************************************************** 
+/****************************************************************************
  *                                                                          *
  *    Globally Acting Function Definitions                                  *
  *                                                                          *
@@ -587,8 +587,8 @@ LoadBuiltinFunctions (void)
 static
 void
 LoadBuiltinFunction (char        *name,
-		     ST_TYPE_SIG *typeSig,
-		     M_INSTR_TAG  instr)
+                     ST_TYPE_SIG *typeSig,
+                     M_INSTR_TAG  instr)
 {
   ST_ENTRY *newFunction = NULL;
 
@@ -631,12 +631,12 @@ st_LoadBaseStructor(char *sName, ST_ENTRY *parent, int posn) {
   structor->info.structor.parent = parent;
   structor->info.structor.posn   = posn;
 
-  structor->info.structor.type_sig = 
+  structor->info.structor.type_sig =
     (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
   structor->info.structor.type_sig->params = NULL;
-  structor->info.structor.type_sig->domain = 
+  structor->info.structor.type_sig->domain =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  structor->info.structor.type_sig->codomain = 
+  structor->info.structor.type_sig->codomain =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
 
   addEntryToSymTab(structor);
@@ -659,13 +659,13 @@ st_LoadBaseDatatype(char *tName,ST_DT_KIND class,int numParams,int numStructs){
   dType->tag = ST_DATATYPE;
   dType->name = libStrdup(symTab->scopeHD, tName);
   dType->key = st_MakeKey();
-  
+
   dType->info.datatype.class = class;
   dType->info.datatype.numParams = numParams;
   dType->info.datatype.numStructors = numStructs;
-  dType->info.datatype.structorNames = 
+  dType->info.datatype.structorNames =
     (char **)MemHeapAlloc(symTab->scopeHD, numStructs+1, sizeof(char *));
-  dType->info.datatype.structorKeys = 
+  dType->info.datatype.structorKeys =
     (ST_KEY *)MemHeapAlloc(symTab->scopeHD, numStructs, sizeof(ST_KEY));
   dType->info.datatype.opCombKeys =   /* always 3 of these */
     (ST_KEY *)MemHeapAlloc(symTab->scopeHD, 3, sizeof(ST_KEY));
@@ -697,7 +697,7 @@ loadProdDatatype(void) {
   PROD_KEY = prodType->key;
 
   /* add PROD0 destructor */
-  destrType = 
+  destrType =
     st_LoadBaseStructor(PROD0, prodType, 0);
   destrType->info.structor.type_sig->domain->tag = TYPE_STATE_VAR;
   destrType->info.structor.type_sig->codomain->tag = TYPE_PARAMETRIC_VAR;
@@ -705,9 +705,9 @@ loadProdDatatype(void) {
 
   prodType->info.datatype.structorNames[0] = destrType->name;
   prodType->info.datatype.structorKeys[0] = destrType->key;
-  
+
   /* add PROD1 destructor */
-  destrType = 
+  destrType =
     st_LoadBaseStructor(PROD1, prodType, 1);
   destrType->info.structor.type_sig->domain->tag = TYPE_STATE_VAR;
   destrType->info.structor.type_sig->codomain->tag = TYPE_PARAMETRIC_VAR;
@@ -722,15 +722,15 @@ loadProdDatatype(void) {
   prodComb->name = (char *)MemHeapAlloc(symTab->scopeHD,strlen(PRIM_PAIR)+1,sizeof(char));
   strcpy(prodComb->name, PRIM_PAIR);
   prodComb->key = st_MakeKey();
-  
+
   prodComb->info.opcomb.numParams = 2;
-  prodComb->info.opcomb.type_sig = 
+  prodComb->info.opcomb.type_sig =
     (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
 
-  prodComb->info.opcomb.type_sig->params = 
+  prodComb->info.opcomb.type_sig->params =
     (ST_TYPE_SIG **)MemHeapAlloc(symTab->scopeHD, 3, sizeof(ST_TYPE_SIG *));
   for (i=0; i<2; i++) {
-    prodComb->info.opcomb.type_sig->params[i] = 
+    prodComb->info.opcomb.type_sig->params[i] =
       (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
     prodComb->info.opcomb.type_sig->params[i]->params = NULL;
 
@@ -739,7 +739,7 @@ loadProdDatatype(void) {
     prodComb->info.opcomb.type_sig->params[i]->domain->tag = TYPE_STATE_VAR;
     prodComb->info.opcomb.type_sig->params[i]->codomain =
       (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-    prodComb->info.opcomb.type_sig->params[i]->codomain->tag = 
+    prodComb->info.opcomb.type_sig->params[i]->codomain->tag =
       TYPE_PARAMETRIC_VAR;
     prodComb->info.opcomb.type_sig->params[i]->codomain->info.param_var = i;
   }   /*  rof  */
@@ -754,13 +754,13 @@ loadProdDatatype(void) {
   prodComb->info.opcomb.type_sig->codomain->info.prod.key = PROD_KEY;
   prodComb->info.opcomb.type_sig->codomain->info.prod.l =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  prodComb->info.opcomb.type_sig->codomain->info.prod.l->tag = 
+  prodComb->info.opcomb.type_sig->codomain->info.prod.l->tag =
     TYPE_PARAMETRIC_VAR;
   prodComb->info.opcomb.type_sig->codomain->info.prod.l->info.param_var = 0;
 
   prodComb->info.opcomb.type_sig->codomain->info.prod.r =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  prodComb->info.opcomb.type_sig->codomain->info.prod.r->tag = 
+  prodComb->info.opcomb.type_sig->codomain->info.prod.r->tag =
     TYPE_PARAMETRIC_VAR;
   prodComb->info.opcomb.type_sig->codomain->info.prod.r->info.param_var = 1;
 
@@ -772,17 +772,17 @@ loadProdDatatype(void) {
   mapProdComb->tag = ST_OPCOMB;
   mapProdComb->name = lb_BuildCombString(symTab->scopeHD, "map", PROD_TYPE);
   mapProdComb->key = st_MakeKey();
-  
+
   mapProdComb->info.opcomb.numParams = 2;
   mapProdComb->info.opcomb.parent    = prodType;
-  mapProdComb->info.opcomb.type_sig = 
+  mapProdComb->info.opcomb.type_sig =
     (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
 
-  mapProdComb->info.opcomb.type_sig->params = 
+  mapProdComb->info.opcomb.type_sig->params =
     (ST_TYPE_SIG **)MemHeapAlloc(symTab->scopeHD, 3, sizeof(ST_TYPE_SIG *));
   j = 2;
   for (i=0; i<2; i++) {
-    mapProdComb->info.opcomb.type_sig->params[i] = 
+    mapProdComb->info.opcomb.type_sig->params[i] =
       (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
     mapProdComb->info.opcomb.type_sig->params[i]->params = NULL;
 
@@ -794,27 +794,27 @@ loadProdDatatype(void) {
     /* domain */
     mapProdComb->info.opcomb.type_sig->params[i]->domain->tag = TYPE_PROD;
     mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.key = PROD_KEY;
-    
-    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l =
-	 (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
 
-    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l->tag = 
-	 TYPE_PARAMETRIC_VAR;
-    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l->info.param_var =     
-	 i;
+    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l =
+         (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
+
+    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l->tag =
+         TYPE_PARAMETRIC_VAR;
+    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.l->info.param_var =
+         i;
 
     mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.r =
-	 (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
+         (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
 
-    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.r->tag = 
-	 TYPE_PARAMETRIC_VAR;
-    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.r->info.param_var =     
-	 4;  /* hard coded */
+    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.r->tag =
+         TYPE_PARAMETRIC_VAR;
+    mapProdComb->info.opcomb.type_sig->params[i]->domain->info.prod.r->info.param_var =
+         4;  /* hard coded */
 
     /* codomain */
     mapProdComb->info.opcomb.type_sig->params[i]->codomain =
       (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-    mapProdComb->info.opcomb.type_sig->params[i]->codomain->tag = 
+    mapProdComb->info.opcomb.type_sig->params[i]->codomain->tag =
       TYPE_PARAMETRIC_VAR;
     mapProdComb->info.opcomb.type_sig->params[i]->codomain->info.param_var = j++;
   }   /*  rof  */
@@ -828,7 +828,7 @@ loadProdDatatype(void) {
   /* prod(A,B) */
   mapProdComb->info.opcomb.type_sig->domain->info.prod.l =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  mapProdComb->info.opcomb.type_sig->domain->info.prod.l->tag = 
+  mapProdComb->info.opcomb.type_sig->domain->info.prod.l->tag =
     TYPE_PROD;
   mapProdComb->info.opcomb.type_sig->domain->info.prod.l->info.prod.key = PROD_KEY;
   mapProdComb->info.opcomb.type_sig->domain->info.prod.l->info.prod.l =
@@ -844,11 +844,11 @@ loadProdDatatype(void) {
        TYPE_PARAMETRIC_VAR;
   mapProdComb->info.opcomb.type_sig->domain->info.prod.l->info.prod.r->info.param_var =
        1;
-  
+
   /* X */
   mapProdComb->info.opcomb.type_sig->domain->info.prod.r =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  mapProdComb->info.opcomb.type_sig->domain->info.prod.r->tag = 
+  mapProdComb->info.opcomb.type_sig->domain->info.prod.r->tag =
     TYPE_PARAMETRIC_VAR;
   mapProdComb->info.opcomb.type_sig->domain->info.prod.r->info.param_var = 4;
 
@@ -861,14 +861,14 @@ loadProdDatatype(void) {
   /* A' */
   mapProdComb->info.opcomb.type_sig->codomain->info.prod.l =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  mapProdComb->info.opcomb.type_sig->codomain->info.prod.l->tag = 
+  mapProdComb->info.opcomb.type_sig->codomain->info.prod.l->tag =
     TYPE_PARAMETRIC_VAR;
   mapProdComb->info.opcomb.type_sig->codomain->info.prod.l->info.param_var = 2;
-  
+
   /* B' */
   mapProdComb->info.opcomb.type_sig->codomain->info.prod.r =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
-  mapProdComb->info.opcomb.type_sig->codomain->info.prod.r->tag = 
+  mapProdComb->info.opcomb.type_sig->codomain->info.prod.r->tag =
     TYPE_PARAMETRIC_VAR;
   mapProdComb->info.opcomb.type_sig->codomain->info.prod.r->info.param_var = 3;
 
@@ -891,23 +891,23 @@ loadTerminalDatatype(void) {
   /* add TERMINAL_TYPE data type */
   termType = st_LoadBaseDatatype(TERMINAL_TYPE, DT_INDUCTIVE, 0, 0);
   TERM_KEY = termType->key;
-  
+
   /* add TERMINAL_TYPE combinator */
   termComb = (ST_ENTRY *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_ENTRY));
   termComb->tag = ST_OPCOMB;
-  termComb->name = 
+  termComb->name =
     (char *)MemHeapAlloc(symTab->scopeHD,strlen(PRIM_BANG)+1,sizeof(char));
   strcpy(termComb->name, PRIM_BANG);
   termComb->key = st_MakeKey();
 
   termComb->info.opcomb.numParams = 0;
-  termComb->info.structor.type_sig = 
+  termComb->info.structor.type_sig =
     (ST_TYPE_SIG *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE_SIG));
-  termComb->info.structor.type_sig->domain = 
+  termComb->info.structor.type_sig->domain =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
   termComb->info.structor.type_sig->domain->tag = TYPE_PARAMETRIC_VAR;
   termComb->info.structor.type_sig->domain->info.param_var = 0;
-  termComb->info.structor.type_sig->codomain = 
+  termComb->info.structor.type_sig->codomain =
     (ST_TYPE *)MemHeapAlloc(symTab->scopeHD, 1, sizeof(ST_TYPE));
   termComb->info.structor.type_sig->codomain->tag = TYPE_1;
 
@@ -1045,7 +1045,7 @@ loadBIDatatype(char *typeName, char *constrName) {
 }   /*  end loadBIDatatype  */
 
 
-/**************************************************************************** 
+/****************************************************************************
  *                                                                          *
  *    Print and Show Function Definitions                                   *
  *                                                                          *
@@ -1098,10 +1098,10 @@ st_ShowDomain(ST_TYPE *domain) {
 
     case TYPE_PROD:
       prodNestedDepth++;
-      if (prodNestedDepth)  appendBuff("("); 
+      if (prodNestedDepth)  appendBuff("(");
       st_ShowDomain(domain->info.prod.l);
       appendBuff(" ");      appendBuff(PROD_TYPE);      appendBuff(" ");
-      st_ShowDomain(domain->info.prod.r); 
+      st_ShowDomain(domain->info.prod.r);
       if (prodNestedDepth) appendBuff(")");
       prodNestedDepth--;
       break;
@@ -1117,30 +1117,30 @@ st_ShowDomain(ST_TYPE *domain) {
     case TYPE_USER_DATA:
       typeName = st_KeyToName(domain->info.user_data.key);
       if (strcmp(typeName, SUM_TYPE)==0) {
-	sumNestedDepth++;
+        sumNestedDepth++;
 
-	/* [H-O] ALTERED CONDITIONAL TO FIX A +/* PRECEDENCE BUG: */
+        /* [H-O] ALTERED CONDITIONAL TO FIX A +/* PRECEDENCE BUG: */
 
-	if ((sumNestedDepth > 0) || (prodNestedDepth >= 0))  appendBuff("("); 
-	st_ShowDomain(domain->info.user_data.args[0]);
-	appendBuff(" ");      appendBuff(SUM_TYPE_INFIX);      appendBuff(" ");
-	st_ShowDomain(domain->info.user_data.args[1]); 
+        if ((sumNestedDepth > 0) || (prodNestedDepth >= 0))  appendBuff("(");
+        st_ShowDomain(domain->info.user_data.args[0]);
+        appendBuff(" ");      appendBuff(SUM_TYPE_INFIX);      appendBuff(" ");
+        st_ShowDomain(domain->info.user_data.args[1]);
 
-	/* [H-O] ALTERED CONDITIONAL TO FIX A +/* PRECEDENCE BUG: */
+        /* [H-O] ALTERED CONDITIONAL TO FIX A +/* PRECEDENCE BUG: */
 
-	if ((sumNestedDepth > 0) || (prodNestedDepth >= 0)) appendBuff(")");
-	sumNestedDepth--;
+        if ((sumNestedDepth > 0) || (prodNestedDepth >= 0)) appendBuff(")");
+        sumNestedDepth--;
       }   /*  fi  */
       else {
-	appendBuff(typeName);
-	numParams = st_GetNumParams(domain->info.user_data.key);
-	if (numParams > 0) {
-	    appendBuff("(");
-	    for (i = 0; i < numParams; i++) {
-		 st_ShowDomain(domain->info.user_data.args[i]);
-		 if (i < numParams-1) appendBuff(", ");
-	    } /* rof */
-	    appendBuff(")");
+        appendBuff(typeName);
+        numParams = st_GetNumParams(domain->info.user_data.key);
+        if (numParams > 0) {
+            appendBuff("(");
+            for (i = 0; i < numParams; i++) {
+                 st_ShowDomain(domain->info.user_data.args[i]);
+                 if (i < numParams-1) appendBuff(", ");
+            } /* rof */
+            appendBuff(")");
         } /* fi */
       }   /*  esle  */
       break;
@@ -1189,10 +1189,10 @@ st_ShowStructDomain(ST_TYPE *domain, ST_TYPE *parentStateSig) {
 
     case TYPE_PROD:
       prodNestedDepth++;
-      if (prodNestedDepth)  appendBuff("("); 
+      if (prodNestedDepth)  appendBuff("(");
       st_ShowStructDomain(domain->info.prod.l, parentStateSig);
       appendBuff(" ");      appendBuff(PROD_TYPE);      appendBuff(" ");
-      st_ShowStructDomain(domain->info.prod.r, parentStateSig); 
+      st_ShowStructDomain(domain->info.prod.r, parentStateSig);
       if (prodNestedDepth) appendBuff(")");
       prodNestedDepth--;
       break;
@@ -1207,25 +1207,25 @@ st_ShowStructDomain(ST_TYPE *domain, ST_TYPE *parentStateSig) {
     case TYPE_USER_DATA:
       typeName = st_KeyToName(domain->info.user_data.key);
       if (strcmp(typeName, SUM_TYPE)==0) {
-	sumNestedDepth++;
-	if (sumNestedDepth)  appendBuff("("); 
-	st_ShowStructDomain(domain->info.user_data.args[0], parentStateSig);
-	appendBuff(" ");      appendBuff(SUM_TYPE_INFIX);      appendBuff(" ");
-	st_ShowStructDomain(domain->info.user_data.args[1], parentStateSig); 
-	if (sumNestedDepth) appendBuff(")");
-	sumNestedDepth--;
+        sumNestedDepth++;
+        if (sumNestedDepth)  appendBuff("(");
+        st_ShowStructDomain(domain->info.user_data.args[0], parentStateSig);
+        appendBuff(" ");      appendBuff(SUM_TYPE_INFIX);      appendBuff(" ");
+        st_ShowStructDomain(domain->info.user_data.args[1], parentStateSig);
+        if (sumNestedDepth) appendBuff(")");
+        sumNestedDepth--;
       }   /*  fi  */
       else {
-	appendBuff(typeName);
-	numParams = st_GetNumParams(domain->info.user_data.key);
-	if (numParams > 0) {
-	    appendBuff("(");
-	    for (i = 0; i < numParams; i++) {
-	      st_ShowStructDomain(domain->info.user_data.args[i],
-				  parentStateSig);
-	      if (i < numParams-1) appendBuff(", ");
-	    } /* rof */
-	    appendBuff(")");
+        appendBuff(typeName);
+        numParams = st_GetNumParams(domain->info.user_data.key);
+        if (numParams > 0) {
+            appendBuff("(");
+            for (i = 0; i < numParams; i++) {
+              st_ShowStructDomain(domain->info.user_data.args[i],
+                                  parentStateSig);
+              if (i < numParams-1) appendBuff(", ");
+            } /* rof */
+            appendBuff(")");
         } /* fi */
       }   /*  esle  */
       break;
@@ -1367,37 +1367,37 @@ st_PrintEntryInfo (ST_KEY key)
     switch (entry->tag)
       {
       case ST_FUNCTION:
-	st_PrintFunction (key);
-	break;
+        st_PrintFunction (key);
+        break;
 
       case ST_MACRO:
-	st_PrintMacro (key);
-	break;
+        st_PrintMacro (key);
+        break;
 
       case ST_STRUCTOR:
-	st_PrintStructor (key);
-	break;
+        st_PrintStructor (key);
+        break;
 
       case ST_DATATYPE:
-	st_PrintDatatype (key);
-	break;
+        st_PrintDatatype (key);
+        break;
 
       case ST_ALIAS:
-	st_PrintAlias (entry);
-	break;
+        st_PrintAlias (entry);
+        break;
 
       case ST_OPCOMB:
-	st_PrintCombinator (key);
-	break;
+        st_PrintCombinator (key);
+        break;
 
       case ST_VAR:
           st_PrintVar(key);
           break;
 
       default:
-	printMsg (FATAL_MSG,
-		  "st_PrintEntryInfo() - invalid tag %d",
-		  entry->tag);
+        printMsg (FATAL_MSG,
+                  "st_PrintEntryInfo() - invalid tag %d",
+                  entry->tag);
       }
   else
     printMsg (ERROR_MSG, "Name not in symbol table");
@@ -1534,12 +1534,12 @@ st_ShowAlias (ST_ENTRY *entry)
       appendBuff ("(");
 
       for (i = 0; i < entry->info.alias.numParams; i++)
-	{
-	  st_ShowParamRep (i);
+        {
+          st_ShowParamRep (i);
 
-	  if (i < entry->info.alias.numParams - 1)
-	    appendBuff (", ");
-	}
+          if (i < entry->info.alias.numParams - 1)
+            appendBuff (", ");
+        }
 
       appendBuff (")");
     }
@@ -1556,9 +1556,9 @@ st_ShowAlias (ST_ENTRY *entry)
  *                              *
  ********************************/
 /* loads print buffer with a string formatted like:
-    TYPE list('A) = 
+    TYPE list('A) =
            nil : 1 -> list('A)
-	   cons : 'A x list('A)  -> list('A)
+           cons : 'A x list('A)  -> list('A)
 */
 void
 st_ShowDatatype(ST_KEY typeKey) {
@@ -1571,17 +1571,17 @@ st_ShowDatatype(ST_KEY typeKey) {
 
   params = st_GetNumParams(typeKey);
 
-  appendBuff("TYPE "); 
+  appendBuff("TYPE ");
 
   if (strcmp(typeName, PROD_TYPE)==0) {
     appendBuff(STATE_VAR_REP " -> " );
-    st_ShowParamRep(0); 
+    st_ShowParamRep(0);
     appendBuff(" " PROD_TYPE " ");
     st_ShowParamRep(1);
     appendBuff(" =\n");
   }
 /*  else if (strcmp(typeName, SUM_TYPE)==0) {
-    st_ShowParamRep(0); 
+    st_ShowParamRep(0);
     appendBuff(" " SUM_TYPE_INFIX " ");
     st_ShowParamRep(1);
     appendBuff(" -> " STATE_VAR_REP " =\n");
@@ -1590,7 +1590,7 @@ st_ShowDatatype(ST_KEY typeKey) {
     if (st_IsCoinductiveType(typeKey))
       appendBuff(STATE_VAR_REP " -> " );
 
-    appendBuff(typeName); 
+    appendBuff(typeName);
     if (params>0)     appendBuff("(");
     for (i=0; i<params; i++) {
       st_ShowParamRep(i);
@@ -1727,7 +1727,7 @@ st_KeysEqual (ST_KEY k1, ST_KEY k2)
  *    st_ParamsEqual             *
  *                               *
  *********************************/
-BBOOL   
+BBOOL
 st_ParamsEqual(ST_PVAR p1, ST_PVAR p2) {
 
   if ((int)p1 == (int)p2)

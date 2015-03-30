@@ -54,73 +54,73 @@ typedef struct _V_INSTR
   union
     {
       struct                         /* [#@]        */
-	{
-	  struct _V_INSTR *next;
-	  int              posn;     /* HAS VALUE 0 */
-	}
+    {
+      struct _V_INSTR *next;
+      int              posn;     /* HAS VALUE 0 */
+    }
       at;
 
       struct            /* [BI] BUILTIN INTEGERS               */
-	{
-	  int i;        /*      THE INTEGER                    */
-	  int gcId;     /*      HAS VALUE OF GC_BUILTIN        */
-	}
+    {
+      int i;        /*      THE INTEGER                    */
+      int gcId;     /*      HAS VALUE OF GC_BUILTIN        */
+    }
       integer;
 
       struct            /* [BI] BUILTIN CHARACTERS             */
-	{
-	  int c;        /*      THE CHARACTER (CAST AS AN int) */
-	  int gcId;     /*      HAS VALUE OF GC_BUILTIN        */
-	}
+    {
+      int c;        /*      THE CHARACTER (CAST AS AN int) */
+      int gcId;     /*      HAS VALUE OF GC_BUILTIN        */
+    }
       character;
 
       struct     /* CONSTRUCTORS */
-	{
-	  struct _V_INSTR *next;
-	  int              posn;     /* [#@] THE POSITION OF THE CONSTRUCTOR + 1 */
-	}
+    {
+      struct _V_INSTR *next;
+      int              posn;     /* [#@] THE POSITION OF THE CONSTRUCTOR + 1 */
+    }
       structor;
 
       struct     /* RECORD CLOSURES */
-	{
-	  struct _V_INSTR *v;
-	  M_INSTR         *c;
-	}
+    {
+      struct _V_INSTR *v;
+      M_INSTR         *c;
+    }
       closure;
 
       struct                          /* RECORDS */
-	{
-	  struct _V_INSTR *frame;     /* CURRENT MACRO FRAME                    */
-	  int              gcId;      /* NUMBER OF CLOSURES AS NEGATIVE INT + 2 */
-	}
+    {
+      struct _V_INSTR *frame;     /* CURRENT MACRO FRAME                    */
+      int              gcId;      /* NUMBER OF CLOSURES AS NEGATIVE INT + 2 */
+    }
       recMacroFrame;
 
       struct     /* MACRO FRAMES */
-	{
-	  struct _V_INSTR  *prev;
-	  struct _M_INSTR **arg;
-	}
+    {
+      struct _V_INSTR  *prev;
+      struct _M_INSTR **arg;
+    }
       macroFrame;
 
       struct     /* 0-TUPLES */
-	{
-	  int bangId1;     /* UNUSED */
-	  int bangId2;     /* UNUSED */
-	}
+    {
+      int bangId1;     /* UNUSED */
+      int bangId2;     /* UNUSED */
+    }
       bang;
 
       struct     /* 2-TUPLES */
-	{
-	  struct _V_INSTR *v0;
-	  struct _V_INSTR *v1;
-	}
+    {
+      struct _V_INSTR *v0;
+      struct _V_INSTR *v1;
+    }
       pair;
 
       struct     /* USED BY GARGAGE COLLECTOR ONLY */
-	{
-	  struct _V_INSTR *heapItm;
-	  int              gcId;
-	}
+    {
+      struct _V_INSTR *heapItm;
+      int              gcId;
+    }
       gc;
     }
   info;

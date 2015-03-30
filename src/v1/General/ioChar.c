@@ -23,7 +23,7 @@
 static char     *printBuff;
 static int      printBuffPtr;
 static MEMORY   printBuffDesc;
-static int 	 MaxPrintbuff;
+static int      MaxPrintbuff;
 int      delayedErrorCount = 0;
 
 /**************************
@@ -93,7 +93,7 @@ getInputLine(char *input, int size) {
  *    printMsg            *
  *                        *
  **************************/
-void 
+void
 printMsg(MSG_TYPE msgType, char *msg, ...) {
 
   va_list  ap;
@@ -111,8 +111,8 @@ printMsg(MSG_TYPE msgType, char *msg, ...) {
 
   clearBuff();
   switch (msgType) {
-  case MSG :  
-  case PROMPT_MSG : 
+  case MSG :
+  case PROMPT_MSG :
     break;
   case FATAL_MSG :
     appendBuff("*** FATAL ERROR: ");     break;
@@ -131,60 +131,60 @@ printMsg(MSG_TYPE msgType, char *msg, ...) {
   va_start(ap, msg);
 
   for (p=msg; *p; p++) {
-    if (*p != '%') 
+    if (*p != '%')
       text[i++] = *p;
     else {
       text[i] = 0;      i=0;
       appendBuff(text);
       switch (*++p) {
       case '%' :
-	appendBuff("%");
-	break;
+        appendBuff("%");
+        break;
       case 'd' :
-	intVal = va_arg(ap, int);
-	sprintf(convStr,"%d",intVal);
-	appendBuff(convStr);
-	break;
+        intVal = va_arg(ap, int);
+        sprintf(convStr,"%d",intVal);
+        appendBuff(convStr);
+        break;
       case 'r' :
-	coreTermLogicExpr = va_arg(ap, CT_EXPR*);
-	_showCT_expr(coreTermLogicExpr, 0);
-	break;
+        coreTermLogicExpr = va_arg(ap, CT_EXPR*);
+        _showCT_expr(coreTermLogicExpr, 0);
+        break;
       case 's' :
-	strVal = va_arg(ap, char*);
-	appendBuff(strVal);
-	break;
+        strVal = va_arg(ap, char*);
+        appendBuff(strVal);
+        break;
       case 't' :
-	typeSigVal = va_arg(ap, ST_TYPE_SIG*);
-	st_ShowSig(typeSigVal);
-	break;
+        typeSigVal = va_arg(ap, ST_TYPE_SIG*);
+        st_ShowSig(typeSigVal);
+        break;
       case 'L' :  /* lists */
-	list = va_arg(ap, LIST*);
-	showList(list, BFALSE);
-	break;
+        list = va_arg(ap, LIST*);
+        showList(list, BFALSE);
+        break;
       case 'T' :
-	st_type = va_arg(ap, ST_TYPE *);
-	st_ShowType(st_type);
-	break;
-      case 'S' :	/* running out of choices */
-	typeSigVal = va_arg(ap, ST_TYPE_SIG*);
-	st_ShowTypeSig(typeSigVal);
-	break;	
-      case 'U' :	/* this is to strip out context variables */
-	typeSigVal = va_arg(ap, ST_TYPE_SIG*);
-	st_ShowTypeSigLessContext(typeSigVal);
-	break;
+        st_type = va_arg(ap, ST_TYPE *);
+        st_ShowType(st_type);
+        break;
+      case 'S' :        /* running out of choices */
+        typeSigVal = va_arg(ap, ST_TYPE_SIG*);
+        st_ShowTypeSig(typeSigVal);
+        break;
+      case 'U' :        /* this is to strip out context variables */
+        typeSigVal = va_arg(ap, ST_TYPE_SIG*);
+        st_ShowTypeSigLessContext(typeSigVal);
+        break;
       case 'V' :
         ctVarBase = va_arg(ap, CT_VAR_BASE*);
         ctShowVarBase(ctVarBase);
         break;
       default :
-	printMsg(FATAL_MSG, "Invalid format specifier: %s", p);
+        printMsg(FATAL_MSG, "Invalid format specifier: %s", p);
       }   /*  hctiws  */
     }   /*  esle  */
   }   /*  rof  */
 
   text[i] = 0;
-  appendBuff(text);     
+  appendBuff(text);
 
 
 
@@ -214,7 +214,7 @@ printMsg(MSG_TYPE msgType, char *msg, ...) {
     outputBuff(stdout);
     printMsg(FATAL_MSG, "printMesg - Invalid value for MSG_TYPE");
   }
-  
+
 
 }   /*  end printMsg  */
 
@@ -240,7 +240,7 @@ initBuff(int bufferSize) {
  * appendBuff             *
  *                        *
  **************************/
-void 
+void
 appendBuff(char *str) {
 
   int i=0;
@@ -248,9 +248,9 @@ appendBuff(char *str) {
   if (str) {
     while (str[i]) {
       if (printBuffPtr == (MaxPrintbuff - 1))  {
-	printBuff[++printBuffPtr] = 0;
-	outputBuff(stdout);
-	clearBuff();
+        printBuff[++printBuffPtr] = 0;
+        outputBuff(stdout);
+        clearBuff();
       }
       printBuff[printBuffPtr++] = str[i++];
     }   /*  elihw  */
@@ -264,7 +264,7 @@ appendBuff(char *str) {
 /* outputBuff             */
 /*                        */
 /**************************/
-void 
+void
 outputBuff(FILE *stream) {
 
   printf(printBuff);   /* !!!! only works for FILE * = stdout */
@@ -278,7 +278,7 @@ outputBuff(FILE *stream) {
 /* clearBuff              */
 /*                        */
 /**************************/
-void 
+void
 clearBuff() {
 
 int i=0;

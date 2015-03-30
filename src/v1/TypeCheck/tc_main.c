@@ -11,16 +11,16 @@
 #include "typecheckI.h"
 #include <string.h>
 
-MEMORY tc_memory;					/* all local memory usage */
-TC_TYPE_VARIABLE next_new_var;				/* for renaming type vars */
+MEMORY tc_memory;                                       /* all local memory usage */
+TC_TYPE_VARIABLE next_new_var;                          /* for renaming type vars */
 TYPE_ASMT_LIST *SubstList;
 
-static int typechecking_a_def;				/* 1 for def, 0 otherwise */
+static int typechecking_a_def;                          /* 1 for def, 0 otherwise */
 static ST_KEY _fnkey;
 
 static TC_TYPE_CONSTRUCTOR product_con;
 static TYPE_EXPR *terminal_type, *int_type, *char_type;
-static TC_TYPE_CONSTRUCTOR next_AT_con;			/* for @ type constructors */
+static TC_TYPE_CONSTRUCTOR next_AT_con;                 /* for @ type constructors */
 
 static PE_PATT *convert_PE_VAR_BASE_to_PE_PATT(PE_VAR_BASE *vb);
 static TYPED_PATT *typed_patt(PE_PATT *patt, TYPE_EXPR **type);
@@ -54,7 +54,7 @@ void tc_open_typechecker(void)
  *  call this BEFORE calling tc_typecheck_PE_EXPR or tc_typecheck_PE_DEF
  */
 {
-  tc_memory = MemAlloc("typecheck",50000,1);	/* enough for now? */
+  tc_memory = MemAlloc("typecheck",50000,1);    /* enough for now? */
   next_new_var = 0;
   typechecking_a_def = 0;
   SubstList = 0;
@@ -123,7 +123,7 @@ void tc_typecheck_PE_DEF(PE_DEF *def, ST_KEY fnkey)
   PE_MACRO *pe_macro;
   PE_PATT *patt;
 
-  _fnkey = fnkey;	/* make it global (used in tc_close_typechecker) */
+  _fnkey = fnkey;       /* make it global (used in tc_close_typechecker) */
   typechecking_a_def = 1;
   num_macros = st_GetNumMacros(fnkey);
   macro_keys = st_GetMacroKeys(fnkey);
@@ -268,7 +268,7 @@ static void typecheck_PE_LIST_T_PHRASE(TYPED_PATT_LIST *context, PE_LIST_T_PHRAS
 
   while (phrase_list) {
     phrase = (PE_T_PHRASE *) phrase_list->item;
-    if (phrase->expr) {     		/* first order */
+    if (phrase->expr) {                 /* first order */
       patt_type = (TYPE_EXPR **) MHA(tc_memory, 2, sizeof(TYPE_EXPR *));
       patt_type[0] = domain;
       patt_type[1] = 0;
@@ -302,11 +302,11 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
 {
   TYPE_EXPR **types;
   P_STRUCTOR **structors;
-  ST_KEY structor_key;   
+  ST_KEY structor_key;
   ST_TYPE_SIG *st_type_sig;
   int num_destrs, i;
   TYPE_EXPR *parent_type;
-  TYPE_ASMT_LIST *alist; 
+  TYPE_ASMT_LIST *alist;
   TYPE_ASMT *asmt;
 
   if (!patt) printMsg(FATAL_MSG,"add_patt_to_context: patt is NULL");
@@ -314,12 +314,12 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
     if (TEL_length(patt_type) != 2) {
       printMsg(FATAL_MSG,"add_patt_to_context: illegal type for higher-order pattern");
     }
-  }  
+  }
   else {
     if (TEL_length(patt_type) != 1) {
       printMsg(FATAL_MSG,"add_patt_to_context: illegal type for first-order pattern");
     }
-  }  
+  }
   switch (patt->tag) {
     case P_VAR:
     case P_HOVAR:
@@ -332,7 +332,7 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
         printMsg(FATAL_MSG,"add_patt_to_context: illegal record pattern");
       }
       structor_key = st_NameToKey(structors[0]->id);
-      num_destrs = st_GetNumStructors(st_GetStructorParent(structor_key));  
+      num_destrs = st_GetNumStructors(st_GetStructorParent(structor_key));
       parent_type = convert_ST_TYPE_to_TE(st_GetGenericStateType(structor_key));
       alist = assign_new_vars(collect_vars_in_TE(parent_type));
       asmt = type_asmt(-1, parent_type);
@@ -340,7 +340,7 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
       for (i=0; i<num_destrs; i++) {
         structor_key = st_NameToKey(structors[i]->id);
         st_type_sig = st_GetTypeSig(structor_key);
-        if (st_IsHO(structor_key)) { 
+        if (st_IsHO(structor_key)) {
           types = (TYPE_EXPR **) MHA(tc_memory, 3, sizeof(TYPE_EXPR *));
           types[0] = convert_ST_TYPE_to_TE(st_type_sig->domain);    /* Ei(A)*C */
           if (types[0]->tag == TYPE_CON  &&  types[0]->id.con == product_con) {
@@ -355,9 +355,9 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
           types[0] = convert_ST_TYPE_to_TE(st_type_sig->codomain);  /* Fi(A,C) */
           types[1] = 0;
         }
-        types = subst_in_TEL(asmt, types);          /* C:=R(A) */   
+        types = subst_in_TEL(asmt, types);          /* C:=R(A) */
         types = rename_vars_in_TEL(alist, types);   /* rename A's */
-        
+
         context = add_patt_to_context(context, structors[i]->arg, types);
       }
       parent_type = rename_vars_in_TE(alist, parent_type);  /* rename A's */
@@ -370,17 +370,17 @@ TYPED_PATT_LIST *add_patt_to_context(TYPED_PATT_LIST *context, PE_PATT *patt, TY
       types[1] = 0;
       types[2] = type_var_expr(new_type_var());
       types[3] = 0;
-          
+
       context = add_patt_to_context(context, patt->info.ppair.l, types);
       context = add_patt_to_context(context, patt->info.ppair.r, types+2);
       add_equation_to_SubstList(product_type_expr(types[0], types[2]), patt_type[0]);
       break;
-          
+
     case P_CONSTR:
       structor_key = st_NameToKey(patt->info.constr->id);
       parent_type = convert_ST_TYPE_to_TE(st_GetGenericStateType(structor_key));
       alist = assign_new_vars(collect_vars_in_TE(parent_type));
-          
+
       st_type_sig = st_GetTypeSig(structor_key);
       types = (TYPE_EXPR **) MHA(tc_memory, 2, sizeof(TYPE_EXPR *));
       types[0] = convert_ST_TYPE_to_TE(st_type_sig->domain);          /* Ei(A,C) */
@@ -429,7 +429,7 @@ static void typecheck_structor(char *name, TYPE_EXPR *domain, TYPE_EXPR *codomai
     types[1] = convert_ST_TYPE_to_TE(st_type_sig->codomain);
     types[2] = 0;
 
-    parent = convert_ST_TYPE_to_TE(st_GetGenericStateType(st_key));	/* L(A) or R(A) */
+    parent = convert_ST_TYPE_to_TE(st_GetGenericStateType(st_key));     /* L(A) or R(A) */
     /* replace C (-1) by parent */
     types = subst_in_TEL(type_asmt(-1, parent), types);
     /* rename the A's */
@@ -453,7 +453,7 @@ static void typecheck_PE_FUNCTION(TYPED_PATT_LIST *context, PE_FUNCTION *fn, TYP
   int num_macros, i, j;
   PE_LIST_T_PHRASE **params;
 
-  types = find_var_in_context(context, fn->fun_name);	 /* look in context first */
+  types = find_var_in_context(context, fn->fun_name);    /* look in context first */
   if (types) {
     /* must be a higher-order variable */
     if (TEL_length(types) != 2) printMsg(FATAL_MSG,"typecheck_PE_FUNCTION: illegal type for h.o. variable");
@@ -484,11 +484,11 @@ static void typecheck_PE_FUNCTION(TYPED_PATT_LIST *context, PE_FUNCTION *fn, TYP
     for (i=0; i<num_macros; i++) {
       j=i*2;
       if (params[i]) {
-	typecheck_PE_LIST_T_PHRASE(context, params[i], types[j+2], types[j+3]);
+        typecheck_PE_LIST_T_PHRASE(context, params[i], types[j+2], types[j+3]);
       }
       else {
-	tc_close_typechecker(0);
-	printMsg(ERROR_MSG, "too few macro arguments to function %s", fn->fun_name);
+        tc_close_typechecker(0);
+        printMsg(ERROR_MSG, "too few macro arguments to function %s", fn->fun_name);
       }
     }
     if (params  &&  (params[i])) {
@@ -518,29 +518,29 @@ static void typecheck_PE_MAP(TYPED_PATT_LIST *context, PE_MAP *map, TYPE_EXPR *d
   A_types = (TYPE_EXPR **) MHA(tc_memory, numParams+1, sizeof(TYPE_EXPR *));
   B_types = (TYPE_EXPR **) MHA(tc_memory, numParams+1, sizeof(TYPE_EXPR *));
   for (i=0; i<numParams; i++) {
-    A_types[i] = type_var_expr(new_type_var());		/* Ai */
-    B_types[i] = type_var_expr(new_type_var());		/* Bi */
+    A_types[i] = type_var_expr(new_type_var());         /* Ai */
+    B_types[i] = type_var_expr(new_type_var());         /* Bi */
 
     map_phrase = (map->phrases)+i;
     if (map_phrase->positive) {
       if (map_phrase->negative) {
-	/* bivariant (*) phrase (p:Ai->Bi & n:Bi->Ai) */
-	typecheck_PE_LIST_T_PHRASE(context, map_phrase->positive, A_types[i], B_types[i]);
-	typecheck_PE_LIST_T_PHRASE(context, map_phrase->negative, B_types[i], A_types[i]);
+        /* bivariant (*) phrase (p:Ai->Bi & n:Bi->Ai) */
+        typecheck_PE_LIST_T_PHRASE(context, map_phrase->positive, A_types[i], B_types[i]);
+        typecheck_PE_LIST_T_PHRASE(context, map_phrase->negative, B_types[i], A_types[i]);
       }
       else {
-	/* covariant (+) phrase (p:Ai->Bi) */
-	typecheck_PE_LIST_T_PHRASE(context, map_phrase->positive, A_types[i], B_types[i]);
+        /* covariant (+) phrase (p:Ai->Bi) */
+        typecheck_PE_LIST_T_PHRASE(context, map_phrase->positive, A_types[i], B_types[i]);
       }
     }
     else {
       if (map_phrase->negative) {
-	/* contra-variant (-) phrase (n:Bi->Ai) */
-	typecheck_PE_LIST_T_PHRASE(context, map_phrase->negative, B_types[i], A_types[i]);
+        /* contra-variant (-) phrase (n:Bi->Ai) */
+        typecheck_PE_LIST_T_PHRASE(context, map_phrase->negative, B_types[i], A_types[i]);
       }
       else {
         /* non-variant (?) phrase ( _ ) */
-	/* do nothing */
+        /* do nothing */
       }
     }
   } /* for */
@@ -571,11 +571,11 @@ static void typecheck_fold(TYPED_PATT_LIST *context, PE_FOLD **phrases, TYPE_EXP
   num_phrases = st_GetNumStructors(st_GetStructorParent(constr_key));
   types = (TYPE_EXPR **) MHA(tc_memory, num_phrases+2, sizeof(TYPE_EXPR *));
   hash_types = (TYPE_EXPR **) MHA(tc_memory, num_phrases+1, sizeof(TYPE_EXPR *));
-  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(constr_key));		/* L(A) */
+  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(constr_key));         /* L(A) */
 
   for (i=0; i<num_phrases; i++) {
     st_type_sig = st_GetTypeSig(st_NameToKey(phrases[i]->constr));
-    types[i+1] = convert_ST_TYPE_to_TE(st_type_sig->domain);		/* Ei(A,C) */
+    types[i+1] = convert_ST_TYPE_to_TE(st_type_sig->domain);            /* Ei(A,C) */
     hash_types[i] = copy_TE(types[i+1]);
   }
   types[num_phrases+1] = 0;
@@ -623,7 +623,7 @@ static void typecheck_unfold(TYPED_PATT_LIST *context, PE_UNFOLD **phrases, TYPE
   destr_key = st_NameToKey(phrases[0]->destr);
   num_phrases = st_GetNumStructors(st_GetStructorParent(destr_key));
   types = (TYPE_EXPR **) MHA(tc_memory, (num_phrases*2)+2, sizeof(TYPE_EXPR *));
-  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(destr_key));		/* R(A) */
+  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(destr_key));          /* R(A) */
 
   for (i=0; i<num_phrases; i++) {
     j=i*2;
@@ -637,22 +637,22 @@ static void typecheck_unfold(TYPED_PATT_LIST *context, PE_UNFOLD **phrases, TYPE
 
 
   /* @ : R(A) -> (C @ R(A)) */
-  ptype[0] = types[0];					/* R(A) */
-  ptype[1] = product_type_expr(domain, types[0]);	/* dom @ R(A) */
+  ptype[0] = types[0];                                  /* R(A) */
+  ptype[1] = product_type_expr(domain, types[0]);       /* dom @ R(A) */
   next_AT_con--;
-  ptype[1]->id.con = next_AT_con;	/* new @ type constructor (-2 and lower) */
+  ptype[1]->id.con = next_AT_con;       /* new @ type constructor (-2 and lower) */
   ptype[2] = 0;
   patt.tag = P_HOVAR;
   patt.info.var = AT_NAME;
   context = add_patt_to_context(context, &patt, ptype);
 
 
-  asmt1 = type_asmt(-1,domain);		/* C := dom */
-  asmt2 = type_asmt(-1,ptype[1]);	/* C := dom @ R(A) */
+  asmt1 = type_asmt(-1,domain);         /* C := dom */
+  asmt2 = type_asmt(-1,ptype[1]);       /* C := dom @ R(A) */
   for (i=0; i<num_phrases; i++) {
     j=i*2;
-    types[j+1] = subst_in_TE(asmt1,types[j+1]);	/* replace C by dom in phrase domain */
-    types[j+2] = subst_in_TE(asmt2,types[j+2]);	/* replace C by dom@R(A) in Fi(A,C) */
+    types[j+1] = subst_in_TE(asmt1,types[j+1]); /* replace C by dom in phrase domain */
+    types[j+2] = subst_in_TE(asmt2,types[j+2]); /* replace C by dom@R(A) in Fi(A,C) */
     typecheck_PE_LIST_T_PHRASE(context, phrases[i]->phrases, types[j+1], types[j+2]);
   }
   add_equation_to_SubstList(types[0], codomain);
@@ -684,7 +684,7 @@ static void typecheck_record(TYPED_PATT_LIST *context, PE_RECORD **phrases, TYPE
   destr_key = st_NameToKey(phrases[0]->destr);
   num_phrases = st_GetNumStructors(st_GetStructorParent(destr_key));
   types = (TYPE_EXPR **) MHA(tc_memory, (num_phrases*2)+2, sizeof(TYPE_EXPR *));
-  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(destr_key));		/* R(A) */
+  types[0] = convert_ST_TYPE_to_TE(st_GetGenericStateType(destr_key));          /* R(A) */
 
   for (i=0; i<num_phrases; i++) {
     j=i*2;
@@ -701,13 +701,13 @@ static void typecheck_record(TYPED_PATT_LIST *context, PE_RECORD **phrases, TYPE
   for (i=0; i<num_phrases; i++) {
     destr_key = st_NameToKey(phrases[i]->destr);
     j=i*2;
-    if (st_IsHO(destr_key)) {	/* higher order di:Ei(A)*C->Fi(A,C) */
+    if (st_IsHO(destr_key)) {   /* higher order di:Ei(A)*C->Fi(A,C) */
       if (types[j+1]->tag == TYPE_CON  &&  types[j+1]->id.con == product_con) {
-	typecheck_PE_TERM(context, phrases[i]->cases, types[j+1]->params[0], types[j+2]);
+        typecheck_PE_TERM(context, phrases[i]->cases, types[j+1]->params[0], types[j+2]);
       }
       else printMsg(FATAL_MSG, "typecheck_record: h.o. destr has illegal domain");
     }
-    else {			/* first order di:C->Fi(A,C) */
+    else {                      /* first order di:C->Fi(A,C) */
       typecheck_PE_EXPR(context, phrases[i]->expr, types[j+2]);
     }
   }
@@ -741,9 +741,9 @@ disp_PE_TERM_sequent(context, term, domain, codomain);
       /* it should be in the context */
       types = find_var_in_context(context, term->info.macro->macro_name);
       if (types) {
-	if (TEL_length(types) != 2) printMsg(FATAL_MSG,"typecheck_PE_TERM: illegal type for macro");
-	add_equation_to_SubstList(domain, types[0]);
-	add_equation_to_SubstList(types[1], codomain);
+        if (TEL_length(types) != 2) printMsg(FATAL_MSG,"typecheck_PE_TERM: illegal type for macro");
+        add_equation_to_SubstList(domain, types[0]);
+        add_equation_to_SubstList(types[1], codomain);
       }
       else printMsg(FATAL_MSG,"typecheck_PE_TERM: macro not found in context");
       break;
@@ -765,25 +765,25 @@ disp_PE_TERM_sequent(context, term, domain, codomain);
       break;
     case T_BUILTIN:
       if (term->info.builtin) {
-	switch (term->info.builtin->tag) {
-	  case BI_INT:
-	    add_equation_to_SubstList(int_type, codomain);
-	    break;
-	  case BI_CHAR:
-	    add_equation_to_SubstList(char_type, codomain);
-	    break;
-	  default:
-	    printMsg(FATAL_MSG, "typecheck_PE_TERM: unknown builtin tag");
-	}
-	add_equation_to_SubstList(domain, terminal_type);
+        switch (term->info.builtin->tag) {
+          case BI_INT:
+            add_equation_to_SubstList(int_type, codomain);
+            break;
+          case BI_CHAR:
+            add_equation_to_SubstList(char_type, codomain);
+            break;
+          default:
+            printMsg(FATAL_MSG, "typecheck_PE_TERM: unknown builtin tag");
+        }
+        add_equation_to_SubstList(domain, terminal_type);
       }
       else {
-	printMsg(FATAL_MSG,"typecheck_PE_TERM: builtin term is NULL");
+        printMsg(FATAL_MSG,"typecheck_PE_TERM: builtin term is NULL");
       }
       break;
     default:
       printMsg(FATAL_MSG,"typecheck_PE_TERM: unknown tag");
-  }      
+  }
 }
 
 /*************************/
@@ -812,7 +812,7 @@ static TYPE_EXPR **find_var_in_context(TYPED_PATT_LIST *context, char *var)
     }
     context = TPL_tail(context);
   }
-  return 0;	/* not found */
+  return 0;     /* not found */
 }
 
 /***********************/
@@ -833,8 +833,8 @@ disp_PE_EXPR_sequent(context, expr, type);
     case E_VAR:
       types = find_var_in_context(context, expr->info.var);
       if (types) {
-	if (TEL_length(types) == 1) add_equation_to_SubstList(types[0], type);
-	else printMsg(FATAL_MSG, "typecheck_PE_EXPR: E_VAR has illegal type");
+        if (TEL_length(types) == 1) add_equation_to_SubstList(types[0], type);
+        else printMsg(FATAL_MSG, "typecheck_PE_EXPR: E_VAR has illegal type");
       }
       else printMsg(FATAL_MSG,"typecheck_PE_EXPR: E_VAR nowhere in context");
       break;

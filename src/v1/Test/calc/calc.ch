@@ -20,21 +20,21 @@ data tokens(A) -> C = PLUS : 1 -> C
                     | TIMES: 1 -> C
                     | NUM  : A -> C.
 
-def char2int: char -> int                                           % hopefully this will be built-in 
+def char2int: char -> int                                           % hopefully this will be built-in
     = c => { \c0..\c9 => sub_int (code c, code \c0)
            | _        => 0
            }
              c.
 
 def lex: 1 -> rS(char, list(tokens(int)))
-    = () => (| (s0, (f, _)) => tok: C => 
+    = () => (| (s0, (f, _)) => tok: C =>
                                   { \d32 => MORE (s0, (f, 0))
                                   | \c+ => MORE (s0, ((fn: l => fn(cons (PLUS, l),f)), 0))
                                   | \c* => MORE (s0, ((fn: l => fn(cons (TIMES, l),f)), 0))
                                   | \c0..\c9 => MORE (s1, (f, char2int C))
                                   |  _  => FAIL } C
              |                 end: ss fn ([], f)
-             | (s1, (f, s)) => tok: C =>  
+             | (s1, (f, s)) => tok: C =>
                                   { \d32 => MORE (s0, ((fn: l => fn (cons (NUM s, l), f)), 0))
                                   | \c+ => MORE (s0, ((fn: l => fn (cons (NUM s, cons (PLUS, l)), f)), 0))
                                   | \c* => MORE (s0, ((fn: l => fn (cons (NUM s, cons (TIMES, l)), f)), 0))

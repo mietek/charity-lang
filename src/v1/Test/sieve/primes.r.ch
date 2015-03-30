@@ -15,7 +15,7 @@ def Lpred: Lnat          -> Lnat
         | ls (unbox: n) => n.
 
 
-data C -> inflist(A) = head: C -> A | tail: C -> C. 
+data C -> inflist(A) = head: C -> A | tail: C -> C.
 
 data success_or_fail(A) -> C = ss: A -> C| ff: 1 -> C.
 
@@ -44,7 +44,7 @@ def forage =
                                                   ,{true  => ss head S
                                                    |false => ff
                                                    } head B
-                                                  ) 
+                                                  )
                                        } Val
      |} head N.
 *)
@@ -92,7 +92,7 @@ def sieve =
            |) forage T0.
 
 
-def cyc = 
+def cyc =
     (n,m) => { zero     => (succ zero, pred m)
              | succ(m1) => { zero     => (zero, succ n)
                            | succ(m2) => (succ n, pred m)
@@ -114,7 +114,7 @@ def tail_prime_pred =
 
 def prime_pred =
     () => (| (S,F) => head: F
-	   |          tail: tail_prime_pred(S,F)
+           |          tail: tail_prime_pred(S,F)
            |)(tail_prime_pred(([],nats2),false)).
 
 (*  Finally the sieve is given by: *)

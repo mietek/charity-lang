@@ -46,10 +46,10 @@ static PE_LIST_TERM *Phrases2Terms (PE_LIST_FUN_PHRASE *phrases);
 static PE_TERM *TermMapNew (char *type, PE_LIST_FUN_PHRASE *phrases);
 
 static PE_TERM *TermAliasMapNew (char               *alias,
-				 PE_LIST_FUN_PHRASE *phrases);
+                                 PE_LIST_FUN_PHRASE *phrases);
 static PE_TERM *MakeAliasMap    (V_VARIANCE          variance,
-				 ST_TYPE            *expansion,
-				 PE_LIST_FUN_PHRASE *phrases);
+                                 ST_TYPE            *expansion,
+                                 PE_LIST_FUN_PHRASE *phrases);
 
 static PE_TERM      *TermFunNew(char *funName, PE_LIST_LIST_T_PHRASE *phrases);
 static PE_TERM      *TermMacroNew(char *macroName, PE_LIST_TERM *terms);
@@ -59,8 +59,8 @@ static PE_LIST_T_PHRASE **makePhraseArray(PE_LIST_TERM *terms,int numElements);
 /* [H-O] ADDED THIS PROTOTYPE (SEE BELOW): */
 
 static PE_MAP_PHRASE *MakeMapPhraseArray (PE_LIST_FUN_PHRASE *funPhrases,
-					  int                 numParams,
-					  V_VARIANCE         *varity);
+                                          int                 numParams,
+                                          V_VARIANCE         *varity);
 
 static char         *peReplaceVar(char *var, BBOOL isHO);
 
@@ -83,7 +83,7 @@ ParserConstruct(void)
  *    ParserDestruct             *
  *                               *
  *********************************/
-void          
+void
 ParserDestruct(void)
 {
      MemDealloc(parseHeapDesc);
@@ -103,9 +103,9 @@ ParseStream(void) {
       ParserReset();
       yyparse();
       if (!delayedErrorCount)
-	      result = ProcessCmd(&ParseResult);
+              result = ProcessCmd(&ParseResult);
       else
-	delayedErrorCount = 0;
+        delayedErrorCount = 0;
     }
     else
       result = 1;
@@ -140,9 +140,9 @@ ParserReset(void)
  * OUTPUT: new data definition.
  */
 void
-*DATADEF(char *domainId, STR_LIST *domainVars, 
-	 char *codomainId, STR_LIST *codomainVars, 
-	 PE_LIST_STRUCTOR *structors)
+*DATADEF(char *domainId, STR_LIST *domainVars,
+         char *codomainId, STR_LIST *codomainVars,
+         PE_LIST_STRUCTOR *structors)
 {
      PE_DATA *data = (PE_DATA *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_DATA));
 
@@ -152,18 +152,18 @@ void
      /* [#@]: */
 
      if (strcmp (domainId,   HASH_NAME) == 0 ||
-	 strcmp (codomainId, HASH_NAME) == 0)
+         strcmp (codomainId, HASH_NAME) == 0)
        printMsg (DELAYEDERROR_MSG, "illegal use of %s", HASH_NAME);
 
      if (strcmp (domainId,   AT_NAME) == 0 ||
-	 strcmp (codomainId, AT_NAME) == 0)
+         strcmp (codomainId, AT_NAME) == 0)
        printMsg (DELAYEDERROR_MSG, "illegal use of %s", AT_NAME);
 
      data->domainId     = domainId;
-     data->domainVars   = domainVars;    
+     data->domainVars   = domainVars;
      data->codomainId   = codomainId;
-     data->codomainVars = codomainVars;     
-     data->structors    = structors;     
+     data->codomainVars = codomainVars;
+     data->structors    = structors;
 
      return(data);
 }
@@ -171,15 +171,15 @@ void
 /*
  * TYPE()
  * Store the typing info for a data defn internally
- * eg something in the form      
+ * eg something in the form
  *      list(A) -> C
  *    store list(A) as a type and is as another type
  *
  * INPUT:  ident = type                 eg: the "list" in list(A)
  *         parms = parameters for type  eg: the "A"    in list(A)
- * OUTPUT: a type 
+ * OUTPUT: a type
  */
-PE_TYPE  
+PE_TYPE
 *TypeNew(char *ident, PE_LIST_TYPE *parms)
 {
      PE_TYPE *type = (PE_TYPE *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_TYPE));
@@ -207,8 +207,8 @@ PE_TYPE
 char *
 checkTerminalType(char *termType) {
 
-  if (strcmp(termType, TERMINAL_TYPE) != 0) 
-    printMsg(DELAYEDERROR_MSG, 
+  if (strcmp(termType, TERMINAL_TYPE) != 0)
+    printMsg(DELAYEDERROR_MSG,
              "Parse - %s is not a valid terminal type", termType);
   else
     return(termType);
@@ -247,8 +247,8 @@ PE_TYPE_SIG
 
 PE_STRUCTOR_TYPE_SIG *
 TypeSigNew2 (PE_TYPE *domain,
-	     PE_TYPE *param,        /* MAY BE NULL */
-	     PE_TYPE *codomain)
+             PE_TYPE *param,        /* MAY BE NULL */
+             PE_TYPE *codomain)
 {
   PE_STRUCTOR_TYPE_SIG *newSig = NULL;
 
@@ -257,8 +257,8 @@ TypeSigNew2 (PE_TYPE *domain,
 
   newSig =
     (PE_STRUCTOR_TYPE_SIG *)MemHeapAlloc (parseHeapDesc,
-					  1,
-					  sizeof (PE_STRUCTOR_TYPE_SIG));
+                                          1,
+                                          sizeof (PE_STRUCTOR_TYPE_SIG));
 
   assert (newSig);
 
@@ -280,7 +280,7 @@ TypeSigNew2 (PE_TYPE *domain,
 
 PE_STRUCTOR *
 StructorNew (char                 *ident,
-	     PE_STRUCTOR_TYPE_SIG *sig)
+             PE_STRUCTOR_TYPE_SIG *sig)
 {
   PE_STRUCTOR *newStructor = NULL;
 
@@ -294,8 +294,8 @@ StructorNew (char                 *ident,
     printMsg (DELAYEDERROR_MSG, "illegal use of %s", AT_NAME);
 
   newStructor = (PE_STRUCTOR *)MemHeapAlloc (parseHeapDesc,
-					     1,
-					     sizeof (PE_STRUCTOR));
+                                             1,
+                                             sizeof (PE_STRUCTOR));
 
   assert (newStructor);
 
@@ -339,8 +339,8 @@ typeSigof (PE_LIST_STRUCTOR *structorList)
 
 PE_ALIAS *
 BuildAlias (char     *name,
-	    STR_LIST *variables,     /* MAY BE NULL */
-	    PE_TYPE  *type)
+            STR_LIST *variables,     /* MAY BE NULL */
+            PE_TYPE  *type)
 {
   PE_ALIAS *alias = NULL;
 
@@ -375,8 +375,8 @@ BuildAlias (char     *name,
  *                               *
  *********************************/
 PE_DEF
-*DEFFUNC(char *name, PE_LIST_MACRO *macros, PE_TYPE_SIG *type_sig, 
-	 PE_DEF *defPart) 
+*DEFFUNC(char *name, PE_LIST_MACRO *macros, PE_TYPE_SIG *type_sig,
+         PE_DEF *defPart)
 /* def->varbase and def->expr are already filled in */
 {
      assert(name);
@@ -415,12 +415,12 @@ pe_MakeFunBody(PE_LIST_T_PHRASE *t_case) {
      if (T_PhraseListLen(t_case) >= 1)  {
        t_phrase = T_PhraseListHead(t_case);
        if ( ct_isVarBase(t_phrase->patt) && (T_PhraseListLen(t_case) <= 1) ) {
-	 defPart->var_base = pe_TranslateVBasePatt(t_phrase->patt);
-	 defPart->expr = t_phrase->expr;
+         defPart->var_base = pe_TranslateVBasePatt(t_phrase->patt);
+         defPart->expr = t_phrase->expr;
        }
        else {
-	 defPart->expr   = ExprNew(TermProgNew(t_case), ExprVarNew(RES_VAR_X));
-	 defPart->var_base = VBvar(RES_VAR_X);
+         defPart->expr   = ExprNew(TermProgNew(t_case), ExprVarNew(RES_VAR_X));
+         defPart->var_base = VBvar(RES_VAR_X);
        }
      }
      else
@@ -470,17 +470,17 @@ pe_TranslateVBasePatt(PE_PATT *patt) {
   PE_VAR_BASE  *vb  = (PE_VAR_BASE *)MHA(prsHD, 1, sizeof(PE_VAR_BASE));
 
   switch (patt->tag) {
-  case P_VAR    : 
+  case P_VAR    :
     vb->tag = VB_VAR;
     vb->info.var = (char *)MHA(prsHD, strlen(patt->info.var) +1, sizeof(char));
     strcpy(vb->info.var, patt->info.var);
     break;
-  case P_PAIR   : 
+  case P_PAIR   :
     vb->tag = VB_PAIR;
     vb->info.vbpair.l = pe_TranslateVBasePatt(patt->info.ppair.l);
     vb->info.vbpair.r = pe_TranslateVBasePatt(patt->info.ppair.r);
     break;
-  case P_BANG   : 
+  case P_BANG   :
     vb->tag = VB_BANG;
     break;
   case P_HOVAR :
@@ -488,9 +488,9 @@ pe_TranslateVBasePatt(PE_PATT *patt) {
     break;
   default           :
     printMsg(FATAL_MSG,"pe_TranslateVBasePatt - %d is not a valid PE_PATT tag",
-	     patt->tag);
+             patt->tag);
   }   /*  hctiws  */
-  
+
   return(vb);
 
 }   /*  end pe_TranslateVBasePatt  */
@@ -516,7 +516,7 @@ PE_MACRO
 
      if (strcmp (ident, AT_NAME) == 0)
        printMsg (DELAYEDERROR_MSG, "illegal use of %s", AT_NAME);
-     
+
      macro->ident    = ident;
      macro->type_sig = type_sig;
 
@@ -554,7 +554,7 @@ PE_VAR_BASE
 PE_VAR_BASE
 *VBbang(void)
 {
-     PE_VAR_BASE *var = 
+     PE_VAR_BASE *var =
        (PE_VAR_BASE *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_VAR_BASE));
 
      var->tag      = VB_BANG;
@@ -577,7 +577,7 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
     PE_PATT     *result = NULL;
     int          i = 0;
 
-    if ( !orig ) 
+    if ( !orig )
         return NULL;
 
     result = (PE_PATT *)MHA(heap, 1, sizeof(PE_PATT));
@@ -603,7 +603,7 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
         result->info.record = (P_STRUCTOR **)MHA(heap, i,sizeof(P_STRUCTOR *));
         i = 0;
         while ( orig->info.record[i] ) {
-            result->info.record[i] = 
+            result->info.record[i] =
                 peCopyPStructor(heap, orig->info.record[i+1]);
             i += 1;
         }
@@ -611,7 +611,7 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
         break;
     case P_BANG :
         break;
-    case P_STR : 
+    case P_STR :
         result->info.strBI = libStrdup(heap, orig->info.strBI);
         break;
     case P_CHAR :
@@ -621,7 +621,7 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
         result->info.intcharBI.uTag = orig->info.intcharBI.uTag;
         result->info.intcharBI.u = orig->info.intcharBI.u;
         break;
-    default :  
+    default :
         assert(NULL);
     }   /*  hctiws  */
 
@@ -637,10 +637,10 @@ peCopyPatt(MEMORY heap, PE_PATT *orig) {
  *********************************/
 P_STRUCTOR *
 peCopyPStructor(MEMORY heap, P_STRUCTOR *orig) {
- 
+
     P_STRUCTOR  *result = NULL;
 
-    if ( !orig ) 
+    if ( !orig )
         return NULL;
 
     result = (P_STRUCTOR *)MHA(heap, 1, sizeof(P_STRUCTOR));
@@ -708,16 +708,16 @@ Pvar(char *id) {
   else
     if (isStructor(id)) {
       if (isConstructor(id)) {
-	result->tag = P_CONSTR;
-	result->info.constr = (P_STRUCTOR *)MHA(prsHD, 1, sizeof(P_STRUCTOR));
-	result->info.constr->id = id;
-	result->info.constr->arg = (PE_PATT *)MHA(prsHD, 1, sizeof(PE_PATT));
-	result->info.constr->arg->tag = P_BANG;
+        result->tag = P_CONSTR;
+        result->info.constr = (P_STRUCTOR *)MHA(prsHD, 1, sizeof(P_STRUCTOR));
+        result->info.constr->id = id;
+        result->info.constr->arg = (PE_PATT *)MHA(prsHD, 1, sizeof(PE_PATT));
+        result->info.constr->arg->tag = P_BANG;
       }   /*  fi  */
       else
-	printMsg(DELAYEDERROR_MSG, "%s is a destructor", id);
+        printMsg(DELAYEDERROR_MSG, "%s is a destructor", id);
     }   /*  fi  */
-    else {  
+    else {
       result->tag      = P_VAR;
       result->info.var = peReplaceVar(id, BFALSE);
     }   /*  esle  */
@@ -744,7 +744,7 @@ peHOvar(char *destr, char *var) {
   else
     if ( isStructor(var) )
       printMsg(DELAYEDERROR_MSG,"%s is a structor; should be a variable", var);
-    else {  
+    else {
       patt->tag      = P_HOVAR;
       patt->info.hovar.hovar = peReplaceVar(var, BTRUE);
       patt->info.hovar.destr = st_NameToKey(destr);
@@ -771,7 +771,7 @@ peReplaceVar(char *var, BBOOL isHO) {
     assert (strcmp (var, AT_NAME)   != 0);
 
     /* Don't worry about reserved variables */
-    if ( strncmp(var, RES_PREFIX, strlen(RES_PREFIX)) == 0 ) 
+    if ( strncmp(var, RES_PREFIX, strlen(RES_PREFIX)) == 0 )
         return var;
 
     if ( gbChangeScope ) {
@@ -779,7 +779,7 @@ peReplaceVar(char *var, BBOOL isHO) {
         gbChangeScope = BFALSE;
     }   /*  fi  */
 
-    if ( varKey != NULL ) 
+    if ( varKey != NULL )
         if ( st_IsVar(varKey, &level) == BTRUE )
             if ( level == 0 ) {
                 /* var already in symbol table at this level; nonlinear patt */
@@ -791,7 +791,7 @@ peReplaceVar(char *var, BBOOL isHO) {
         /* var is not in symbol table  at this level ---  normal case */
         varKey = stAddVar(var, isHO);
 
-    return libStrdup(prsHD, st_GetUniqueVar(varKey));        
+    return libStrdup(prsHD, st_GetUniqueVar(varKey));
 
 }   /*  end peReplaceVar  */
 
@@ -832,7 +832,7 @@ PE_PATT
 
      char *dontcare = (char *) MemHeapAlloc(parseHeapDesc, len+1, sizeof(char));
      strcpy(dontcare, RES_PREFIX);
-     strcat(dontcare, underscore);     
+     strcat(dontcare, underscore);
      assert(dontcare);
 
      patt = (PE_PATT *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_PATT));
@@ -875,7 +875,7 @@ peMakeChar(char *str, int radix) {
 
     c[0] = c[1] = NULL;
 /* !!!! Sun ignores overflow conditions!  Write your own overflow code here */
-    if ( (l < CHARMIN)   || (l > CHARMAX) ) 
+    if ( (l < CHARMIN)   || (l > CHARMAX) )
         printMsg(DELAYEDERROR_MSG, "Illegal character.");
     else
         *c = (char)l;
@@ -924,13 +924,13 @@ PE_PATT *Precord(P_STRUCTOR_ARRAY *sArray)
       sArray->array[i] = P_StructorNew(destrNames[i], Pdontcare());
     }
   }
-  sArray->array[sArray->numDestructors] = 0;	/* null terminate */
+  sArray->array[sArray->numDestructors] = 0;    /* null terminate */
   patt->tag         = P_RECORD;
   patt->info.record = sArray->array;
   return patt;
 }
 
-/* patterns of a record definition 
+/* patterns of a record definition
  * eg: (head: patt, tail: patt)
  */
 
@@ -1017,10 +1017,10 @@ peMakeStrExpr(char *str) {
 
     if (str)
       {
-	int index = 0;
+        int index = 0;
 
-	for (index = strlen (str) - 1; index >= 0; index--)
-	  strExpr = ExprNew (TermIdNew ("cons", NULL), ExprPair (peMakeCharExpr (&str[index]), strExpr));
+        for (index = strlen (str) - 1; index >= 0; index--)
+          strExpr = ExprNew (TermIdNew ("cons", NULL), ExprPair (peMakeCharExpr (&str[index]), strExpr));
       }
 
     return strExpr;
@@ -1105,16 +1105,16 @@ PE_TERM
        fold = FoldListHead(folds);
        sKey = st_NameToKey(fold->constr);
        if (!sKey)
-	 printMsg(DELAYEDERROR_MSG, 
-		  "Invalid constructor %s in fold.", fold->constr);
+         printMsg(DELAYEDERROR_MSG,
+                  "Invalid constructor %s in fold.", fold->constr);
        else if (!st_IsStructor(sKey))
-	 printMsg(DELAYEDERROR_MSG,
-		  "Invalid constructor %s in fold.", fold->constr);
+         printMsg(DELAYEDERROR_MSG,
+                  "Invalid constructor %s in fold.", fold->constr);
        else if (!st_IsConstructor(sKey))
-	 printMsg(DELAYEDERROR_MSG,
-		  "%s is a destructor.", fold->constr);
+         printMsg(DELAYEDERROR_MSG,
+                  "%s is a destructor.", fold->constr);
        else  /* everythings's OK */
-	 break;
+         break;
        folds = FoldListTail(folds);
      }
 
@@ -1122,47 +1122,47 @@ PE_TERM
        parentKey    = st_GetStructorParent(sKey);
        sKeys        = st_GetStructorKeys(parentKey);
        numStructs   = st_GetNumStructors(parentKey);
-     
+
        term->tag        = T_FOLD;
-       term->info.folds = 
-	 (PE_FOLD **) MHA(prsHD, numStructs, sizeof(PE_FOLD *));
+       term->info.folds =
+         (PE_FOLD **) MHA(prsHD, numStructs, sizeof(PE_FOLD *));
 
        while (folds) {
-	 fold = FoldListHead(folds);
-	 folds = FoldListTail(folds);
+         fold = FoldListHead(folds);
+         folds = FoldListTail(folds);
 
-	 /* test to see if constructor is valid eg: of type "parent" */
-	 sKey = st_NameToKey(fold->constr);
-	 if (!sKey)	
-	   printMsg(DELAYEDERROR_MSG,
-		    "Invalid constructor %s in fold.", fold->constr);
-	 else if (!st_IsStructor(sKey))
-	   printMsg(DELAYEDERROR_MSG,
-		    "Invalid constructor %s in fold.", fold->constr);
-	 else {
-	   if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey)) 
-	     printMsg(DELAYEDERROR_MSG, "Constructor %s not of type %s",
-		      fold->constr, st_KeyToName(parentKey));
-	   else {
-	     structPos = st_GetStructorPosn(sKey); /* structor posn */
+         /* test to see if constructor is valid eg: of type "parent" */
+         sKey = st_NameToKey(fold->constr);
+         if (!sKey)
+           printMsg(DELAYEDERROR_MSG,
+                    "Invalid constructor %s in fold.", fold->constr);
+         else if (!st_IsStructor(sKey))
+           printMsg(DELAYEDERROR_MSG,
+                    "Invalid constructor %s in fold.", fold->constr);
+         else {
+           if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey))
+             printMsg(DELAYEDERROR_MSG, "Constructor %s not of type %s",
+                      fold->constr, st_KeyToName(parentKey));
+           else {
+             structPos = st_GetStructorPosn(sKey); /* structor posn */
 
-	     /* see if the constructor has already been put into the array */
-	     if (term->info.folds[structPos]) 
-	       FoldListAppend(term->info.folds[structPos]->phrases, 
-			      fold->phrases);
-	     else {
-	       numFoldPhrases++;
-	       term->info.folds[structPos] = fold;
-	     }   /*  else  */
-	   }   /*  esle  */
-	 }   /*  esle  */
+             /* see if the constructor has already been put into the array */
+             if (term->info.folds[structPos])
+               FoldListAppend(term->info.folds[structPos]->phrases,
+                              fold->phrases);
+             else {
+               numFoldPhrases++;
+               term->info.folds[structPos] = fold;
+             }   /*  else  */
+           }   /*  esle  */
+         }   /*  esle  */
        }   /*  elihw  */
 
        /* check for missing constructors */
        if (numFoldPhrases != numStructs)
-	 printMsg(DELAYEDERROR_MSG, 
-		  "Should be %d constructors in fold, not %d.",
-		  numStructs, numFoldPhrases);
+         printMsg(DELAYEDERROR_MSG,
+                  "Should be %d constructors in fold, not %d.",
+                  numStructs, numFoldPhrases);
      }   /*  fi  */
      else {
        term->tag        = T_FOLD;
@@ -1215,13 +1215,13 @@ PE_TERM
     sKey = st_NameToKey(unfold->destr);
     if (!sKey)
       printMsg(DELAYEDERROR_MSG,
-	       "Invalid destructor %s in unfold.", unfold->destr);
+               "Invalid destructor %s in unfold.", unfold->destr);
     else if (!st_IsStructor(sKey))
       printMsg(DELAYEDERROR_MSG,
-	       "Invalid destructor %s in unfold.", unfold->destr);
+               "Invalid destructor %s in unfold.", unfold->destr);
     else if (!st_IsDestructor(sKey))
       printMsg(DELAYEDERROR_MSG,
-	       "%s is a constructor.", unfold->destr);
+               "%s is a constructor.", unfold->destr);
     else  /* everythings's OK */
       break;
     unfolds = UnfoldListTail(unfolds);
@@ -1231,55 +1231,55 @@ PE_TERM
     parentKey    = st_GetStructorParent(sKey);
     sKeys        = st_GetStructorKeys(parentKey);
     numStructs   = st_GetNumStructors(parentKey);
-    
+
     term->tag          = T_UNFOLD;
-    term->info.unfolds = 
+    term->info.unfolds =
       (PE_UNFOLD **)MHA(prsHD, numStructs+1, sizeof(PE_UNFOLD *));
-    
+
     while (unfolds) {
       unfold = UnfoldListHead(unfolds);
       unfolds = UnfoldListTail(unfolds);
-      
+
       /* test to see if destructor is valid eg: of type "parent" */
       sKey = st_NameToKey(unfold->destr);
       if (!sKey)
-	printMsg(DELAYEDERROR_MSG,
-		 "Invalid destructor %s in unfold.", unfold->destr);
+        printMsg(DELAYEDERROR_MSG,
+                 "Invalid destructor %s in unfold.", unfold->destr);
       else if (!st_IsStructor(sKey))
-	printMsg(DELAYEDERROR_MSG,
-		 "Invalid destructor %s in unfold.", unfold->destr);
+        printMsg(DELAYEDERROR_MSG,
+                 "Invalid destructor %s in unfold.", unfold->destr);
       else {
-	if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey)) 
-	  printMsg(DELAYEDERROR_MSG, "Destructor %s not of type %s",
-		   unfold->destr, st_KeyToName(parentKey));
-	else {
-	  structPos = st_GetStructorPosn(sKey); /* structor posn */
-      
-	  /* see if the destructor has already been put into the array */
-	  if (term->info.unfolds[structPos]) 
-	    UnfoldListAppend(term->info.unfolds[structPos]->phrases, 
-			     unfold->phrases);
-	  else {
-	    term->info.unfolds[structPos] = unfold;
-	    numUnfoldPhrases++;
-	  }   /*  esle  */
-	}   /*  esle  */
+        if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey))
+          printMsg(DELAYEDERROR_MSG, "Destructor %s not of type %s",
+                   unfold->destr, st_KeyToName(parentKey));
+        else {
+          structPos = st_GetStructorPosn(sKey); /* structor posn */
+
+          /* see if the destructor has already been put into the array */
+          if (term->info.unfolds[structPos])
+            UnfoldListAppend(term->info.unfolds[structPos]->phrases,
+                             unfold->phrases);
+          else {
+            term->info.unfolds[structPos] = unfold;
+            numUnfoldPhrases++;
+          }   /*  esle  */
+        }   /*  esle  */
       }   /*  esle  */
     }   /*  elihw  */
     term->info.unfolds[numStructs] = NULL;   /* null terminated */
-    
+
     /* check for missing destructors */
     if (numUnfoldPhrases != numStructs)
-      printMsg(DELAYEDERROR_MSG, 
-	       "Should be %d destructors in unfold, not %d.",
-	       numStructs, numUnfoldPhrases);
+      printMsg(DELAYEDERROR_MSG,
+               "Should be %d destructors in unfold, not %d.",
+               numStructs, numUnfoldPhrases);
   }   /*  fi  */
   else {
     term->tag        = T_UNFOLD;
     term->info.unfolds = NULL;
   }
 
-  
+
   return(term);
 
 }
@@ -1289,7 +1289,7 @@ PE_TERM
  *    UnfoldNew                  *
  *                               *
  *********************************/
-PE_UNFOLD     
+PE_UNFOLD
 *UnfoldNew(char *destr, PE_T_PHRASE *phrase)
 {
      PE_UNFOLD *unfold = (PE_UNFOLD *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_UNFOLD));
@@ -1315,16 +1315,16 @@ PE_LIST_UNFOLD
      PE_LIST_UNFOLD *result     = NULL;
      PE_FOLD        *headfold   = NULL;
      PE_UNFOLD      *unfold     = NULL;
-     
+
      if (folds) {
-	  headfold = FoldListHead(folds);
-	  assert(headfold);
+          headfold = FoldListHead(folds);
+          assert(headfold);
 
-	  unfold = (PE_UNFOLD *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_UNFOLD));
-	  unfold->destr   = headfold->constr;
-	  unfold->phrases = headfold->phrases;
+          unfold = (PE_UNFOLD *) MemHeapAlloc(parseHeapDesc, 1, sizeof(PE_UNFOLD));
+          unfold->destr   = headfold->constr;
+          unfold->phrases = headfold->phrases;
 
-	  result = UnfoldListCons(unfold, Fold2Unfold(FoldListTail(folds)));
+          result = UnfoldListCons(unfold, Fold2Unfold(FoldListTail(folds)));
      }
 
      return(result);
@@ -1341,7 +1341,7 @@ PE_LIST_UNFOLD
  *    UnfoldListAddPatt          *
  *                               *
  *********************************/
-PE_LIST_UNFOLD 
+PE_LIST_UNFOLD
 *UnfoldListAddPatt(PE_PATT *patt, PE_LIST_UNFOLD *unfolds)
 /* patt may be NULL */
 {
@@ -1355,24 +1355,24 @@ PE_LIST_UNFOLD
 
      while (listunfold) {
 
-	  headunfold = UnfoldListHead(listunfold);
-	  assert(headunfold);
-     
-	  listphr = headunfold->phrases;
-	  assert(listphr);
+          headunfold = UnfoldListHead(listunfold);
+          assert(headunfold);
 
-	  while (listphr) {
-	       headphr = T_PhraseListHead(listphr);
-	       assert(headphr);
-	       if (!headphr->patt)
-		    headphr->patt = patt;
-	       else
-		    break;
+          listphr = headunfold->phrases;
+          assert(listphr);
 
-	       listphr = T_PhraseListTail(listphr);
-	  }
+          while (listphr) {
+               headphr = T_PhraseListHead(listphr);
+               assert(headphr);
+               if (!headphr->patt)
+                    headphr->patt = patt;
+               else
+                    break;
 
-	  listunfold = UnfoldListTail(listunfold);
+               listphr = T_PhraseListTail(listphr);
+          }
+
+          listunfold = UnfoldListTail(listunfold);
      }
 
      return(result);
@@ -1389,12 +1389,12 @@ PE_LIST_UNFOLD
 
 PE_CASES_AND_UNFOLDS *
 MoreCasesNew (PE_T_PHRASE    *newCase,
-	      PE_LIST_UNFOLD *unfolds)     /* MAY BE NULL */
+              PE_LIST_UNFOLD *unfolds)     /* MAY BE NULL */
 {
   PE_CASES_AND_UNFOLDS *casesAndUnfolds =
     (PE_CASES_AND_UNFOLDS *)MemHeapAlloc (parseHeapDesc,
-					  1,
-					  sizeof (PE_CASES_AND_UNFOLDS));
+                                          1,
+                                          sizeof (PE_CASES_AND_UNFOLDS));
 
   assert (newCase);
   assert (casesAndUnfolds);
@@ -1416,7 +1416,7 @@ MoreCasesNew (PE_T_PHRASE    *newCase,
 
 PE_CASES_AND_UNFOLDS *
 AddMoreCases (PE_T_PHRASE          *newCase,
-	      PE_CASES_AND_UNFOLDS *original)
+              PE_CASES_AND_UNFOLDS *original)
 {
   assert (newCase);
   assert (original);
@@ -1483,15 +1483,15 @@ PE_TERM
 
   sKey = st_NameToKey(rec->destr);
   if (!sKey)
-    printMsg(DELAYEDERROR_MSG, 
-	     "Invalid destructor %s in record.", rec->destr);
+    printMsg(DELAYEDERROR_MSG,
+             "Invalid destructor %s in record.", rec->destr);
   else {
     parentKey  = st_GetStructorParent(sKey);
     sKeys      = st_GetStructorKeys(parentKey);
     numStructs = st_GetNumStructors(parentKey);
-     
+
     term->tag          = T_RECORD;
-    term->info.records = 
+    term->info.records =
       (PE_RECORD **)MHA(prsHD, numStructs, sizeof(struct PE_TERM*));
     while (records) {
       rec = RecordListHead(records);
@@ -1499,32 +1499,32 @@ PE_TERM
 
       /* test to see if destructor is valid eg: of type "parent" */
       sKey = st_NameToKey(rec->destr);
-      if (!sKey)     
-	printMsg(DELAYEDERROR_MSG,
-		 "Invalid destructor %s in record.", rec->destr);
+      if (!sKey)
+        printMsg(DELAYEDERROR_MSG,
+                 "Invalid destructor %s in record.", rec->destr);
       else {
-	if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey)) 
-	  printMsg(DELAYEDERROR_MSG, "Destructor %s not of type %s",
-		   rec->destr, st_KeyToName(parentKey));
-	else {
-	  structPos = st_GetStructorPosn(sKey); /* structor posn */
-      
-	  /* see if the destructor has already been put into the array */
-	  if (term->info.records[structPos]) 
-	   printMsg(DELAYEDERROR_MSG,"Duplicate destructor entry %s in record",
-		     rec->destr);
-	  else {
-	    numRecordPhrases++;
-	    term->info.records[structPos] = rec;
-	  }   /*  esle  */
-	}   /*  esle  */
+        if (!st_KeysEqual(st_GetStructorParent(sKey), parentKey))
+          printMsg(DELAYEDERROR_MSG, "Destructor %s not of type %s",
+                   rec->destr, st_KeyToName(parentKey));
+        else {
+          structPos = st_GetStructorPosn(sKey); /* structor posn */
+
+          /* see if the destructor has already been put into the array */
+          if (term->info.records[structPos])
+           printMsg(DELAYEDERROR_MSG,"Duplicate destructor entry %s in record",
+                     rec->destr);
+          else {
+            numRecordPhrases++;
+            term->info.records[structPos] = rec;
+          }   /*  esle  */
+        }   /*  esle  */
       }   /*  esle  */
     }   /*  elihw  */
 
     if (numRecordPhrases != numStructs)
-      printMsg(DELAYEDERROR_MSG, 
-	       "Should be %d destructors in record, not %d.",
-	       numStructs, numRecordPhrases);
+      printMsg(DELAYEDERROR_MSG,
+               "Should be %d destructors in record, not %d.",
+               numStructs, numRecordPhrases);
   }   /*  esle  */
 
   return(term);
@@ -1542,11 +1542,11 @@ PE_TERM
 
 PE_RECORD *
 RecordNew (char    *destr,
-	   PE_EXPR *expr)
+           PE_EXPR *expr)
 {
   PE_RECORD *record = (PE_RECORD *)MemHeapAlloc (parseHeapDesc,
-						 1,
-						 sizeof (PE_RECORD));
+                                                 1,
+                                                 sizeof (PE_RECORD));
 
   assert (destr);
   assert (expr);
@@ -1570,11 +1570,11 @@ RecordNew (char    *destr,
 
 PE_RECORD *
 HORecordNew (char    *destr,
-	     PE_TERM *cases)
+             PE_TERM *cases)
 {
   PE_RECORD *record = (PE_RECORD *)MemHeapAlloc (parseHeapDesc,
-						 1,
-						 sizeof (PE_RECORD));
+                                                 1,
+                                                 sizeof (PE_RECORD));
 
   assert (destr);
   assert (cases);
@@ -1610,19 +1610,19 @@ Phrases2Terms (PE_LIST_FUN_PHRASE *phrases)     /* MAY BE NULL */
       PE_FUN_PHRASE *head = FunPhraseListHead (phrases);
 
       if (!head->positive || head->negative)
-	{
-	  printMsg (DELAYEDERROR_MSG, "macros must be univariant");
+        {
+          printMsg (DELAYEDERROR_MSG, "macros must be univariant");
 
-	  /* CREATE A DUMMY IF NECESSARY: */
+          /* CREATE A DUMMY IF NECESSARY: */
 
-	  if (!head->positive)
-	    head->positive = (PE_TERM *)MemHeapAlloc (parseHeapDesc,
-						      1,
-						      sizeof (PE_TERM));
-	}
+          if (!head->positive)
+            head->positive = (PE_TERM *)MemHeapAlloc (parseHeapDesc,
+                                                      1,
+                                                      sizeof (PE_TERM));
+        }
 
       return TermListCons (head->positive,
-			   Phrases2Terms (FunPhraseListTail (phrases)));
+                           Phrases2Terms (FunPhraseListTail (phrases)));
     }
   else
     return NULL;
@@ -1639,7 +1639,7 @@ Phrases2Terms (PE_LIST_FUN_PHRASE *phrases)     /* MAY BE NULL */
 
 PE_FUN_PHRASE *
 FunPhraseNew (PE_TERM *positive,     /* MAY BE NULL */
-	      PE_TERM *negative)     /* MAY BE NULL */
+              PE_TERM *negative)     /* MAY BE NULL */
 {
   PE_FUN_PHRASE *phrase = (PE_FUN_PHRASE *)MHA(prsHD,1,sizeof (PE_FUN_PHRASE));
 
@@ -1660,13 +1660,13 @@ FunPhraseNew (PE_TERM *positive,     /* MAY BE NULL */
 PE_TERM
 *TermMacroNew(char *macroName, PE_LIST_TERM *terms) {
 
-  PE_TERM      *macroTerm = (PE_TERM *)MemHeapAlloc(parseHeapDesc, 1, 
-						    sizeof(PE_TERM));
+  PE_TERM      *macroTerm = (PE_TERM *)MemHeapAlloc(parseHeapDesc, 1,
+                                                    sizeof(PE_TERM));
   PE_MACROS    *macro     = (PE_MACROS *)MemHeapAlloc(parseHeapDesc,1,
-						      sizeof(PE_MACROS));
+                                                      sizeof(PE_MACROS));
 
   /* can't test for proper number of macros here */
-    macro->macro_name = macroName;     
+    macro->macro_name = macroName;
     macro->macros = makePhraseArray(terms, TermListLen(terms));
     macroTerm->tag       = T_MACRO;
     macroTerm->info.macro = macro;
@@ -1693,7 +1693,7 @@ PE_TERM
   funTerm->info.function = fun;
 
   /* can't tell how many macros since may have been redefined */
-  fun->fun_name = funName;     
+  fun->fun_name = funName;
   fun->macros = makePhraseArray(terms, TermListLen(terms));
 
   return(funTerm);
@@ -1711,7 +1711,7 @@ PE_LIST_T_PHRASE
 
   PE_LIST_TERM      *tmp    = terms;
   PE_TERM           *term   = NULL;
-  PE_LIST_T_PHRASE **phrases = 
+  PE_LIST_T_PHRASE **phrases =
     (PE_LIST_T_PHRASE **)MHA(prsHD, numElements+1, sizeof(PE_LIST_T_PHRASE *));
   PE_T_PHRASE      *phrase  = NULL;
   PE_EXPR          *appExpr = NULL;
@@ -1720,7 +1720,7 @@ PE_LIST_T_PHRASE
 
   for (count = 0; count < numElements; count++) {
     term = TermListHead(tmp);
-      
+
     if (term->tag == T_CASE)
       phrases[count] = term->info.cases;
     else {
@@ -1734,14 +1734,14 @@ PE_LIST_T_PHRASE
       phrase =(PE_T_PHRASE *)MHA(parseHeapDesc,1,sizeof(PE_T_PHRASE));
       phrase->patt = Pvar(newVar);
       phrase->expr = ExprNew(term, appExpr);
-      
+
       phrases[count] = T_PhraseListCons(phrase, NULL);
     }   /*  esle  */
 
     tmp = TermListTail(tmp);
   }   /*  rof  */
   phrases[numElements] = NULL;
-  
+
   return phrases;
 
 }   /*  end makePhraseArray  */
@@ -1758,8 +1758,8 @@ PE_LIST_T_PHRASE
 static
 PE_MAP_PHRASE *
 MakeMapPhraseArray (PE_LIST_FUN_PHRASE *funPhrases,
-		    int                 numParams,
-		    V_VARIANCE         *varity)
+                    int                 numParams,
+                    V_VARIANCE         *varity)
 {
   int                 index     = 0;
   PE_LIST_FUN_PHRASE *tmp       = funPhrases;
@@ -1771,8 +1771,8 @@ MakeMapPhraseArray (PE_LIST_FUN_PHRASE *funPhrases,
 
   PE_MAP_PHRASE *mapPhrases =
     (PE_MAP_PHRASE *)MemHeapAlloc (parseHeapDesc,
-				   numParams,
-				   sizeof (PE_MAP_PHRASE));
+                                   numParams,
+                                   sizeof (PE_MAP_PHRASE));
 
   assert (funPhrases);
   assert (numParams > 0);
@@ -1784,112 +1784,112 @@ MakeMapPhraseArray (PE_LIST_FUN_PHRASE *funPhrases,
       funPhrase = FunPhraseListHead (tmp);
 
       if (funPhrase->positive)
-	{
-	  if (funPhrase->positive->tag == T_CASE)
-	    mapPhrases[index].positive = funPhrase->positive->info.cases;
-	  else
-	    {
-	      newVar = makeNewRsrvdVar (parseHeapDesc);
+        {
+          if (funPhrase->positive->tag == T_CASE)
+            mapPhrases[index].positive = funPhrase->positive->info.cases;
+          else
+            {
+              newVar = makeNewRsrvdVar (parseHeapDesc);
 
-	      assert (newVar);
+              assert (newVar);
 
-	      appExpr = (PE_EXPR *)MemHeapAlloc (parseHeapDesc,
-						 1,
-						 sizeof (PE_EXPR));
+              appExpr = (PE_EXPR *)MemHeapAlloc (parseHeapDesc,
+                                                 1,
+                                                 sizeof (PE_EXPR));
 
-	      assert (appExpr);
+              assert (appExpr);
 
-	      appExpr->tag      = E_VAR;
-	      appExpr->info.var = newVar;
+              appExpr->tag      = E_VAR;
+              appExpr->info.var = newVar;
 
-	      positive = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
-						      1,
-						      sizeof (PE_T_PHRASE));
+              positive = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
+                                                      1,
+                                                      sizeof (PE_T_PHRASE));
 
-	      assert (positive);
+              assert (positive);
 
-	      positive->patt  = Pvar (newVar);
-	      positive->expr  = ExprNew (funPhrase->positive, appExpr);
-	      positive->cases = NULL;
+              positive->patt  = Pvar (newVar);
+              positive->expr  = ExprNew (funPhrase->positive, appExpr);
+              positive->cases = NULL;
 
-	      mapPhrases[index].positive = T_PhraseListCons (positive, NULL);
-	    }
-	}
+              mapPhrases[index].positive = T_PhraseListCons (positive, NULL);
+            }
+        }
       else
-	mapPhrases[index].positive = NULL;
+        mapPhrases[index].positive = NULL;
 
       if (funPhrase->negative)
-	{
-	  if (funPhrase->negative->tag == T_CASE)
-	    mapPhrases[index].negative = funPhrase->negative->info.cases;
-	  else
-	    {
-	      newVar = makeNewRsrvdVar (parseHeapDesc);
+        {
+          if (funPhrase->negative->tag == T_CASE)
+            mapPhrases[index].negative = funPhrase->negative->info.cases;
+          else
+            {
+              newVar = makeNewRsrvdVar (parseHeapDesc);
 
-	      assert (newVar);
+              assert (newVar);
 
-	      appExpr = (PE_EXPR *)MemHeapAlloc (parseHeapDesc,
-						 1,
-						 sizeof (PE_EXPR));
+              appExpr = (PE_EXPR *)MemHeapAlloc (parseHeapDesc,
+                                                 1,
+                                                 sizeof (PE_EXPR));
 
-	      assert (appExpr);
+              assert (appExpr);
 
-	      appExpr->tag      = E_VAR;
-	      appExpr->info.var = newVar;
+              appExpr->tag      = E_VAR;
+              appExpr->info.var = newVar;
 
-	      negative = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
-						      1,
-						      sizeof (PE_T_PHRASE));
+              negative = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
+                                                      1,
+                                                      sizeof (PE_T_PHRASE));
 
-	      assert (negative);
+              assert (negative);
 
-	      negative->patt  = Pvar (newVar);
-	      negative->expr  = ExprNew (funPhrase->negative, appExpr);
-	      negative->cases = NULL;
+              negative->patt  = Pvar (newVar);
+              negative->expr  = ExprNew (funPhrase->negative, appExpr);
+              negative->cases = NULL;
 
-	      mapPhrases[index].negative = T_PhraseListCons (negative, NULL);
-	    }
-	}
+              mapPhrases[index].negative = T_PhraseListCons (negative, NULL);
+            }
+        }
       else
-	mapPhrases[index].negative = NULL;
+        mapPhrases[index].negative = NULL;
 
       switch (varity[index])
-	{
-	case V_NEITHER:
-	  if (mapPhrases[index].positive || mapPhrases[index].negative)
-	    printMsg (DELAYEDERROR_MSG,
-		      "Parameter %d of the map must have \"_\" variance.",
-		      index);
+        {
+        case V_NEITHER:
+          if (mapPhrases[index].positive || mapPhrases[index].negative)
+            printMsg (DELAYEDERROR_MSG,
+                      "Parameter %d of the map must have \"_\" variance.",
+                      index);
 
-	  break;
+          break;
 
-	case V_POSITIVE:
-	  if (!mapPhrases[index].positive || mapPhrases[index].negative)
-	    printMsg (DELAYEDERROR_MSG,
-		      "Parameter %d of the map must have \"+\" variance.",
-		      index);
+        case V_POSITIVE:
+          if (!mapPhrases[index].positive || mapPhrases[index].negative)
+            printMsg (DELAYEDERROR_MSG,
+                      "Parameter %d of the map must have \"+\" variance.",
+                      index);
 
-	  break;
+          break;
 
-	case V_NEGATIVE:
-	  if (!mapPhrases[index].positive || mapPhrases[index].negative)
-	    printMsg (DELAYEDERROR_MSG,
-		      "Parameter %d of the map must have \"-\" variance.",
-		      index);
+        case V_NEGATIVE:
+          if (!mapPhrases[index].positive || mapPhrases[index].negative)
+            printMsg (DELAYEDERROR_MSG,
+                      "Parameter %d of the map must have \"-\" variance.",
+                      index);
 
-	  mapPhrases[index].negative = mapPhrases[index].positive;
-	  mapPhrases[index].positive = NULL;
+          mapPhrases[index].negative = mapPhrases[index].positive;
+          mapPhrases[index].positive = NULL;
 
-	  break;
+          break;
 
-	case V_BOTH:
-	  if (!mapPhrases[index].positive || !mapPhrases[index].negative)
-	    printMsg (DELAYEDERROR_MSG,
-		      "Parameter %d of the map must have \"*\" variance.",
-		      index);
+        case V_BOTH:
+          if (!mapPhrases[index].positive || !mapPhrases[index].negative)
+            printMsg (DELAYEDERROR_MSG,
+                      "Parameter %d of the map must have \"*\" variance.",
+                      index);
 
-	  break;
-	}
+          break;
+        }
 
       tmp = FunPhraseListTail (tmp);
     }
@@ -1907,7 +1907,7 @@ MakeMapPhraseArray (PE_LIST_FUN_PHRASE *funPhrases,
 static
 PE_TERM *
 TermAliasMapNew (char               *alias,
-		 PE_LIST_FUN_PHRASE *phrases)
+                 PE_LIST_FUN_PHRASE *phrases)
 {
   PE_TERM *aliasMapTerm = NULL;
   int      numParams    = 0;
@@ -1927,63 +1927,63 @@ TermAliasMapNew (char               *alias,
       ST_TYPE    *expansion = getAliasExpansion (alias);
 
       for (i = 0; i < numParams; i++)
-	{
-	  assert (tmpPhrases);
+        {
+          assert (tmpPhrases);
 
-	  tmpPhrase = FunPhraseListHead (tmpPhrases);
+          tmpPhrase = FunPhraseListHead (tmpPhrases);
 
-	  switch (varity[i])
-	    {
-	    case V_NEITHER:
-	      if (tmpPhrase->positive || tmpPhrase->negative)
-		printMsg (DELAYEDERROR_MSG,
-			  "Parameter %d of the map must have \"_\" variance.",
-			  i);
+          switch (varity[i])
+            {
+            case V_NEITHER:
+              if (tmpPhrase->positive || tmpPhrase->negative)
+                printMsg (DELAYEDERROR_MSG,
+                          "Parameter %d of the map must have \"_\" variance.",
+                          i);
 
-	      break;
+              break;
 
-	    case V_POSITIVE:
-	      if (!tmpPhrase->positive || tmpPhrase->negative)
-		printMsg (DELAYEDERROR_MSG,
-			  "Parameter %d of the map must have \"+\" variance.",
-			  i);
+            case V_POSITIVE:
+              if (!tmpPhrase->positive || tmpPhrase->negative)
+                printMsg (DELAYEDERROR_MSG,
+                          "Parameter %d of the map must have \"+\" variance.",
+                          i);
 
-	      break;
+              break;
 
-	    case V_NEGATIVE:
-	      if (!tmpPhrase->positive || tmpPhrase->negative)
-		printMsg (DELAYEDERROR_MSG,
-			  "Parameter %d of the map must have \"-\" variance.",
-			  i);
+            case V_NEGATIVE:
+              if (!tmpPhrase->positive || tmpPhrase->negative)
+                printMsg (DELAYEDERROR_MSG,
+                          "Parameter %d of the map must have \"-\" variance.",
+                          i);
 
-	      tmpPhrase->negative = tmpPhrase->positive;
-	      tmpPhrase->positive = NULL;
+              tmpPhrase->negative = tmpPhrase->positive;
+              tmpPhrase->positive = NULL;
 
-	      break;
+              break;
 
-	    case V_BOTH:
-	      if (!tmpPhrase->positive || !tmpPhrase->negative)
-		printMsg (DELAYEDERROR_MSG,
-			  "Parameter %d of the map must have \"*\" variance.",
-			  i);
+            case V_BOTH:
+              if (!tmpPhrase->positive || !tmpPhrase->negative)
+                printMsg (DELAYEDERROR_MSG,
+                          "Parameter %d of the map must have \"*\" variance.",
+                          i);
 
-	      break;
+              break;
 
-	    default:
-	      assert (BFALSE);
-	    }
+            default:
+              assert (BFALSE);
+            }
 
-	  tmpPhrases = FunPhraseListTail (tmpPhrases);
-	}
+          tmpPhrases = FunPhraseListTail (tmpPhrases);
+        }
 
       assert (!tmpPhrases);
 
       if (!delayedErrorCount)
-	aliasMapTerm = MakeAliasMap (V_POSITIVE, expansion, phrases);
+        aliasMapTerm = MakeAliasMap (V_POSITIVE, expansion, phrases);
     }
   else
     printMsg (DELAYEDERROR_MSG,
-	      "Map for alias %s has invalid number of parameters.", alias);
+              "Map for alias %s has invalid number of parameters.", alias);
 
   if (!aliasMapTerm)     /* FUTURE ASSERTIONS WILL FAIL, SO ... */
     {
@@ -2008,8 +2008,8 @@ TermAliasMapNew (char               *alias,
 static
 PE_TERM *
 MakeAliasMap (V_VARIANCE          variance,
-	      ST_TYPE            *expansion,
-	      PE_LIST_FUN_PHRASE *phrases)
+              ST_TYPE            *expansion,
+              PE_LIST_FUN_PHRASE *phrases)
 {
   PE_TERM *term = (PE_TERM *)MHA (prsHD, 1, sizeof (PE_TERM));
 
@@ -2022,228 +2022,228 @@ MakeAliasMap (V_VARIANCE          variance,
     case TYPE_1:
       term->tag        = T_CASE;
       term->info.cases = T_PhraseListCons (T_PhraseNew (Pbang (),
-							ConstNew ()),
-					   NULL);
+                                                        ConstNew ()),
+                                           NULL);
 
       break;
 
     case TYPE_BUILTIN_INT:
       {
-	char       *x       = makeNewRsrvdVar   (parseHeapDesc);
-	PE_PATT    *patt    = (PE_PATT *)MHA    (parseHeapDesc, 1, sizeof (PE_PATT));
-	PE_BUILTIN *builtin = (PE_BUILTIN *)MHA (parseHeapDesc, 1, sizeof (PE_BUILTIN));
-	PE_TERM    *BIterm  = (PE_TERM *)MHA    (parseHeapDesc, 1, sizeof (PE_TERM));
+        char       *x       = makeNewRsrvdVar   (parseHeapDesc);
+        PE_PATT    *patt    = (PE_PATT *)MHA    (parseHeapDesc, 1, sizeof (PE_PATT));
+        PE_BUILTIN *builtin = (PE_BUILTIN *)MHA (parseHeapDesc, 1, sizeof (PE_BUILTIN));
+        PE_TERM    *BIterm  = (PE_TERM *)MHA    (parseHeapDesc, 1, sizeof (PE_TERM));
 
-	assert (patt);
-	assert (builtin);
-	assert (BIterm);
+        assert (patt);
+        assert (builtin);
+        assert (BIterm);
 
-	patt->tag                 = P_INT;
-	patt->info.intcharBI.lTag = INTX;
-	patt->info.intcharBI.l    = (long)1;
-	patt->info.intcharBI.uTag = INTX;
-	patt->info.intcharBI.u    = (long)1;
+        patt->tag                 = P_INT;
+        patt->info.intcharBI.lTag = INTX;
+        patt->info.intcharBI.l    = (long)1;
+        patt->info.intcharBI.uTag = INTX;
+        patt->info.intcharBI.u    = (long)1;
 
-	builtin->tag        = BI_INT;
-	builtin->info.intBI = (long)1;
+        builtin->tag        = BI_INT;
+        builtin->info.intBI = (long)1;
 
-	BIterm->tag          = T_BUILTIN;
-	BIterm->info.builtin = builtin;
+        BIterm->tag          = T_BUILTIN;
+        BIterm->info.builtin = builtin;
 
-	term->tag        = T_CASE;
-	term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
-							  ExprVarNew (x)),
-					     T_PhraseListCons (T_PhraseNew (patt,
-									    ExprNew (BIterm,
-										     ConstNew ())),
-							       NULL));
+        term->tag        = T_CASE;
+        term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                          ExprVarNew (x)),
+                                             T_PhraseListCons (T_PhraseNew (patt,
+                                                                            ExprNew (BIterm,
+                                                                                     ConstNew ())),
+                                                               NULL));
       }
 
       break;
 
     case TYPE_BUILTIN_CHAR:
       {
-	char       *x       = makeNewRsrvdVar   (parseHeapDesc);
-	PE_PATT    *patt    = (PE_PATT *)MHA    (parseHeapDesc, 1, sizeof (PE_PATT));
-	PE_BUILTIN *builtin = (PE_BUILTIN *)MHA (parseHeapDesc, 1, sizeof (PE_BUILTIN));
-	PE_TERM    *BIterm  = (PE_TERM *)MHA    (parseHeapDesc, 1, sizeof (PE_TERM));
+        char       *x       = makeNewRsrvdVar   (parseHeapDesc);
+        PE_PATT    *patt    = (PE_PATT *)MHA    (parseHeapDesc, 1, sizeof (PE_PATT));
+        PE_BUILTIN *builtin = (PE_BUILTIN *)MHA (parseHeapDesc, 1, sizeof (PE_BUILTIN));
+        PE_TERM    *BIterm  = (PE_TERM *)MHA    (parseHeapDesc, 1, sizeof (PE_TERM));
 
-	assert (patt);
-	assert (builtin);
-	assert (BIterm);
+        assert (patt);
+        assert (builtin);
+        assert (BIterm);
 
-	patt->tag                 = P_CHAR;
-	patt->info.intcharBI.lTag = INTX;
-	patt->info.intcharBI.l    = (long)65;
-	patt->info.intcharBI.uTag = INTX;
-	patt->info.intcharBI.u    = (long)65;
+        patt->tag                 = P_CHAR;
+        patt->info.intcharBI.lTag = INTX;
+        patt->info.intcharBI.l    = (long)65;
+        patt->info.intcharBI.uTag = INTX;
+        patt->info.intcharBI.u    = (long)65;
 
-	builtin->tag         = BI_CHAR;
-	builtin->info.charBI = 'A';
+        builtin->tag         = BI_CHAR;
+        builtin->info.charBI = 'A';
 
-	BIterm->tag          = T_BUILTIN;
-	BIterm->info.builtin = builtin;
+        BIterm->tag          = T_BUILTIN;
+        BIterm->info.builtin = builtin;
 
-	term->tag        = T_CASE;
-	term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
-							  ExprVarNew (x)),
-					     T_PhraseListCons (T_PhraseNew (patt,
-									    ExprNew (BIterm,
-										     ConstNew ())),
-							       NULL));
+        term->tag        = T_CASE;
+        term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                          ExprVarNew (x)),
+                                             T_PhraseListCons (T_PhraseNew (patt,
+                                                                            ExprNew (BIterm,
+                                                                                     ConstNew ())),
+                                                               NULL));
       }
 
       break;
 
     case TYPE_PROD:
       {
-	PE_TERM *f = MakeAliasMap (variance, expansion->info.prod.l, phrases);
-	PE_TERM *g = MakeAliasMap (variance, expansion->info.prod.r, phrases);
+        PE_TERM *f = MakeAliasMap (variance, expansion->info.prod.l, phrases);
+        PE_TERM *g = MakeAliasMap (variance, expansion->info.prod.r, phrases);
 
-	char *x = makeNewRsrvdVar (parseHeapDesc);
-	char *y = makeNewRsrvdVar (parseHeapDesc);
+        char *x = makeNewRsrvdVar (parseHeapDesc);
+        char *y = makeNewRsrvdVar (parseHeapDesc);
 
-	term->tag        = T_CASE;
-	term->info.cases = T_PhraseListCons (T_PhraseNew (Ppair (Pvar (x),
-								 Pvar (y)),
-							  ExprPair (ExprNew (f,
-									     ExprVarNew (x)),
-								    ExprNew (g,
-									     ExprVarNew (y)))),
-					     NULL);
+        term->tag        = T_CASE;
+        term->info.cases = T_PhraseListCons (T_PhraseNew (Ppair (Pvar (x),
+                                                                 Pvar (y)),
+                                                          ExprPair (ExprNew (f,
+                                                                             ExprVarNew (x)),
+                                                                    ExprNew (g,
+                                                                             ExprVarNew (y)))),
+                                             NULL);
       }
 
       break;
 
     case TYPE_USER_DATA:
       {
-	int numParams = st_GetNumParams (expansion->info.user_data.key);
+        int numParams = st_GetNumParams (expansion->info.user_data.key);
 
-	assert (numParams >= 0);
+        assert (numParams >= 0);
 
-	if (numParams > 0)
-	  {
-	    PE_MAP     *map     = (PE_MAP *)MHA (parseHeapDesc, 1, sizeof (PE_MAP));
-	    V_VARIANCE *varity  = st_GetVarity (expansion->info.user_data.key);
-	    int         i       = 0;
-	    PE_TERM    *recTerm = NULL;
-	    char       *x       = makeNewRsrvdVar (parseHeapDesc);
+        if (numParams > 0)
+          {
+            PE_MAP     *map     = (PE_MAP *)MHA (parseHeapDesc, 1, sizeof (PE_MAP));
+            V_VARIANCE *varity  = st_GetVarity (expansion->info.user_data.key);
+            int         i       = 0;
+            PE_TERM    *recTerm = NULL;
+            char       *x       = makeNewRsrvdVar (parseHeapDesc);
 
-	    assert (map);
-	    assert (numParams ? varity : (V_VARIANCE *)BTRUE);
-	    assert (x);
+            assert (map);
+            assert (numParams ? varity : (V_VARIANCE *)BTRUE);
+            assert (x);
 
-	    map->type_name = st_KeyToName (expansion->info.user_data.key);
-	    map->phrases   = (PE_MAP_PHRASE *)MHA (parseHeapDesc,
-						   numParams + 1,
-						   sizeof (PE_MAP_PHRASE));
+            map->type_name = st_KeyToName (expansion->info.user_data.key);
+            map->phrases   = (PE_MAP_PHRASE *)MHA (parseHeapDesc,
+                                                   numParams + 1,
+                                                   sizeof (PE_MAP_PHRASE));
 
-	    assert (map->type_name);
-	    assert (map->phrases);
+            assert (map->type_name);
+            assert (map->phrases);
 
-	    for (i = 0; i < numParams; i++)
-	      {
-		assert (expansion->info.user_data.args[i]);
-		assert (varity[i]);
+            for (i = 0; i < numParams; i++)
+              {
+                assert (expansion->info.user_data.args[i]);
+                assert (varity[i]);
 
-		switch (varity[i])
-		  {
-		  case V_NEITHER:
-		    map->phrases[i].positive = NULL;
-		    map->phrases[i].negative = NULL;
+                switch (varity[i])
+                  {
+                  case V_NEITHER:
+                    map->phrases[i].positive = NULL;
+                    map->phrases[i].negative = NULL;
 
-		    break;
+                    break;
 
-		  case V_POSITIVE:
-		    recTerm = MakeAliasMap (variance,
-					    expansion->info.user_data.args[i],
-					    phrases);
+                  case V_POSITIVE:
+                    recTerm = MakeAliasMap (variance,
+                                            expansion->info.user_data.args[i],
+                                            phrases);
 
-		    map->phrases[i].positive = T_PhraseListCons (T_PhraseNew (Pvar (x),
-									      ExprNew (recTerm,
-										       ExprVarNew (x))),
-								 NULL);
-		    map->phrases[i].negative = NULL;
+                    map->phrases[i].positive = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                                              ExprNew (recTerm,
+                                                                                       ExprVarNew (x))),
+                                                                 NULL);
+                    map->phrases[i].negative = NULL;
 
-		    break;
+                    break;
 
-		  case V_NEGATIVE:
-		    recTerm = MakeAliasMap (Flip (variance),
-					    expansion->info.user_data.args[i],
-					    phrases);
+                  case V_NEGATIVE:
+                    recTerm = MakeAliasMap (Flip (variance),
+                                            expansion->info.user_data.args[i],
+                                            phrases);
 
-		    map->phrases[i].positive = NULL;
-		    map->phrases[i].negative = T_PhraseListCons (T_PhraseNew (Pvar (x),
-									      ExprNew (recTerm,
-										       ExprVarNew (x))),
-								 NULL);
+                    map->phrases[i].positive = NULL;
+                    map->phrases[i].negative = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                                              ExprNew (recTerm,
+                                                                                       ExprVarNew (x))),
+                                                                 NULL);
 
-		    break;
+                    break;
 
-		  case V_BOTH:
-		    recTerm = MakeAliasMap (variance,
-					    expansion->info.user_data.args[i],
-					    phrases);
+                  case V_BOTH:
+                    recTerm = MakeAliasMap (variance,
+                                            expansion->info.user_data.args[i],
+                                            phrases);
 
-		    map->phrases[i].positive = T_PhraseListCons (T_PhraseNew (Pvar (x),
-									      ExprNew (recTerm,
-										       ExprVarNew (x))),
-								 NULL);
+                    map->phrases[i].positive = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                                              ExprNew (recTerm,
+                                                                                       ExprVarNew (x))),
+                                                                 NULL);
 
-		    recTerm = MakeAliasMap (Flip (variance),
-					    expansion->info.user_data.args[i],
-					    phrases);
+                    recTerm = MakeAliasMap (Flip (variance),
+                                            expansion->info.user_data.args[i],
+                                            phrases);
 
-		    map->phrases[i].negative = T_PhraseListCons (T_PhraseNew (Pvar (x),
-									      ExprNew (recTerm,
-										       ExprVarNew (x))),
-								 NULL);
+                    map->phrases[i].negative = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                                              ExprNew (recTerm,
+                                                                                       ExprVarNew (x))),
+                                                                 NULL);
 
-		    break;
+                    break;
 
-		  default:
-		    assert (BFALSE);
-		  }
-	      }
+                  default:
+                    assert (BFALSE);
+                  }
+              }
 
-	    map->phrases[i].positive = NULL;
-	    map->phrases[i].negative = NULL;
+            map->phrases[i].positive = NULL;
+            map->phrases[i].negative = NULL;
 
-	    term->tag       = T_MAP;
-	    term->info.maps = map;
-	  }
-	else
-	  {
-	    char *x = makeNewRsrvdVar (parseHeapDesc);
+            term->tag       = T_MAP;
+            term->info.maps = map;
+          }
+        else
+          {
+            char *x = makeNewRsrvdVar (parseHeapDesc);
 
-	    term->tag        = T_CASE;
-	    term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
-							      ExprVarNew (x)),
-						 NULL);
-	  }
+            term->tag        = T_CASE;
+            term->info.cases = T_PhraseListCons (T_PhraseNew (Pvar (x),
+                                                              ExprVarNew (x)),
+                                                 NULL);
+          }
       }
 
       break;
 
     case TYPE_PARAMETRIC_VAR:
       {
-	PE_FUN_PHRASE *phrase = FunPhraseListIndex (phrases, (int)expansion->info.param_var);
+        PE_FUN_PHRASE *phrase = FunPhraseListIndex (phrases, (int)expansion->info.param_var);
 
-	assert (phrase);
+        assert (phrase);
 
-	switch (variance)
-	  {
-	  case V_POSITIVE:
-	    term = phrase->positive;
-	    break;
+        switch (variance)
+          {
+          case V_POSITIVE:
+            term = phrase->positive;
+            break;
 
-	  case V_NEGATIVE:
-	    term = phrase->negative;
-	    break;
+          case V_NEGATIVE:
+            term = phrase->negative;
+            break;
 
-	  default:
-	    assert (BFALSE);
-	  }
+          default:
+            assert (BFALSE);
+          }
       }
 
       break;
@@ -2272,14 +2272,14 @@ MakeAliasMap (V_VARIANCE          variance,
 static
 PE_TERM *
 TermMapNew (char               *type,
-	    PE_LIST_FUN_PHRASE *phrases)
+            PE_LIST_FUN_PHRASE *phrases)
 {
   PE_TERM *mapTerm   = (PE_TERM *)MHA (prsHD, 1, sizeof (PE_TERM));
   PE_MAP  *map       = (PE_MAP  *)MHA (prsHD, 1, sizeof (PE_MAP));
   int      numParams = 0;
 
   assert (type);
-  if (!delayedErrorCount) assert(phrases);	/* might be NULL */
+  if (!delayedErrorCount) assert(phrases);      /* might be NULL */
   assert (mapTerm);
   assert (map);
 
@@ -2289,27 +2289,27 @@ TermMapNew (char               *type,
     {
       map->type_name = type;
       map->phrases   = MakeMapPhraseArray (phrases,
-					   numParams,
-					   st_GetVarity (st_NameToKey (type)));
+                                           numParams,
+                                           st_GetVarity (st_NameToKey (type)));
 
       mapTerm->tag       = T_MAP;
       mapTerm->info.maps = map;
     }
   else
     printMsg (DELAYEDERROR_MSG,
-	      "Map for datatype %s has invalid number of parameters.", type);
+              "Map for datatype %s has invalid number of parameters.", type);
 
 /*
   numParams = getNumParams(type);
   if (numParams == TermListLen(terms)) {
-    map->type_name = type;     
+    map->type_name = type;
     map->phrases = makePhraseArray(terms, numParams);
     mapTerm->tag       = T_MAP;
     mapTerm->info.maps = map;
   }
-  else 
-    printMsg(DELAYEDERROR_MSG, 
-	     "Map for datatype %s has invalid number of parameters.", type);
+  else
+    printMsg(DELAYEDERROR_MSG,
+             "Map for datatype %s has invalid number of parameters.", type);
 */
 
   return mapTerm;
@@ -2323,9 +2323,9 @@ TermMapNew (char               *type,
  *********************************/
 PE_TERM
 *TermStructorNew(char *structor)   {
-  
-  PE_TERM *structorTerm = (PE_TERM *)MemHeapAlloc(parseHeapDesc, 1, 
-						  sizeof(PE_TERM));
+
+  PE_TERM *structorTerm = (PE_TERM *)MemHeapAlloc(parseHeapDesc, 1,
+                                                  sizeof(PE_TERM));
   assert(structor);
 
   structorTerm->tag = T_STRUCTOR;
@@ -2348,17 +2348,17 @@ TermIdNew(char *id, PE_LIST_FUN_PHRASE *phrases) {
 
     if (idKey == 0) {
       printMsg(DELAYEDERROR_MSG,"unknown identifier \"%s\"", id);
-      return TermMacroNew(id, NULL);	/* return something arbitrary (not NULL)
-					   so subsequent assertions don't fail... */
+      return TermMacroNew(id, NULL);    /* return something arbitrary (not NULL)
+                                           so subsequent assertions don't fail... */
     }
 
     else if (st_IsVar(idKey, NULL) == BTRUE) {
       /* should be a h.o. variable with no macro arguments */
       if (phrases) {
-	printMsg(DELAYEDERROR_MSG, "inappropriate use of variable \"%s\"", id);
+        printMsg(DELAYEDERROR_MSG, "inappropriate use of variable \"%s\"", id);
       }
       else if (st_IsHOVar(idKey, NULL) == BFALSE) {
-	printMsg(DELAYEDERROR_MSG, "inappropriate use of first-order variable \"%s\"", id);
+        printMsg(DELAYEDERROR_MSG, "inappropriate use of first-order variable \"%s\"", id);
       }
 /*
       return TermFunNew(libStrdup(prsHD,st_GetUniqueVar(idKey)),Phrases2Terms(phrases));
@@ -2369,44 +2369,44 @@ TermIdNew(char *id, PE_LIST_FUN_PHRASE *phrases) {
 
     else if (st_IsMacro(idKey)) {
       if (phrases) {
-	printMsg(DELAYEDERROR_MSG, "inappropriate use of macro \"%s\"", id);
+        printMsg(DELAYEDERROR_MSG, "inappropriate use of macro \"%s\"", id);
       }
       return TermMacroNew(id, NULL);
     }
 
     else if (st_IsFunction(idKey)) {
       if (phrases && strcmp (id, AT_NAME) == 0)
-	printMsg (DELAYEDERROR_MSG, "inappropriate use of %s", AT_NAME);     /* [#@] */
+        printMsg (DELAYEDERROR_MSG, "inappropriate use of %s", AT_NAME);     /* [#@] */
 
       return TermFunNew(id, Phrases2Terms(phrases));
     }
 
     else if (st_IsDatatype(idKey)) {
       if (!phrases) {
-	printMsg(DELAYEDERROR_MSG, "inappropriate use of datatype identifier \"%s\"", id);
-	return TermMacroNew(id, NULL);	/* return something arbitrary (not NULL)
-					   so subsequent assertions won't fail */
+        printMsg(DELAYEDERROR_MSG, "inappropriate use of datatype identifier \"%s\"", id);
+        return TermMacroNew(id, NULL);  /* return something arbitrary (not NULL)
+                                           so subsequent assertions won't fail */
       }
       else return TermMapNew(id, phrases);
     }
 
     else if (isAlias (id))
       {
-	if (!phrases)
-	  {
-	    printMsg (DELAYEDERROR_MSG,
-		      "inappropriate use of type alias \"%s\"",
-		      id);
+        if (!phrases)
+          {
+            printMsg (DELAYEDERROR_MSG,
+                      "inappropriate use of type alias \"%s\"",
+                      id);
 
-	    return TermMacroNew (id, NULL);
-	  }
+            return TermMacroNew (id, NULL);
+          }
 
-	return TermAliasMapNew (id, phrases);
+        return TermAliasMapNew (id, phrases);
       }
 
     else if (st_IsStructor(idKey)) {
       if (phrases) {
-	printMsg(DELAYEDERROR_MSG, "inappropriate use of structor \"%s\"", id);
+        printMsg(DELAYEDERROR_MSG, "inappropriate use of structor \"%s\"", id);
       }
       return TermStructorNew(id);
     }
@@ -2426,11 +2426,11 @@ TermIdNew(char *id, PE_LIST_FUN_PHRASE *phrases) {
 
 PE_T_PHRASE *
 T_PhraseNew (PE_PATT *patt,     /* MAY BE NULL */
-	     PE_EXPR *expr)
+             PE_EXPR *expr)
 {
   PE_T_PHRASE *phrase = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
-						     1,
-						     sizeof (PE_T_PHRASE));
+                                                     1,
+                                                     sizeof (PE_T_PHRASE));
 
   assert (expr);
   assert (phrase);
@@ -2453,11 +2453,11 @@ T_PhraseNew (PE_PATT *patt,     /* MAY BE NULL */
 
 PE_T_PHRASE *
 HOT_PhraseNew (PE_PATT *patt,      /* MAY BE NULL */
-	       PE_TERM *cases)
+               PE_TERM *cases)
 {
   PE_T_PHRASE *phrase = (PE_T_PHRASE *)MemHeapAlloc (parseHeapDesc,
-						     1,
-						     sizeof (PE_T_PHRASE));
+                                                     1,
+                                                     sizeof (PE_T_PHRASE));
 
   assert (cases);
   assert (phrase);
@@ -2491,14 +2491,14 @@ PE_LIST_FOLD
      assert(folds);
 
      while (listfold) {
-	  headfold = FoldListHead(listfold);
-	  assert(headfold);
+          headfold = FoldListHead(listfold);
+          assert(headfold);
 
-	  if (!headfold->constr)
-	       headfold->constr = id;
-	  else
-	       break;
-	  listfold = FoldListTail(listfold);
+          if (!headfold->constr)
+               headfold->constr = id;
+          else
+               break;
+          listfold = FoldListTail(listfold);
      }
 
      return(result);
@@ -2520,19 +2520,19 @@ PE_EXPR
     ST_KEY    idKey = st_NameToKey(id);
 
     if (idKey == 0) {
-	printMsg(DELAYEDERROR_MSG, "unknown identifier \"%s\"", id);
+        printMsg(DELAYEDERROR_MSG, "unknown identifier \"%s\"", id);
         nexpr = ExprNew(TermMacroNew(id, NULL), ConstNew());
-	/* nexpr is arbitrary (but not NULL) so subsequent assertions won't fail */
+        /* nexpr is arbitrary (but not NULL) so subsequent assertions won't fail */
     }
     else if ((st_IsVar(idKey,NULL) == BTRUE) && (st_IsHOVar(idKey,NULL) == BFALSE)) {
         /* Insert the variable's unique alias */
         nexpr = (PE_EXPR *)MHA(prsHD, 1, sizeof(PE_EXPR));
         nexpr->tag = E_VAR;
 
-	if (strcmp (id, HASH_NAME) == 0)     /* [#@] */
-	  nexpr->info.var = id;
-	else
-	  nexpr->info.var = libStrdup (prsHD, st_GetUniqueVar (idKey));
+        if (strcmp (id, HASH_NAME) == 0)     /* [#@] */
+          nexpr->info.var = id;
+        else
+          nexpr->info.var = libStrdup (prsHD, st_GetUniqueVar (idKey));
       }
     else         /* it should be a structor, function or macro */
         nexpr = ExprNew(TermIdNew(id, NULL), ConstNew());
@@ -2572,7 +2572,7 @@ PE_EXPR
      nexpr->info.app.term = term;
      nexpr->info.app.expr = expr;
 
-     return nexpr;     
+     return nexpr;
 }
 
 /*********************************
@@ -2593,7 +2593,7 @@ PE_EXPR
      nexpr->info.epair.l = l;
      nexpr->info.epair.r = r;
 
-     return(nexpr);     
+     return(nexpr);
 }
 
 /*********************************
@@ -2607,7 +2607,7 @@ ConstNew(void) {
      assert(nexpr);
 
      nexpr->tag  = E_BANG;
-     return nexpr;  
+     return nexpr;
 }
 
 
@@ -2679,7 +2679,7 @@ PE_PATT *
 pe_MakePattList(PE_PATT *head, PE_PATT *tail) {
 /* head may be NULL */
 
-    if (tail) 
+    if (tail)
       return(Pconstr("cons", Ppair(head, tail)));
     else
       return(Pconstr("cons", Ppair(head, Pconstr("nil", Pbang()))));
@@ -2698,7 +2698,7 @@ pe_MakeIntPatt(PE_INT_TAG tag1, long i1, PE_INT_TAG tag2, long i2) {
     PE_PATT  *result = NULL;
 
     if ( (tag1 == INTX) && (tag2 == INTX) && (i1 > i2) ) {
-        printMsg(DELAYEDERROR_MSG, 
+        printMsg(DELAYEDERROR_MSG,
           " In integer pattern, %d must be less than or equal to %d.", i1, i2);
         return NULL;
     }   /*  fi  */
@@ -2768,12 +2768,12 @@ pe_MakeStrPatt(char *str) {
       result = pe_MakePattNilList ();
     else
       {
-	int index = strlen (str) - 1;
+        int index = strlen (str) - 1;
 
-	result = pe_MakePattList (peMakeCharPatt (&str[index], &str[index]), NULL);
+        result = pe_MakePattList (peMakeCharPatt (&str[index], &str[index]), NULL);
 
-	for (--index; index >= 0; index--)
-	  result = pe_MakePattList (peMakeCharPatt (&str[index], &str[index]), result);
+        for (--index; index >= 0; index--)
+          result = pe_MakePattList (peMakeCharPatt (&str[index], &str[index]), result);
       }
 
     return result;
@@ -2795,22 +2795,22 @@ P_STRUCTOR_ARRAY *pe_MakePattDestr(char *id, PE_PATT *patt, P_STRUCTOR_ARRAY *sA
   if (idKey) {
     if (st_IsStructor(idKey)) {
       if (st_IsDestructor(idKey)) {
-	if (!sArray) {
-	  new_sArray = (P_STRUCTOR_ARRAY *) MHA(parseHeapDesc, 1, sizeof(P_STRUCTOR_ARRAY));
-	  new_sArray->parentKey = st_GetStructorParent(idKey);
-	  numDestrs = st_GetNumStructors(new_sArray->parentKey);
-	  new_sArray->numDestructors = numDestrs;
-	  new_sArray->array = (P_STRUCTOR **) MHA(parseHeapDesc, numDestrs+1, sizeof(P_STRUCTOR *));
+        if (!sArray) {
+          new_sArray = (P_STRUCTOR_ARRAY *) MHA(parseHeapDesc, 1, sizeof(P_STRUCTOR_ARRAY));
+          new_sArray->parentKey = st_GetStructorParent(idKey);
+          numDestrs = st_GetNumStructors(new_sArray->parentKey);
+          new_sArray->numDestructors = numDestrs;
+          new_sArray->array = (P_STRUCTOR **) MHA(parseHeapDesc, numDestrs+1, sizeof(P_STRUCTOR *));
           new_sArray->array[numDestrs] = NULL;
-	  return P_RecordAdd(P_StructorNew(id, patt), new_sArray);
-	}
-	else if (st_GetStructorParent(idKey) == sArray->parentKey) {
-	  return P_RecordAdd(P_StructorNew(id, patt), sArray);
-	}
-	else {
-	  printMsg(DELAYEDERROR_MSG, "incompatible destructors in pattern");
-	  return NULL;
-	}
+          return P_RecordAdd(P_StructorNew(id, patt), new_sArray);
+        }
+        else if (st_GetStructorParent(idKey) == sArray->parentKey) {
+          return P_RecordAdd(P_StructorNew(id, patt), sArray);
+        }
+        else {
+          printMsg(DELAYEDERROR_MSG, "incompatible destructors in pattern");
+          return NULL;
+        }
       }
     }
   }
@@ -2830,10 +2830,10 @@ pe_MakePattConstr(char *id, PE_PATT *patt) {
 
   ST_KEY idKey = st_NameToKey(id);
 
-  if (idKey) 
-    if (st_IsStructor(idKey)) 
-      if (st_IsConstructor(idKey)) 
-	return(Pconstr(id, patt));
+  if (idKey)
+    if (st_IsStructor(idKey))
+      if (st_IsConstructor(idKey))
+        return(Pconstr(id, patt));
 
   printMsg(DELAYEDERROR_MSG, "expected %s to be a constructor (in pattern)", id);
   return(NULL);

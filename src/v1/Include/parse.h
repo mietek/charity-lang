@@ -65,7 +65,7 @@ PE_STRUCTOR_TYPE_SIG;
 
 /*********************************/
 /* Type signatures for structors */
-/* eg: nil: 1 -> C               */ 
+/* eg: nil: 1 -> C               */
 /*********************************/
 
 typedef struct
@@ -79,7 +79,7 @@ PE_STRUCTOR;
 /* DATA defintions */
 /* DATATYPE domainId domainVars -> codomainId codomainVars =
               structors
-	    | structors.                                          */
+        | structors.                                          */
 typedef struct _PE_DATA {
      char             *domainId;
      STR_LIST         *domainVars;
@@ -109,7 +109,7 @@ PE_ALIAS;
 /* structor patterns or records */
 /* eg:    cons(0, L)            */
 /*      | cons(1, L)            */
-typedef struct _P_STRUCTOR {  
+typedef struct _P_STRUCTOR {
      char            *id;
      struct _PE_PATT *arg;
 } P_STRUCTOR;
@@ -136,21 +136,21 @@ typedef enum {
 typedef struct _PE_PATT {
      PE_PATT_TAG tag;
      union {
-	  char *var;
+      char *var;
 
           struct {
               char *hovar;
               ST_KEY destr;
           } hovar;
 
-	  struct {
-	       struct _PE_PATT *l;
-	       struct _PE_PATT *r;
-	  } ppair;
+      struct {
+           struct _PE_PATT *l;
+           struct _PE_PATT *r;
+      } ppair;
 
-	  P_STRUCTOR  *constr;
+      P_STRUCTOR  *constr;
 
-	  P_STRUCTOR **record;      /* NULL terminated */
+      P_STRUCTOR **record;      /* NULL terminated */
 
           struct {
               PE_INT_TAG lTag;
@@ -263,7 +263,7 @@ PE_FUN_PHRASE;
 
 typedef struct _PE_FOLD {
      char             *constr;
-     PE_LIST_T_PHRASE *phrases;	       
+     PE_LIST_T_PHRASE *phrases;
 } PE_FOLD;
 
 typedef struct _PE_UNFOLD {
@@ -294,14 +294,14 @@ PE_RECORD;
 typedef struct _PE_TERM {
      PE_TERM_TAG tag;
      union {
-	  char               *struct_name;
-	  PE_FUNCTION        *function;
-	  PE_MACROS          *macro;
-	  PE_FOLD           **folds;
-	  PE_UNFOLD         **unfolds;
-	  PE_RECORD         **records;
-	  PE_LIST_T_PHRASE   *cases;
-	  PE_MAP             *maps;
+      char               *struct_name;
+      PE_FUNCTION        *function;
+      PE_MACROS          *macro;
+      PE_FOLD           **folds;
+      PE_UNFOLD         **unfolds;
+      PE_RECORD         **records;
+      PE_LIST_T_PHRASE   *cases;
+      PE_MAP             *maps;
           PE_BUILTIN         *builtin;
      } info;
 
@@ -330,17 +330,17 @@ typedef struct _PE_EXPR
       char *var;
 
       struct
-	{
-	  PE_TERM         *term;
-	  struct _PE_EXPR *expr;
-	}
+    {
+      PE_TERM         *term;
+      struct _PE_EXPR *expr;
+    }
       app;
 
       struct
-	{
-	  struct _PE_EXPR *l;
-	  struct _PE_EXPR *r;
-	}
+    {
+      struct _PE_EXPR *l;
+      struct _PE_EXPR *r;
+    }
       epair;
     }
   info;
@@ -357,7 +357,7 @@ PE_EXPR;
 /* Macros                      */
 /* eg:     eq : nat * nat -> c */
 /*******************************/
-typedef struct _PE_MACRO {     
+typedef struct _PE_MACRO {
      char        *ident;
      PE_TYPE_SIG *type_sig;
 } PE_MACRO;
@@ -374,14 +374,14 @@ typedef enum {
 
 typedef struct _PE_VAR_BASE {
      PE_VAR_BASE_TAG tag;
-     
+
      union {
-	  char *var;
-	  
-	  struct {
-	       struct _PE_VAR_BASE *l;
-	       struct _PE_VAR_BASE *r;
-	  } vbpair;
+      char *var;
+
+      struct {
+           struct _PE_VAR_BASE *l;
+           struct _PE_VAR_BASE *r;
+      } vbpair;
      } info;
 
 } PE_VAR_BASE;
@@ -432,15 +432,15 @@ typedef struct {
 /***********************************************************/
 typedef struct _PARSE_RESULT {
      int tag;      /* look in y.tab.h for the lookup table */
-     
+
      union {
-	  PE_DATA    *data;
-	  PE_ALIAS   *alias;
-	  PE_DEF     *def;
-	  PE_EXPR    *expr;
-	  PE_COMM     command;
+      PE_DATA    *data;
+      PE_ALIAS   *alias;
+      PE_DEF     *def;
+      PE_EXPR    *expr;
+      PE_COMM     command;
           PE_SETCOMM  setcommand;
-	  PE_QUERY    query;
+      PE_QUERY    query;
      } info;
 
 } PARSE_RESULT;
@@ -452,7 +452,7 @@ typedef struct _PARSE_RESULT {
 extern PARSE_RESULT ParseResult;
 extern MEMORY       parseHeapDesc;
 extern MEMORY       parseHD;
- 
+
 /*******************************************************/
 /* Function Definitions                                */
 /*******************************************************/
@@ -461,9 +461,9 @@ extern void          ParserDestruct(void);
 extern void          ParserReset(void);
 extern void          ParseStream(void);
 
-extern void         *DATADEF(char *domainId, STR_LIST *domainVars, 
-			     char *codomainId, STR_LIST *codomainVars, 
-			     PE_LIST_STRUCTOR *structor);
+extern void         *DATADEF(char *domainId, STR_LIST *domainVars,
+                 char *codomainId, STR_LIST *codomainVars,
+                 PE_LIST_STRUCTOR *structor);
 
 extern char         *checkTerminalType(char *termType);
 extern PE_TYPE      *TypeNew(char *ident, PE_LIST_TYPE *parms);
@@ -474,10 +474,10 @@ extern PE_MACRO     *MacroNew(char *ident, PE_TYPE_SIG *type_sig);
 /* [H-O] ADDED/ALTERED TO HANDLE TYPE PE_STRUCTOR_TYPE_SIG (SEE ABOVE): */
 
 extern PE_STRUCTOR_TYPE_SIG *TypeSigNew2 (PE_TYPE *domain,
-					  PE_TYPE *param,
-					  PE_TYPE *codomain);
+                      PE_TYPE *param,
+                      PE_TYPE *codomain);
 extern PE_STRUCTOR          *StructorNew (char                 *ident,
-					  PE_STRUCTOR_TYPE_SIG *sig);
+                      PE_STRUCTOR_TYPE_SIG *sig);
 extern PE_STRUCTOR_TYPE_SIG *typeSigof   (PE_LIST_STRUCTOR *structorList);
 
 
@@ -486,8 +486,8 @@ extern PE_STRUCTOR_TYPE_SIG *typeSigof   (PE_LIST_STRUCTOR *structorList);
 /**********************************/
 
 extern PE_ALIAS *BuildAlias (char     *name,
-			     STR_LIST *variables,
-			     PE_TYPE  *type);
+                 STR_LIST *variables,
+                 PE_TYPE  *type);
 
 
 /**********************************/
@@ -536,8 +536,8 @@ extern P_STRUCTOR   *peCopyPStructor(MEMORY heap, P_STRUCTOR *orig);
 /**********************************/
 /*   Function definitions         */
 /**********************************/
-extern PE_DEF       *DEFFUNC(char *name, PE_LIST_MACRO *macros, 
-			     PE_TYPE_SIG *type_sig, PE_DEF *defPart);
+extern PE_DEF       *DEFFUNC(char *name, PE_LIST_MACRO *macros,
+                 PE_TYPE_SIG *type_sig, PE_DEF *defPart);
 extern PE_DEF       *pe_MakeFunBody(PE_LIST_T_PHRASE *t_case);
 
 
@@ -574,14 +574,14 @@ extern PE_TERM        *pe_TermUnfoldNew  (PE_LIST_UNFOLD *unfolds);
 extern PE_UNFOLD      *UnfoldNew         (char *destr, PE_T_PHRASE *phrase);
 extern PE_LIST_UNFOLD *Fold2Unfold       (PE_LIST_FOLD *folds);
 extern PE_LIST_UNFOLD *UnfoldListAddPatt (PE_PATT        *patt,
-					  PE_LIST_UNFOLD *unfolds);
+                      PE_LIST_UNFOLD *unfolds);
 
 /* [H-O] ADDED (SEE term.y): */
 
 extern PE_CASES_AND_UNFOLDS *MoreCasesNew (PE_T_PHRASE    *newCase,
-					   PE_LIST_UNFOLD *unfolds);
+                       PE_LIST_UNFOLD *unfolds);
 extern PE_CASES_AND_UNFOLDS *AddMoreCases (PE_T_PHRASE          *newCase,
-					   PE_CASES_AND_UNFOLDS *original);
+                       PE_CASES_AND_UNFOLDS *original);
 
 /**********************************/
 /*   Case                         */
@@ -631,10 +631,10 @@ extern PE_EXPR      *ExprPair(PE_EXPR *l, PE_EXPR *r);
 /**********************************/
 /*   Guards                       */
 /**********************************/
-extern PE_EXPR    *peMakeGuardBool(PE_EXPR *trueCase, 
+extern PE_EXPR    *peMakeGuardBool(PE_EXPR *trueCase,
                                    PE_EXPR *falseCase,
                                    PE_EXPR *cond);
-extern PE_EXPR    *peMakeGuardExpr(PE_EXPR *term, 
+extern PE_EXPR    *peMakeGuardExpr(PE_EXPR *term,
                                    PE_LIST_LIST_T_PHRASE *casesList);
 
 /**********************************/

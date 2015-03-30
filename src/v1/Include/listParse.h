@@ -74,12 +74,12 @@ extern int                 TermListLen(PE_LIST_TERM *list);
 /* [H-O] ADDED THESE PROTOTYPES (SEE listParse.c): */
 
 extern PE_LIST_FUN_PHRASE *FunPhraseListCons  (PE_FUN_PHRASE      *x,
-					       PE_LIST_FUN_PHRASE *list);
+                           PE_LIST_FUN_PHRASE *list);
 extern PE_FUN_PHRASE      *FunPhraseListHead  (PE_LIST_FUN_PHRASE *list);
 extern PE_LIST_FUN_PHRASE *FunPhraseListTail  (PE_LIST_FUN_PHRASE *list);
 extern int                 FunPhraseListLen   (PE_LIST_FUN_PHRASE *list);
 extern PE_FUN_PHRASE      *FunPhraseListIndex (PE_LIST_FUN_PHRASE *list,
-					       int                 i);
+                           int                 i);
 
 
 /*******************************
@@ -107,10 +107,10 @@ extern char               *pe_StrListImplode(STR_LIST *l);
 extern int                 StructorListLen(PE_LIST_STRUCTOR  *list);
 extern PE_STRUCTOR        *StructorListHead(PE_LIST_STRUCTOR *list);
 extern PE_LIST_STRUCTOR   *StructorListTail(PE_LIST_STRUCTOR *list);
-extern PE_LIST_STRUCTOR   *StructorListCons(PE_STRUCTOR *x, 
-					    PE_LIST_STRUCTOR *l);
-extern PE_LIST_STRUCTOR   *StructorListAppend(PE_LIST_STRUCTOR *L1, 
-					      PE_LIST_STRUCTOR *L2);
+extern PE_LIST_STRUCTOR   *StructorListCons(PE_STRUCTOR *x,
+                        PE_LIST_STRUCTOR *l);
+extern PE_LIST_STRUCTOR   *StructorListAppend(PE_LIST_STRUCTOR *L1,
+                          PE_LIST_STRUCTOR *L2);
 
 /*******************************
  *                             *
@@ -122,7 +122,7 @@ extern PE_TYPE            *TypeListHead(PE_LIST_TYPE *list);
 extern PE_LIST_TYPE       *TypeListTail(PE_LIST_TYPE *list);
 extern int                 TypeListLen(PE_LIST_TYPE *list);
 extern PE_TYPE            *TypeListIndex(PE_LIST_TYPE *list,
-					 int index);
+                     int index);
 
 extern PE_LIST_RECORD     *RecordListCons(PE_RECORD *x, PE_LIST_RECORD *list);
 extern PE_RECORD          *RecordListHead(PE_LIST_RECORD *list);

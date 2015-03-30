@@ -21,7 +21,7 @@
 TYPE_EXPR *type_vars_to_user_vars(TYPE_EXPR *expr)
 {
   TYPE_EXPR **elist;
-  int i;  
+  int i;
   if (!expr) return 0;
   switch (expr->tag) {
   case USER_VAR:
@@ -30,7 +30,7 @@ TYPE_EXPR *type_vars_to_user_vars(TYPE_EXPR *expr)
     expr->tag = USER_VAR;       /* just replace TYPE_VAR tags by USER_VAR tags */
     return expr;
   case TYPE_CON:
-    elist = expr->params;   
+    elist = expr->params;
     if (!elist) return expr;
     i=0;
     while (elist[i]) {
@@ -158,7 +158,7 @@ TYPE_EXPR *rename_vars_in_TE(TYPE_ASMT_LIST *alist, TYPE_EXPR *expr)
     while (alist) {
       asmt = TAL_head(alist);
       if (tc_type_var_match(asmt->var,expr->id.var)) {
-	expr->id.var = asmt->rhs.var;
+        expr->id.var = asmt->rhs.var;
         return expr;
       }
       else alist = TAL_tail(alist);
@@ -213,11 +213,11 @@ TYPE_EXPR *copy_TE(TYPE_EXPR *expr)
       numparams = TEL_length(expr->params);
       if (numparams == 0) new_expr->params = 0;
       else {
-	new_expr->params = (TYPE_EXPR **) MemHeapAlloc(tc_memory,numparams+1,sizeof(TYPE_EXPR *));
-	for (i=0; i<numparams; i++) {
-	  new_expr->params[i] = copy_TE(expr->params[i]);
-	}
-	new_expr->params[i] = 0;
+        new_expr->params = (TYPE_EXPR **) MemHeapAlloc(tc_memory,numparams+1,sizeof(TYPE_EXPR *));
+        for (i=0; i<numparams; i++) {
+          new_expr->params[i] = copy_TE(expr->params[i]);
+        }
+        new_expr->params[i] = 0;
       }
       return new_expr;
     default:

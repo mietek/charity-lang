@@ -33,14 +33,14 @@ typedef enum {
 
 typedef struct _CT_VAR_BASE {
      CT_VAR_BASE_TAG tag;
-     
+
      union {
-	  char *var;
-	  
-	  struct {
-	       struct _CT_VAR_BASE *l;
-	       struct _CT_VAR_BASE *r;
-	  } pair;
+      char *var;
+
+      struct {
+           struct _CT_VAR_BASE *l;
+           struct _CT_VAR_BASE *r;
+      } pair;
      } info;
 
 } CT_VAR_BASE;
@@ -69,17 +69,17 @@ typedef struct _CT_EXPR
       char *var;
 
       struct
-	{
-	  struct _CT_TERM *term;
-	  struct _CT_EXPR *expr;
-	}
+    {
+      struct _CT_TERM *term;
+      struct _CT_EXPR *expr;
+    }
       app;
 
       struct
-	{
-	  struct _CT_EXPR *l;
-	  struct _CT_EXPR *r;
-	}
+    {
+      struct _CT_EXPR *l;
+      struct _CT_EXPR *r;
+    }
       pair;
     }
   info;
@@ -109,7 +109,7 @@ typedef enum
 }
 CT_TERM_TAG;
 
-typedef struct {   
+typedef struct {
      CT_VAR_BASE *var_base;
      CT_EXPR     *expr;
    } CT_PHRASE;
@@ -136,7 +136,7 @@ typedef struct {
    char         *macro_name;
    CT_PHRASE   **macros;
 } CT_MACROS;
-	  
+
 typedef struct {
    char         *fun_name;
    CT_PHRASE   **macros;

@@ -6,7 +6,7 @@ rf "search.ch".
 %  Positions on the board are named by:
 %
 
-data PEG -> C = 
+data PEG -> C =
       a0|b0|b1|c0|c1|c2|d0|d1|d2|d3|e0|e1|e2|e3|e4: 1 -> C.
 
 %
@@ -18,17 +18,17 @@ data PEG -> C =
 %
 %        c0  c1  c2
 %
-%      d0  d1  d2  d3 
-% 
+%      d0  d1  d2  d3
+%
 %    e0  e1  e2  e3  e4
 %
-%  The normal starting state will be 
+%  The normal starting state will be
 %      [b0,b1,c0,c1,c2,d0,d1,d2,d3,e0,e1,e2,e3,e4]
 %  a good test starting state is ..
 %      [d1,e2,c1,d2]
-%  another is 
+%  another is
 %      [a0,c1,c2,d1,d2,d3]
-%  yet another is 
+%  yet another is
 %      [a0,b0,b1,c1,d0,d1,d2,d3,e1,e3,e4]
 %
 
@@ -48,7 +48,7 @@ def PEG_num: PEG -> int
     | e2 => 12
     | e3 => 13
     | e4 => 14.
-    
+
 
 def PEG_eq: PEG * PEG -> bool
     = (peg1,peg2) => eq_int(PEG_num peg1,PEG_num peg2).
@@ -193,7 +193,7 @@ def jump: PEG * PEG -> SF(PEG)
     | _ => ff.
 
 %
-%  To calculate the list of possible moves one must test all the 
+%  To calculate the list of possible moves one must test all the
 %  possible jumps.  This means testing each pair of pegs for a jump
 %  and collecting the possible jumps and their new state.
 %
@@ -229,15 +229,15 @@ def move: (PEG * PEG) * list(PEG)
 def moves: list(PEG) -> list((PEG * PEG) * list(PEG))
     = L => filter_2{ x => move(x,L)} L.
 
-def PEG_next_front: list(list(PEG * PEG) * list(PEG)) 
+def PEG_next_front: list(list(PEG * PEG) * list(PEG))
                              -> list(list(PEG * PEG) * list(PEG))
     = L => flatten list{(Path,St) => list{(m,St')  => (cons(m,Path),St')
                                          } moves St
                        } L.
 
-def SFfind{pass: A -> SF(B)}: list(A) -> SF(B) 
+def SFfind{pass: A -> SF(B)}: list(A) -> SF(B)
     =  L => {| nil: () => ff
-             | cons: (a,v) => { ss(b) => ss(b) 
+             | cons: (a,v) => { ss(b) => ss(b)
                               | ff() => v
                               } pass a
              |} L.
@@ -258,7 +258,7 @@ def n13 = () => succ(mult(succ(succ(succ(zero))),
           succ(succ(succ(succ(zero)))))).
 
 %
-%  The path filtering for peg solitaire is given by insisting that independent 
+%  The path filtering for peg solitaire is given by insisting that independent
 %  moves occur in order.
 %
 
@@ -274,7 +274,7 @@ def peg_filter: (PEG * PEG) * list(PEG * PEG) -> bool
     = ( x, cons(y,_)) => or(PEG_geq(p0 x,p0 y),dependent(x,y))
     | _ => true.
 
-% 
+%
 
 (*
 search_at{peg_filter}(n13,peg_solitaire([b0,b1,c0,c1,c2,d0,d1,d2,d3,e0,e1,e2,e3,e4]
