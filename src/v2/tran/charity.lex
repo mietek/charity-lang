@@ -21,11 +21,11 @@ fun resetLineNo() = pos:=1
 %s COMMENT;
 %s STRENV;
 
-ident	=	[A-Za-z_][A-Za-z0-9_']*;
-decNum  =	[0-9]+;
-hexNum  =	[0-9A-Fa-f]+;
+ident   =       [A-Za-z_][A-Za-z0-9_']*;
+decNum  =       [0-9]+;
+hexNum  =       [0-9A-Fa-f]+;
 printableChar= [\ -\~];
-ws		=   [\ \t\013];
+ws              =   [\ \t\013];
 briefcomment=  \%.*\n|\%.*;
 
 %%

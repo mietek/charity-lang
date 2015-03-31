@@ -63,7 +63,7 @@ fun findRecurPos [] = raise Fail("findRecurPos")
   | findRecurPos((_,1)::_) = 0
   | findRecurPos(_::rps) = 1+(findRecurPos rps)
 
-fun buildNewBody(paramList:(string*int) list, fbody: YTerm) = 
+fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
     (* convert <f(#p1,@p2,p3) = patterns> into <f = p1,p2,p3 => (p1,p3);patterns> *)
     if countRecurParams paramList >1 then
         raise YACCERR("Can not have more than one recursive parameters")
@@ -72,16 +72,16 @@ fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
               | getPatternedVars((id,0)::pl) = id::(getPatternedVars pl)
               | getPatternedVars((id,1)::pl) = id::(getPatternedVars pl)
               | getPatternedVars((id,2)::pl) = (getPatternedVars pl)
-            
+
             val pvarlst = getPatternedVars paramList
             fun toTerm [x] = yVAR x
               | toTerm lst = yTUPLE(map yVAR lst)
         in
-            yPattABS([(map ypVAR (map #1 paramList), 
+            yPattABS([(map ypVAR (map #1 paramList),
                        yAPP(fbody, toTerm pvarlst)
                       )])
         end
-                      
+
 
 
 
@@ -155,7 +155,7 @@ fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
 %term
      ID of string
    | COMB_ID of string
-   | SHARP 
+   | SHARP
    | AT
    | DONTCARE
    | RANGE
@@ -164,12 +164,12 @@ fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
    | STRING of string
    | OPER of string
    | CHAR of string
-   | BAR				(* | *)
+   | BAR                                (* | *)
    | S_ARROW | D_ARROW  (* -> => *)
    | L_PAR | R_PAR      (* () *)
-   | L_BRACKET 	| R_BRACKET 	(* [] *)
-   | L_BRACE 	| R_BRACE		(* {} *)
-   | L_FOLD 	| R_FOLD        (* {| |} *)
+   | L_BRACKET  | R_BRACKET     (* [] *)
+   | L_BRACE    | R_BRACE               (* {} *)
+   | L_FOLD     | R_FOLD        (* {| |} *)
    | L_UNFOLD   | R_UNFOLD      (* (| |) *)
    | L_MACBRACE | R_MACBRACE    (* {\ \} *)
    | L_RECUR    | R_RECUR       (* {: :} *)
@@ -251,16 +251,16 @@ dataDefinition
                 )
 
 dataName
-	: ID                            (ID, [])
+        : ID                            (ID, [])
     | ID L_PAR idList R_PAR         (ID, idList)
 
 idList
-	: ID							( [ID] )
-	| ID COMMA idList               ( ID::idList )
+        : ID                                                    ( [ID] )
+        | ID COMMA idList               ( ID::idList )
 
 structorDefList
-	: structorDef                       ( [ structorDef ] )
-	| structorDef BAR structorDefList   ( structorDef::structorDefList)
+        : structorDef                       ( [ structorDef ] )
+        | structorDef BAR structorDefList   ( structorDef::structorDefList)
 
 structorDef
     : ID                                ( (ID, NONE) )
@@ -368,8 +368,8 @@ recursiveFunction
     : ID formalParams EQUALS functionBody
                                         (
                                         if countRecurParams formalParams = 1 then
-                                            (ID, 
-                                             findRecurPos formalParams, 
+                                            (ID,
+                                             findRecurPos formalParams,
                                              buildNewBody(formalParams,functionBody)
                                             )
                                         else
@@ -378,8 +378,8 @@ recursiveFunction
     | SHARP ID formalParams EQUALS functionBody
                                         (
                                         if countRecurParams formalParams = 0 then
-                                            (ID, 
-                                             ~1, 
+                                            (ID,
+                                             ~1,
                                              buildNewBody(formalParams,functionBody)
                                             )
                                         else
@@ -395,9 +395,9 @@ pattAbstraction
     | L_BRACE casephraseList R_BRACE    ( yPattABS casephraseList )
 
 casephraseList
-    : casephrase                         ( if casephrase=([],yNULL) then [] 
+    : casephrase                         ( if casephrase=([],yNULL) then []
                                                                     else [ casephrase ] )
-    | casephrase BAR  casephraseList     ( if casephrase=([],yNULL) then casephraseList 
+    | casephrase BAR  casephraseList     ( if casephrase=([],yNULL) then casephraseList
                                                                     else casephrase::casephraseList )
 
 casephrase

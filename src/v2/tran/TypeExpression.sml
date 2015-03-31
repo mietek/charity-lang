@@ -36,24 +36,24 @@ struct
     fun mainTypeOfTG (maint, _) = maint
     fun subTypesOfTG (_, tlist) = tlist
 
-	local
-		val uniqueID= ref 100
-	in
+        local
+                val uniqueID= ref 100
+        in
         fun newTVarID() = (uniqueID:=(!uniqueID)+1; !uniqueID)
-		fun newTVar () = tVAR(newTVarID())
+                fun newTVar () = tVAR(newTVarID())
         fun newTVarIDList n = List.tabulate(n, fn _ =>newTVarID())
-		fun newTVarList n = List.tabulate(n, fn _=> newTVar())
+                fun newTVarList n = List.tabulate(n, fn _=> newTVar())
 
-		fun resetNewTVar x = uniqueID:=x
-	end
+                fun resetNewTVar x = uniqueID:=x
+        end
 
-	local
-		val equSetPtr: ((TypeExp*TypeExp) list) ref = ref []
+        local
+                val equSetPtr: ((TypeExp*TypeExp) list) ref = ref []
     in
         fun resetEquSet() = (equSetPtr:=[])
         fun getEquSet() = (!equSetPtr)
         fun newEqu(t1,t2) = equSetPtr:= (t1,t2)::(!equSetPtr)
-	end
+        end
 
     fun genTVar1toN n = List.tabulate(n, fn i => tVAR (i+1))
     fun genTVarMtoN(m,n) = List.tabulate(n-m+1, fn i=> tVAR (m+i))
@@ -253,13 +253,13 @@ struct
             fun addEqu(sol, (S,T)) = sol@ solveEqu(apply sol S, apply sol T)
             fun unifyList([], sol) = sol
               | unifyList((s,t)::rest,sol) =
-					unifyList(rest, addEqu(sol,(s,t)))
-(*			        handle TYPECHECK(msg) =>
-						(print ("error while unify "
-						       ^ DomainToStr(s) ^ "=" ^ DomainToStr(t)
-							   ^":" ^ msg);
-						 raise TYPECHECK(msg)
-						)
+                                        unifyList(rest, addEqu(sol,(s,t)))
+(*                              handle TYPECHECK(msg) =>
+                                                (print ("error while unify "
+                                                       ^ DomainToStr(s) ^ "=" ^ DomainToStr(t)
+                                                           ^":" ^ msg);
+                                                 raise TYPECHECK(msg)
+                                                )
 *)
         in
             unifyList(eqnlist, [])

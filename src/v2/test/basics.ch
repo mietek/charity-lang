@@ -45,7 +45,7 @@ def mult: nat * nat -> nat
 def p0 = x,y => x
 def p1 = x,y => y
 %
-%  The list datatype 
+%  The list datatype
 %
 
 def lhead: list(A) -> SF(A)
@@ -71,7 +71,7 @@ def rev: list(A) -> list(A)
     = L => p1( {| nil: => (L,nil)
                 | cons:{ (_,(nil,V)) => (nil,V)
                        | (_,(cons(a,R),V)) => (R,cons(a,V))
-		       }
+                       }
                 |}(L) ).
 
 

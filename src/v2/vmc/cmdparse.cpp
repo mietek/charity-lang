@@ -9,14 +9,14 @@
 */
 
 CmdlineParser::CmdlineParser(int argc, char*argv[], char sw,const char*s)
-{   
-	_argc=argc;
-	_argv=argv;
-	switchchar=sw; 
-	format=s; 
-	curparam=0;
-	curoption=0;
-	value = 0;
+{
+    _argc=argc;
+    _argv=argv;
+    switchchar=sw;
+    format=s;
+    curparam=0;
+    curoption=0;
+    value = 0;
 }
 
 char CmdlineParser::getOption()

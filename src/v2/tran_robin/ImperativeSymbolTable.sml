@@ -4,7 +4,7 @@ struct
     structure TE = TypeExpression
     type TypeExp = TE.TypeExp
     type TypeGroup = TE.TypeGroup
-	type CTerm = CoreTerm.CTerm
+        type CTerm = CoreTerm.CTerm
 
     datatype SymValue   = sALIAS    of int * TypeExp        (* # of arguments, type *)
                         | sDATA     of int * (string * TypeExp list) list
@@ -53,9 +53,9 @@ struct
             val theType = TE.genName(aName, aArgCnt)
             fun cvt ctrtypes = TE.tARROW(map (TE.substTVar0 theType) ctrtypes, theType)
             val ctrtypes = map (fn (n,t) => (n, cvt t)) aCtrLst
-			fun toNormCtrDef((cname, ctype), i) =
+                        fun toNormCtrDef((cname, ctype), i) =
                     (cname, sCTR(ctype,  aName, i))
-    	in
+        in
             insertList( (aName, sDATA(aArgCnt, aCtrLst))::(from0toN toNormCtrDef ctrtypes))
         end
 
@@ -265,7 +265,7 @@ struct
     fun dtrsOf (sCODATA(_,sl)) = sl
       | dtrsOf _ = raise Fail("dtrsOf in ImperativeSymbolTable")
 
-	fun bodyOf (sCOMB(_, body)) = body
+        fun bodyOf (sCOMB(_, body)) = body
       | bodyOf (sFUN(_, body)) = body
       | bodyOf _ = raise Fail("bodyOf in ImperativeSymbolTable")
 

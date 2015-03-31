@@ -34,15 +34,15 @@ void showStatus(int aThreadID=-1)
         return;
     }
     VThread* pthread=VMachine::theThreads[aThreadID];
-	int heapsize = VHeap::spaceUsed()+VHeap::spaceAvailable();
+    int heapsize = VHeap::spaceUsed()+VHeap::spaceAvailable();
     cout<<"\nThread "<<aThreadID
         <<"  HEAP USAGE:  "
-		<<VHeap::spaceUsed()/(heapsize/100)<<"% of "<<heapsize/256<<"K"
+        <<VHeap::spaceUsed()/(heapsize/100)<<"% of "<<heapsize/256<<"K"
         <<" GC="<<VHeap::gcOccurredCnt()
-		<<" Total Allocation=" <<VHeap::getTotalAllocated();
-	int bsize=pthread -> getBSize();
-	int psize=pthread -> getPSize();
-	cout<<"\nSTACK USED: "<<bsize+psize<<" / "<<pthread -> getStackCapacity();
+        <<" Total Allocation=" <<VHeap::getTotalAllocated();
+    int bsize=pthread -> getBSize();
+    int psize=pthread -> getPSize();
+    cout<<"\nSTACK USED: "<<bsize+psize<<" / "<<pthread -> getStackCapacity();
     cout<<"\nStack B("<<bsize<<"): ";
     int i;
     for(i=0;i<ITEM_TO_SHOW && i<bsize;i++)
@@ -60,7 +60,7 @@ void showStatus(int aThreadID=-1)
     else
         cout<<"#";
     VMachine::theCodeBase->unasm(pthread->getIP(),cout);
-}    
+}
 void showHeapNode(VPtr ph)
 {
     if(ph==0){
@@ -68,8 +68,8 @@ void showHeapNode(VPtr ph)
         return;
     }
     int bCnt=VHeap::bFieldCnt(ph);
-	int pCnt=VHeap::pFieldCnt(ph);
-	cout<<"["<<unsigned(ph)<<"]  #basic="<<bCnt
+    int pCnt=VHeap::pFieldCnt(ph);
+    cout<<"["<<unsigned(ph)<<"]  #basic="<<bCnt
                            <<" #pointer="<<pCnt;
     if(bCnt>100 || pCnt>100){
         cout<<" may not be a valid heap node\n";
@@ -80,7 +80,7 @@ void showHeapNode(VPtr ph)
         cout<<"\nB["<<i<<"]= "<<ph[i]<<"  HEX="<<hex<<ph[i]<<dec<<" FLOAT="<<((VFloat*)ph)[i];
     for(i=0;i<pCnt ;i++)
         cout<<"\nP["<<i+bCnt<<"]= "<<VPtr(ph[i+bCnt]);
-}                                    
+}
 typedef void (*CMDProcessor)(const char* arg);
 //analyze the arg and get corresponding address
 //arg can be a label name(start with '@'), a number(start with a digit), or empty
@@ -107,18 +107,18 @@ void cmd_help(const char*)
 {
     cout<<
       "\n load filename -- load a program into memory, default suffix is .vmc"
-	  "\n reload        -- reset the system then load the last file"
+      "\n reload        -- reset the system then load the last file"
       "\n exec filename -- load & run a program"
       "\n run  [address]-- run program from the first instruction or a given address"
       "\n thread n -- change current thread to thread n"
       "\n stat [n] -- show status of thread n, default is current thread"
-	  "\n clear    -- clear stacks and heap, keep the loaded program and breakpoints"
+      "\n clear    -- clear stacks and heap, keep the loaded program and breakpoints"
       "\n reset    -- restore to initial states"
       "\n quit     -- exit the program"
       "\n ip  [address] -- show or set current address"
       "\n d   address   -- display tuple at heap address"
       "\n dstr address  -- display string at heap address"
-      "\n d?  address   -- display array, ? is array type, which can be c,s,i,l,f,d" 
+      "\n d?  address   -- display array, ? is array type, which can be c,s,i,l,f,d"
       "\n u   [address] -- unassembly"
       "\n p             -- proceed(step over)"
       "\n t             -- trace(step through)"
@@ -132,56 +132,56 @@ void cmd_help(const char*)
       "\n lstk  n       -- show the nth element on B stack, as an long"
       "\n dstk  n       -- show the nth element on B stack, as an double"
       "\n pstk  n       -- show the nth element on P stack"
-	  "\n\n An address is either a number or a label"
+      "\n\n An address is either a number or a label"
       ;
 }
 static char last_file[256];
 void cmd_load(const char*filename)
 {
-	//check if filename has a suffix
-	char buf[256];
-	if(strchr(filename, '.')==0){
-		strcpy(buf,filename);
-		strcat(buf,".vmc");
-		filename=buf;
-	}
-	char cmdline[256];
-	strcpy(cmdline, "cpp ");
-	strcat(cmdline, filename);
-	strcat(cmdline, " vmcload.tmp");
-	if(system(cmdline)!=0){
-//		cerr<<"load file without pre-processing";
-//		VMachine::theCodeBase->loadFromFile(filename);
-	}
-	else
-		VMachine::theCodeBase->loadFromFile("vmcload.tmp");
-	if(filename!=last_file)
-		strcpy(last_file, filename);
+    //check if filename has a suffix
+    char buf[256];
+    if(strchr(filename, '.')==0){
+        strcpy(buf,filename);
+        strcat(buf,".vmc");
+        filename=buf;
+    }
+    char cmdline[256];
+    strcpy(cmdline, "cpp ");
+    strcat(cmdline, filename);
+    strcat(cmdline, " vmcload.tmp");
+    if(system(cmdline)!=0){
+//      cerr<<"load file without pre-processing";
+//      VMachine::theCodeBase->loadFromFile(filename);
+    }
+    else
+        VMachine::theCodeBase->loadFromFile("vmcload.tmp");
+    if(filename!=last_file)
+        strcpy(last_file, filename);
 }
 void cmd_reload(const char*)
 {
     VMachine::init(_stacksize*1024*256, _heapsize*1024*256);
-	cmd_load(last_file);
-	cout<<"re-initialized and file "<<last_file<<" is loaded";
+    cmd_load(last_file);
+    cout<<"re-initialized and file "<<last_file<<" is loaded";
 }
-		
+
 void cmd_run(const char* arg)
 {
     int addr=arg2addr(1, arg);
-	if(addr==VMC_INVALID_ADDR)
+    if(addr==VMC_INVALID_ADDR)
         return;
-    
-	VMachine::curThread->setIP(addr);
+
+    VMachine::curThread->setIP(addr);
     clock_t starttime=clock();
     VMachine::run();
     clock_t t=clock()-starttime;
     cout<<"\n "<<double(t)/CLOCKS_PER_SEC<<" seconds";
     showStatus();
-}    
+}
 void cmd_exec(const char*filename)
 {
     //if(VMachine::theCodeBase->loadFromFile(filename)==0)
-	cmd_load(filename);
+    cmd_load(filename);
     cmd_run("");
 }
 void cmd_stat(const char* arg)
@@ -194,7 +194,7 @@ void cmd_stat(const char* arg)
 void cmd_reset(const char*)
 {
     VMachine::init(_stacksize*1024*256, _heapsize*1024*256);
-	cout<<"re-initialized";
+    cout<<"re-initialized";
 }
 void cmd_clear(const char*)
 {
@@ -294,7 +294,7 @@ void cmd_ip(const char* arg)
             VMachine::curThread->setIP(addr);
     }
     VMachine::theCodeBase->unasm(VMachine::curThread->getIP(),cout);
-}   
+}
 #define disp_bstack(T, arg) \
 { \
     int i=atoi(arg); \
@@ -355,20 +355,20 @@ VPtr getArgAsPointer(const char* arg)
 void cmd_dstr(const char* arg)
 {
     VPtr p=getArgAsPointer(arg);
-	if(p==0){
-		cout<<"<NULL>";
-		return;
-	}
-	cout<<"string=\"";
-	const unsigned char* str=(const unsigned char*)p;
-	int len=VHeap::bArraySize(p);
-	int i;
-	for(i=0;i<len && str[i]!=0;i++){
-		cout<<PChar(str[i]);
-	}
-	cout<<"\"";
-	if(i>=len)
-		cout<<"\nString not ended with zero";
+    if(p==0){
+        cout<<"<NULL>";
+        return;
+    }
+    cout<<"string=\"";
+    const unsigned char* str=(const unsigned char*)p;
+    int len=VHeap::bArraySize(p);
+    int i;
+    for(i=0;i<len && str[i]!=0;i++){
+        cout<<PChar(str[i]);
+    }
+    cout<<"\"";
+    if(i>=len)
+        cout<<"\nString not ended with zero";
 }
 void cmd_dc(const char* arg)
 {
@@ -477,7 +477,7 @@ static CMDItem _cmdarr[]= {
     {"thread", cmd_thread},
     {"stat", cmd_stat} ,
     {"reset",cmd_reset},
-	{"clear",cmd_clear},
+    {"clear",cmd_clear},
     {"reload", cmd_reload},
     {"d"   , cmd_d},
     {"dstr", cmd_dstr},
@@ -504,78 +504,78 @@ static CMDItem _cmdarr[]= {
 };
 void usage()
 {
-	cout<<"Usage: VMC [-Heap:n] [-Stack:n] [filename]\n"
-		<<"   Heap:n --- specify the initial heap size(MB), default is 1\n"
-		<<"  Stack:n --- specify the stack size(MB), default is 1\n"
-		<<" filename --- The VMC file to be executed\n"
-		;
+    cout<<"Usage: VMC [-Heap:n] [-Stack:n] [filename]\n"
+        <<"   Heap:n --- specify the initial heap size(MB), default is 1\n"
+        <<"  Stack:n --- specify the stack size(MB), default is 1\n"
+        <<" filename --- The VMC file to be executed\n"
+        ;
 }
 int main(int argc, char* argv[])
 {
-	CmdlineParser cp(argc, argv, '-', "Heap:& Stack:& Pstacksize ?");
-	int c;
-	while((c=cp.getOption())!=0)
-		switch(c){
-			case 'H':
-				_heapsize=atoi(cp.getValue());
-				if(_heapsize<=0 || _heapsize>64){
-					cerr<<"Invalid heapsize, should be from 1 to 64";
-					return -1;
-				}
-				break;
-			case 'S':
-				_stacksize=atoi(cp.getValue());
-				if(_stacksize<=0 || _stacksize>32){
-					cerr<<"Invalid _stacksize, should be from 1 to 32";
-					return -1;
-				}
-				break;
-			case '?':
-				usage();
-				return 0;
-			case '&':
-				cerr<<"Invalid option "<<cp.getValue()<<"\n";
-				usage();
-				return -1;
-			default:
-				cerr<<"Internal error!";
-				return -1;
-		}
-	
+    CmdlineParser cp(argc, argv, '-', "Heap:& Stack:& Pstacksize ?");
+    int c;
+    while((c=cp.getOption())!=0)
+        switch(c){
+            case 'H':
+                _heapsize=atoi(cp.getValue());
+                if(_heapsize<=0 || _heapsize>64){
+                    cerr<<"Invalid heapsize, should be from 1 to 64";
+                    return -1;
+                }
+                break;
+            case 'S':
+                _stacksize=atoi(cp.getValue());
+                if(_stacksize<=0 || _stacksize>32){
+                    cerr<<"Invalid _stacksize, should be from 1 to 32";
+                    return -1;
+                }
+                break;
+            case '?':
+                usage();
+                return 0;
+            case '&':
+                cerr<<"Invalid option "<<cp.getValue()<<"\n";
+                usage();
+                return -1;
+            default:
+                cerr<<"Internal error!";
+                return -1;
+        }
+
     VMachine::init(_stacksize*1024*256, _heapsize*1024*256);
-	if(cp.parameterCount()>1){
-		cerr<<"too many file names";
-		usage();
-		return -1;
-	}
-	if(cp.parameterCount()==1){ 
-		//non interactive mode
-		const char* filename = cp.getParameter();
-		char buf[256];
-		if(strchr(filename, '.')==0){
-			strcpy(buf,filename);
-			strcat(buf,".vmc");
-			filename=buf;
-		}
-		char cmdline[256];
-		strcpy(cmdline, "cpp ");
-		strcat(cmdline, filename);
-		strcat(cmdline, " vmcload.tmp");
-		if(system(cmdline)!=0)
-			return -1;
-		if(VMachine::theCodeBase->loadFromFile("vmcload.tmp")==-1)
-			return -1;
-	    VMachine::run();
-		return 0;
-	}
+    if(cp.parameterCount()>1){
+        cerr<<"too many file names";
+        usage();
+        return -1;
+    }
+    if(cp.parameterCount()==1){
+        //non interactive mode
+        const char* filename = cp.getParameter();
+        char buf[256];
+        if(strchr(filename, '.')==0){
+            strcpy(buf,filename);
+            strcat(buf,".vmc");
+            filename=buf;
+        }
+        char cmdline[256];
+        strcpy(cmdline, "cpp ");
+        strcat(cmdline, filename);
+        strcat(cmdline, " vmcload.tmp");
+        if(system(cmdline)!=0)
+            return -1;
+        if(VMachine::theCodeBase->loadFromFile("vmcload.tmp")==-1)
+            return -1;
+        VMachine::run();
+        return 0;
+    }
 #ifdef _DEBUG
-	cout<<"\nVirtual Machine for Charity debug version 1.03\n"
+    cout<<"\nVirtual Machine for Charity debug version 1.03\n"
         <<"copyright (c) 2001,2002 Charity Development Group";
 #else
-	cout<<"\nVirtual Machine for Charity fast version 1.03\n"
+    cout<<"\nVirtual Machine for Charity fast version 1.03\n"
         <<"copyright (c) 2001,2002 Charity Development Group"
-	    <<"\nWarning: this version should only be used to run trusted VMC code";
-#endif	
+        <<"\nWarning: this version should only be used to run trusted VMC code";
+#endif
     cout<<"\nEnter a command, type help for a list of available commands\n";
     char cmd[256]="";
     cout<<"VMC>> ";
@@ -598,11 +598,11 @@ int main(int argc, char* argv[])
             char arg[256];
             cin.getline(arg,sizeof(arg));
             istrstream is(arg);
-			char buf[256];
-			is>>buf;
+            char buf[256];
+            is>>buf;
             (*proc)(buf);
         }
         cout<<"\nVMC>> ";
     }
-	return 0;
+    return 0;
 }

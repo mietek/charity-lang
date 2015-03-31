@@ -33,10 +33,10 @@ def append = L1, L2 => {: app #L1 =
 def flatten
     = LL => {: flat #x =
                nil  => nil
-             | cons(z,zs) => {: app #y = 
-	                        nil => flat zs
-                              | cons(a,as) => cons(a,app as) 
-			      :} z
+             | cons(z,zs) => {: app #y =
+                                nil => flat zs
+                              | cons(a,as) => cons(a,app as)
+                              :} z
              :} LL.
 
 def filter{ pred: A -> bool}: list(A) -> list(A)
@@ -88,10 +88,10 @@ def Lflatten: Llist(Llist(A)) -> Llist(A)
     = LL => {: flat #x =
                Lnil  => Lnil
              | Lcons (fst: a, snd:b) =>
-	                {: app #y = 
-			   Lnil => flat b
-			 | Lcons (fst: a',snd: b') => Lcons(fst: a', snd: app b')
-			 :} a
+                        {: app #y =
+                           Lnil => flat b
+                         | Lcons (fst: a',snd: b') => Lcons(fst: a', snd: app b')
+                         :} a
              :} LL.
 
 def Lfind{ pred: A -> SF(B)}: Llist(A) -> SF(B)
@@ -109,7 +109,7 @@ def Lfilter{ P: A -> bool }: Llist(A) -> Llist(A)
             :} L.
 
 %
-%   Translation routines lists to and from lazy lists 
+%   Translation routines lists to and from lazy lists
 %
 
 def list_2_Llist: list(A) -> Llist(A)
@@ -123,9 +123,9 @@ def Llist_2_list: Llist(A) -> list(A)
              |} LL.
 
 
-%  
-%  A search problem is expressed by a set of states with a labelled 
-%  evolution, together with a goal set.  This is expressed by the charity 
+%
+%  A search problem is expressed by a set of states with a labelled
+%  evolution, together with a goal set.  This is expressed by the charity
 %  datatype:
 %
 
@@ -133,7 +133,7 @@ data C -> ProbTree(A) = evolve: C -> Llist(A*C)
                       |   goal: C -> bool.
 
 %
-%  The next frontier is determined by the evolution and a filtering 
+%  The next frontier is determined by the evolution and a filtering
 %  process on paths to remove partial solutions which are not productive.
 %
 
@@ -279,7 +279,7 @@ def filter_2{fun}: list(A) -> list(B)
                    } LP.
 
 def inboard
-    = z,L =>   {: member #x = 
+    = z,L =>   {: member #x =
                   nil => false
                 | cons(x,v) => (z==x); { true  => true
                                        | false => member v}

@@ -17,25 +17,25 @@ data D-> inflist(A) = head: D-> A
 
 data C-> exp(A,B) = fn: C->A=>B.
 
-def plus(#x, @y) = 
+def plus(#x, @y) =
      zero => y
     |succ m => succ plus(m,y)
 
-def plus2 = {: plus(#x,@y) = 
+def plus2 = {: plus(#x,@y) =
              | zero => y
-	     | succ m => succ plus(m,y)
-	     :}
+             | succ m => succ plus(m,y)
+             :}
 
 def append (#_,_): list(A), list(A) -> list(A)
      = nil , L => L
      | cons(a,as),L  => cons(a,append(as,L)).
-	    
+
 def reverse: list(A) -> list(A)
-    = L => {: rev(#_,@A) = 
+    = L => {: rev(#_,@A) =
                          |
                          |  nil => A
                          | cons(a,as) => rev(as,cons(a,A))
-			 |
+                         |
             :} (L,[]).
 
 def start = =>reverse([1,2,3,4])

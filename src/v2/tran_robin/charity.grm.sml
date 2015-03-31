@@ -2,11 +2,11 @@ functor chLrValsFun(structure Token : TOKEN)
  : sig structure ParserData : PARSER_DATA
        structure Tokens : ch_TOKENS
    end
- = 
+ =
 struct
 structure ParserData=
 struct
-structure Header = 
+structure Header =
 struct
 (* the yacc file for charity *)
 open AST
@@ -73,7 +73,7 @@ fun findRecurPos [] = raise Fail("findRecurPos")
   | findRecurPos((_,1)::_) = 0
   | findRecurPos(_::rps) = 1+(findRecurPos rps)
 
-fun buildNewBody(paramList:(string*int) list, fbody: YTerm) = 
+fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
     (* convert <f(#p1,@p2,p3) = patterns> into <f = p1,p2,p3 => (p1,p3);patterns> *)
     if countRecurParams paramList >1 then
         raise YACCERR("Can not have more than one recursive parameters")
@@ -82,16 +82,16 @@ fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
               | getPatternedVars((id,0)::pl) = id::(getPatternedVars pl)
               | getPatternedVars((id,1)::pl) = id::(getPatternedVars pl)
               | getPatternedVars((id,2)::pl) = (getPatternedVars pl)
-            
+
             val pvarlst = getPatternedVars paramList
             fun toTerm [x] = yVAR x
               | toTerm lst = yTUPLE(map yVAR lst)
         in
-            yPattABS([(map ypVAR (map #1 paramList), 
+            yPattABS([(map ypVAR (map #1 paramList),
                        yAPP(fbody, toTerm pvarlst)
                       )])
         end
-                      
+
 
 
 
@@ -102,7 +102,7 @@ fun buildNewBody(paramList:(string*int) list, fbody: YTerm) =
 end
 structure LrTable = Token.LrTable
 structure Token = Token
-local open LrTable in 
+local open LrTable in
 val table=let val actionRows =
 "\
 \\001\000\001\000\117\001\002\000\117\001\007\000\117\001\008\000\117\001\
@@ -898,7 +898,7 @@ val gotoT =
 val numstates = 291
 val numrules = 146
 val s = ref "" and index = ref 0
-val string_to_int = fn () => 
+val string_to_int = fn () =>
 let val i = !index
 in index := i+2; Char.ord(String.sub(!s,i)) + Char.ord(String.sub(!s,i+1)) * 256
 end
@@ -956,7 +956,7 @@ end
 local open Header in
 type pos = int
 type arg = unit
-structure MlyValue = 
+structure MlyValue =
 struct
 datatype svalue = VOID | ntVOID of unit ->  unit
  | CHAR of unit ->  (string) | OPER of unit ->  (string)
@@ -1020,9 +1020,9 @@ open LrTable
 val is_keyword =
 fn (T 62) => true | (T 63) => true | (T 28) => true | (T 11) => true
  | (T 32) => true | (T 12) => true | (T 13) => true | _ => false
-val preferred_change = 
+val preferred_change =
 nil
-val noShift = 
+val noShift =
 fn (T 64) => true | _ => false
 val showTerminal =
 fn (T 0) => "ID"
@@ -1096,21 +1096,21 @@ local open Header in
 val errtermvalue=
 fn _ => MlyValue.VOID
 end
-val terms = (T 2) :: (T 3) :: (T 4) :: (T 5) :: (T 11) :: (T 12) :: 
-(T 13) :: (T 14) :: (T 15) :: (T 16) :: (T 17) :: (T 18) :: (T 19) :: 
-(T 20) :: (T 21) :: (T 22) :: (T 23) :: (T 24) :: (T 25) :: (T 26) :: 
-(T 27) :: (T 28) :: (T 29) :: (T 30) :: (T 31) :: (T 32) :: (T 33) :: 
-(T 34) :: (T 35) :: (T 36) :: (T 37) :: (T 38) :: (T 39) :: (T 40) :: 
-(T 41) :: (T 42) :: (T 43) :: (T 44) :: (T 45) :: (T 46) :: (T 47) :: 
-(T 48) :: (T 49) :: (T 50) :: (T 51) :: (T 52) :: (T 53) :: (T 54) :: 
-(T 55) :: (T 56) :: (T 57) :: (T 58) :: (T 59) :: (T 60) :: (T 61) :: 
+val terms = (T 2) :: (T 3) :: (T 4) :: (T 5) :: (T 11) :: (T 12) ::
+(T 13) :: (T 14) :: (T 15) :: (T 16) :: (T 17) :: (T 18) :: (T 19) ::
+(T 20) :: (T 21) :: (T 22) :: (T 23) :: (T 24) :: (T 25) :: (T 26) ::
+(T 27) :: (T 28) :: (T 29) :: (T 30) :: (T 31) :: (T 32) :: (T 33) ::
+(T 34) :: (T 35) :: (T 36) :: (T 37) :: (T 38) :: (T 39) :: (T 40) ::
+(T 41) :: (T 42) :: (T 43) :: (T 44) :: (T 45) :: (T 46) :: (T 47) ::
+(T 48) :: (T 49) :: (T 50) :: (T 51) :: (T 52) :: (T 53) :: (T 54) ::
+(T 55) :: (T 56) :: (T 57) :: (T 58) :: (T 59) :: (T 60) :: (T 61) ::
 (T 62) :: (T 63) :: (T 64) :: (T 65) :: nil
 end
 structure Actions =
-struct 
+struct
 exception mlyAction of int
 local open Header in
-val actions = 
+val actions =
 fn (i392,defaultPos,stack,
     (()):arg) =>
 case (i392,stack)
@@ -1152,16 +1152,16 @@ dataDefinition1right))::rest671) => let val result=MlyValue.definition
  in (LrTable.NT 2,(result,dataDefinition1left,dataDefinition1right),
 rest671) end
 | (5,(_,(MlyValue.aliasDefinition aliasDefinition1,
-aliasDefinition1left,aliasDefinition1right))::rest671) => let val 
-result=MlyValue.definition(fn _ => let val aliasDefinition as 
+aliasDefinition1left,aliasDefinition1right))::rest671) => let val
+result=MlyValue.definition(fn _ => let val aliasDefinition as
 aliasDefinition1=aliasDefinition1 ()
  in ( yALIASDEF aliasDefinition ) end
 )
  in (LrTable.NT 2,(result,aliasDefinition1left,aliasDefinition1right),
 rest671) end
 | (6,(_,(MlyValue.functionDefinition functionDefinition1,
-functionDefinition1left,functionDefinition1right))::rest671) => let 
-val result=MlyValue.definition(fn _ => let val functionDefinition as 
+functionDefinition1left,functionDefinition1right))::rest671) => let
+val result=MlyValue.definition(fn _ => let val functionDefinition as
 functionDefinition1=functionDefinition1 ()
  in ( yFUNDEF   functionDefinition ) end
 )
@@ -1198,12 +1198,12 @@ val structorDefList as structorDefList1=structorDefList1 ()
                  else
                         raise YACCERR("Parsing error: datatype '" ^ (#1 dataName1) ^
                                       "' is neither inductive nor co-inductive\n")
-                
+
 ) end
 )
  in (LrTable.NT 3,(result,DATA1left,structorDefList1right),rest671)
  end
-| (8,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (8,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.dataName(fn _ => let val ID as ID1=ID1 ()
  in (ID, []) end
 )
@@ -1215,13 +1215,13 @@ val idList as idList1=idList1 ()
  in (ID, idList) end
 )
  in (LrTable.NT 4,(result,ID1left,R_PAR1right),rest671) end
-| (10,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (10,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.idList(fn _ => let val ID as ID1=ID1 ()
  in ( [ID] ) end
 )
  in (LrTable.NT 5,(result,ID1left,ID1right),rest671) end
 | (11,(_,(MlyValue.idList idList1,_,idList1right))::_::(_,(MlyValue.ID
- ID1,ID1left,_))::rest671) => let val result=MlyValue.idList(fn _ => 
+ ID1,ID1left,_))::rest671) => let val result=MlyValue.idList(fn _ =>
 let val ID as ID1=ID1 ()
 val idList as idList1=idList1 ()
  in ( ID::idList ) end
@@ -1245,7 +1245,7 @@ val structorDefList as structorDefList1=structorDefList1 ()
 )
  in (LrTable.NT 6,(result,structorDef1left,structorDefList1right),
 rest671) end
-| (14,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (14,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.structorDef(fn _ => let val ID as ID1=ID1 ()
  in ( (ID, NONE) ) end
 )
@@ -1258,7 +1258,7 @@ val structorType as structorType1=structorType1 ()
 )
  in (LrTable.NT 7,(result,ID1left,structorType1right),rest671) end
 | (16,(_,(MlyValue.arrowType arrowType1,arrowType1left,arrowType1right
-))::rest671) => let val result=MlyValue.structorType(fn _ => let val 
+))::rest671) => let val result=MlyValue.structorType(fn _ => let val
 arrowType as arrowType1=arrowType1 ()
  in ( arrowType ) end
 )
@@ -1276,7 +1276,7 @@ val termType as termType1=termType1 ()
  end
 | (18,(_,(MlyValue.termType termType1,_,termType1right))::_::(_,(
 MlyValue.termTypeList termTypeList1,termTypeList1left,_))::rest671)
- => let val result=MlyValue.arrowType(fn _ => let val termTypeList as 
+ => let val result=MlyValue.arrowType(fn _ => let val termTypeList as
 termTypeList1=termTypeList1 ()
 val termType as termType1=termType1 ()
  in ( yARROW(termTypeList, termType) ) end
@@ -1290,13 +1290,13 @@ S_ARROW1left,_))::rest671) => let val result=MlyValue.arrowType(fn _
 )
  in (LrTable.NT 9,(result,S_ARROW1left,termType1right),rest671) end
 | (20,(_,(MlyValue.termType termType1,termType1left,termType1right))::
-rest671) => let val result=MlyValue.termTypeList(fn _ => let val 
+rest671) => let val result=MlyValue.termTypeList(fn _ => let val
 termType as termType1=termType1 ()
  in ( [termType] ) end
 )
  in (LrTable.NT 10,(result,termType1left,termType1right),rest671) end
 | (21,(_,(MlyValue.termTypeList termTypeList1,_,termTypeList1right))::
-_::(_,(MlyValue.termType termType1,termType1left,_))::rest671) => let 
+_::(_,(MlyValue.termType termType1,termType1left,_))::rest671) => let
 val result=MlyValue.termTypeList(fn _ => let val termType as termType1
 =termType1 ()
 val termTypeList as termTypeList1=termTypeList1 ()
@@ -1312,24 +1312,24 @@ fn _ => let val singleTermType as singleTermType1=singleTermType1 ()
  in (LrTable.NT 11,(result,singleTermType1left,singleTermType1right),
 rest671) end
 | (23,(_,(MlyValue.termTypeProd termTypeProd1,termTypeProd1left,
-termTypeProd1right))::rest671) => let val result=MlyValue.termType(fn 
+termTypeProd1right))::rest671) => let val result=MlyValue.termType(fn
 _ => let val termTypeProd as termTypeProd1=termTypeProd1 ()
  in ( yPRODS termTypeProd ) end
 )
  in (LrTable.NT 11,(result,termTypeProd1left,termTypeProd1right),
 rest671) end
-| (24,(_,(MlyValue.NUM NUM1,NUM1left,NUM1right))::rest671) => let val 
+| (24,(_,(MlyValue.NUM NUM1,NUM1left,NUM1right))::rest671) => let val
 result=MlyValue.singleTermType(fn _ => let val NUM as NUM1=NUM1 ()
  in (
  if NUM="1" then
                                                 yUNIT
                                           else
                                                 raise YACCERR("syntax error:"^NUM)
-                                        
+
 ) end
 )
  in (LrTable.NT 12,(result,NUM1left,NUM1right),rest671) end
-| (25,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (25,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.singleTermType(fn _ => let val ID as ID1=ID1 ()
  in ( yNAME(ID,[]) ) end
 )
@@ -1351,7 +1351,7 @@ termTypeProd1 ()
 | (28,(_,(MlyValue.singleTermType singleTermType2,_,
 singleTermType2right))::_::(_,(MlyValue.singleTermType singleTermType1
 ,singleTermType1left,_))::rest671) => let val result=
-MlyValue.termTypeProd(fn _ => let val singleTermType1=singleTermType1 
+MlyValue.termTypeProd(fn _ => let val singleTermType1=singleTermType1
 ()
 val singleTermType2=singleTermType2 ()
  in ( [singleTermType1, singleTermType2] ) end
@@ -1360,7 +1360,7 @@ val singleTermType2=singleTermType2 ()
 rest671) end
 | (29,(_,(MlyValue.termTypeProd termTypeProd1,_,termTypeProd1right))::
 _::(_,(MlyValue.singleTermType singleTermType1,singleTermType1left,_))
-::rest671) => let val result=MlyValue.termTypeProd(fn _ => let val 
+::rest671) => let val result=MlyValue.termTypeProd(fn _ => let val
 singleTermType as singleTermType1=singleTermType1 ()
 val termTypeProd as termTypeProd1=termTypeProd1 ()
  in ( singleTermType::termTypeProd ) end
@@ -1368,8 +1368,8 @@ val termTypeProd as termTypeProd1=termTypeProd1 ()
  in (LrTable.NT 13,(result,singleTermType1left,termTypeProd1right),
 rest671) end
 | (30,(_,(MlyValue.termType termType1,_,termType1right))::_::(_,(
-MlyValue.dataName dataName1,_,_))::(_,(_,DATA1left,_))::rest671) => 
-let val result=MlyValue.aliasDefinition(fn _ => let val dataName as 
+MlyValue.dataName dataName1,_,_))::(_,(_,DATA1left,_))::rest671) =>
+let val result=MlyValue.aliasDefinition(fn _ => let val dataName as
 dataName1=dataName1 ()
 val termType as termType1=termType1 ()
  in ( (dataName, termType) ) end
@@ -1433,9 +1433,9 @@ val functionBody as functionBody1=functionBody1 ()
  in (LrTable.NT 15,(result,DEF1left,functionBody1right),rest671) end
 | (36,(_,(MlyValue.functionBody functionBody1,_,functionBody1right))::
 _::(_,(MlyValue.functionSpec functionSpec1,_,_))::(_,(
-MlyValue.formalParams formalParams1,_,_))::_::(_,(MlyValue.macroList 
+MlyValue.formalParams formalParams1,_,_))::_::(_,(MlyValue.macroList
 macroList1,_,_))::(_,(MlyValue.COMB_ID COMB_ID1,_,_))::(_,(_,DEF1left,
-_))::rest671) => let val result=MlyValue.functionDefinition(fn _ => 
+_))::rest671) => let val result=MlyValue.functionDefinition(fn _ =>
 let val COMB_ID as COMB_ID1=COMB_ID1 ()
 val macroList as macroList1=macroList1 ()
 val formalParams as formalParams1=formalParams1 ()
@@ -1453,7 +1453,7 @@ fparamList1 ()
  in (fparamList) end
 )
  in (LrTable.NT 49,(result,L_PAR1left,R_PAR1right),rest671) end
-| (38,(_,(MlyValue.fpID fpID1,fpID1left,fpID1right))::rest671) => let 
+| (38,(_,(MlyValue.fpID fpID1,fpID1left,fpID1right))::rest671) => let
 val result=MlyValue.fparamList(fn _ => let val fpID as fpID1=fpID1 ()
  in ([fpID]) end
 )
@@ -1475,15 +1475,15 @@ val fparamList as fparamList1=fparamList1 ()
  in ((ID, 2)) end
 )
  in (LrTable.NT 51,(result,AT1left,ID1right),rest671) end
-| (42,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (42,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.fpID(fn _ => let val ID as ID1=ID1 ()
  in ((ID, 0)) end
 )
  in (LrTable.NT 51,(result,ID1left,ID1right),rest671) end
-| (43,(_,(_,_,DONTCARE1right))::(_,(_,SHARP1left,_))::rest671) => let 
+| (43,(_,(_,_,DONTCARE1right))::(_,(_,SHARP1left,_))::rest671) => let
 val result=MlyValue.fpID(fn _ => (("$p" ^ Utility.newName(), 1)))
  in (LrTable.NT 51,(result,SHARP1left,DONTCARE1right),rest671) end
-| (44,(_,(_,_,DONTCARE1right))::(_,(_,AT1left,_))::rest671) => let 
+| (44,(_,(_,_,DONTCARE1right))::(_,(_,AT1left,_))::rest671) => let
 val result=MlyValue.fpID(fn _ => (("$p" ^ Utility.newName(), 2)))
  in (LrTable.NT 51,(result,AT1left,DONTCARE1right),rest671) end
 | (45,(_,(_,DONTCARE1left,DONTCARE1right))::rest671) => let val result
@@ -1495,7 +1495,7 @@ COLON1left,_))::rest671) => let val result=MlyValue.functionSpec(fn _
  in ( SOME arrowType ) end
 )
  in (LrTable.NT 17,(result,COLON1left,arrowType1right),rest671) end
-| (47,rest671) => let val result=MlyValue.functionSpec(fn _ => ( NONE 
+| (47,rest671) => let val result=MlyValue.functionSpec(fn _ => ( NONE
 ))
  in (LrTable.NT 17,(result,defaultPos,defaultPos),rest671) end
 | (48,(_,(MlyValue.macroDef macroDef1,macroDef1left,macroDef1right))::
@@ -1505,14 +1505,14 @@ rest671) => let val result=MlyValue.macroList(fn _ => let val macroDef
 )
  in (LrTable.NT 18,(result,macroDef1left,macroDef1right),rest671) end
 | (49,(_,(MlyValue.macroList macroList1,_,macroList1right))::_::(_,(
-MlyValue.macroDef macroDef1,macroDef1left,_))::rest671) => let val 
+MlyValue.macroDef macroDef1,macroDef1left,_))::rest671) => let val
 result=MlyValue.macroList(fn _ => let val macroDef as macroDef1=
 macroDef1 ()
 val macroList as macroList1=macroList1 ()
  in ( macroDef::macroList ) end
 )
  in (LrTable.NT 18,(result,macroDef1left,macroList1right),rest671) end
-| (50,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (50,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.macroDef(fn _ => let val ID as ID1=ID1 ()
  in ( (ID, NONE) ) end
 )
@@ -1525,8 +1525,8 @@ val arrowType as arrowType1=arrowType1 ()
 )
  in (LrTable.NT 19,(result,ID1left,arrowType1right),rest671) end
 | (52,(_,(MlyValue.pattAbstraction pattAbstraction1,
-pattAbstraction1left,pattAbstraction1right))::rest671) => let val 
-result=MlyValue.functionBody(fn _ => let val pattAbstraction as 
+pattAbstraction1left,pattAbstraction1right))::rest671) => let val
+result=MlyValue.functionBody(fn _ => let val pattAbstraction as
 pattAbstraction1=pattAbstraction1 ()
  in ( pattAbstraction ) end
 )
@@ -1541,20 +1541,20 @@ functionCall1right))::rest671) => let val result=MlyValue.functionBody
 rest671) end
 | (54,(_,(MlyValue.functionBody functionBody1,_,functionBody1right))::
 _::(_,(MlyValue.formalParams formalParams1,_,_))::(_,(MlyValue.ID ID1,
-ID1left,_))::rest671) => let val result=MlyValue.recursiveFunction(fn 
+ID1left,_))::rest671) => let val result=MlyValue.recursiveFunction(fn
 _ => let val ID as ID1=ID1 ()
 val formalParams as formalParams1=formalParams1 ()
 val functionBody as functionBody1=functionBody1 ()
  in (
 
                                         if countRecurParams formalParams = 1 then
-                                            (ID, 
-                                             findRecurPos formalParams, 
+                                            (ID,
+                                             findRecurPos formalParams,
                                              buildNewBody(formalParams,functionBody)
                                             )
                                         else
                                             raise YACCERR("Can only have one recursive parameters")
-                                        
+
 ) end
 )
  in (LrTable.NT 46,(result,ID1left,functionBody1right),rest671) end
@@ -1567,28 +1567,28 @@ val functionBody as functionBody1=functionBody1 ()
  in (
 
                                         if countRecurParams formalParams = 0 then
-                                            (ID, 
-                                             ~1, 
+                                            (ID,
+                                             ~1,
                                              buildNewBody(formalParams,functionBody)
                                             )
                                         else
                                             raise YACCERR("Can only have one recursive parameters")
-                                        
+
 ) end
 )
  in (LrTable.NT 46,(result,SHARP1left,functionBody1right),rest671) end
 | (56,(_,(MlyValue.recursiveFunction recursiveFunction1,
-recursiveFunction1left,recursiveFunction1right))::rest671) => let val 
-result=MlyValue.recursiveFunList(fn _ => let val recursiveFunction as 
+recursiveFunction1left,recursiveFunction1right))::rest671) => let val
+result=MlyValue.recursiveFunList(fn _ => let val recursiveFunction as
 recursiveFunction1=recursiveFunction1 ()
  in ( [ recursiveFunction ] ) end
 )
  in (LrTable.NT 47,(result,recursiveFunction1left,
 recursiveFunction1right),rest671) end
 | (57,(_,(MlyValue.recursiveFunList recursiveFunList1,_,
-recursiveFunList1right))::_::(_,(MlyValue.recursiveFunction 
-recursiveFunction1,recursiveFunction1left,_))::rest671) => let val 
-result=MlyValue.recursiveFunList(fn _ => let val recursiveFunction as 
+recursiveFunList1right))::_::(_,(MlyValue.recursiveFunction
+recursiveFunction1,recursiveFunction1left,_))::rest671) => let val
+result=MlyValue.recursiveFunList(fn _ => let val recursiveFunction as
 recursiveFunction1=recursiveFunction1 ()
 val recursiveFunList as recursiveFunList1=recursiveFunList1 ()
  in ( recursiveFunction::recursiveFunList ) end
@@ -1597,15 +1597,15 @@ val recursiveFunList as recursiveFunList1=recursiveFunList1 ()
 recursiveFunList1right),rest671) end
 | (58,(_,(MlyValue.casephraseList casephraseList1,casephraseList1left,
 casephraseList1right))::rest671) => let val result=
-MlyValue.pattAbstraction(fn _ => let val casephraseList as 
+MlyValue.pattAbstraction(fn _ => let val casephraseList as
 casephraseList1=casephraseList1 ()
  in ( yPattABS casephraseList ) end
 )
  in (LrTable.NT 21,(result,casephraseList1left,casephraseList1right),
 rest671) end
-| (59,(_,(_,_,R_BRACE1right))::(_,(MlyValue.casephraseList 
-casephraseList1,_,_))::(_,(_,L_BRACE1left,_))::rest671) => let val 
-result=MlyValue.pattAbstraction(fn _ => let val casephraseList as 
+| (59,(_,(_,_,R_BRACE1right))::(_,(MlyValue.casephraseList
+casephraseList1,_,_))::(_,(_,L_BRACE1left,_))::rest671) => let val
+result=MlyValue.pattAbstraction(fn _ => let val casephraseList as
 casephraseList1=casephraseList1 ()
  in ( yPattABS casephraseList ) end
 )
@@ -1614,8 +1614,8 @@ casephraseList1=casephraseList1 ()
 casephrase1right))::rest671) => let val result=MlyValue.casephraseList
 (fn _ => let val casephrase as casephrase1=casephrase1 ()
  in (
- if casephrase=([],yNULL) then [] 
-                                                                    else [ casephrase ] 
+ if casephrase=([],yNULL) then []
+                                                                    else [ casephrase ]
 ) end
 )
  in (LrTable.NT 25,(result,casephrase1left,casephrase1right),rest671)
@@ -1627,15 +1627,15 @@ MlyValue.casephraseList(fn _ => let val casephrase as casephrase1=
 casephrase1 ()
 val casephraseList as casephraseList1=casephraseList1 ()
  in (
- if casephrase=([],yNULL) then casephraseList 
-                                                                    else casephrase::casephraseList 
+ if casephrase=([],yNULL) then casephraseList
+                                                                    else casephrase::casephraseList
 ) end
 )
  in (LrTable.NT 25,(result,casephrase1left,casephraseList1right),
 rest671) end
 | (62,(_,(MlyValue.term term1,_,term1right))::_::(_,(
-MlyValue.patternList patternList1,patternList1left,_))::rest671) => 
-let val result=MlyValue.casephrase(fn _ => let val patternList as 
+MlyValue.patternList patternList1,patternList1left,_))::rest671) =>
+let val result=MlyValue.casephrase(fn _ => let val patternList as
 patternList1=patternList1 ()
 val term as term1=term1 ()
  in ( (patternList, term)) end
@@ -1651,13 +1651,13 @@ rest671) => let val result=MlyValue.casephrase(fn _ => let val term
  ( [], yNULL) ))
  in (LrTable.NT 24,(result,defaultPos,defaultPos),rest671) end
 | (65,(_,(MlyValue.pattern pattern1,pattern1left,pattern1right))::
-rest671) => let val result=MlyValue.patternList(fn _ => let val 
+rest671) => let val result=MlyValue.patternList(fn _ => let val
 pattern as pattern1=pattern1 ()
  in ( [pattern] ) end
 )
  in (LrTable.NT 23,(result,pattern1left,pattern1right),rest671) end
 | (66,(_,(MlyValue.patternList patternList1,_,patternList1right))::_::
-(_,(MlyValue.pattern pattern1,pattern1left,_))::rest671) => let val 
+(_,(MlyValue.pattern pattern1,pattern1left,_))::rest671) => let val
 result=MlyValue.patternList(fn _ => let val pattern as pattern1=
 pattern1 ()
 val patternList as patternList1=patternList1 ()
@@ -1665,16 +1665,16 @@ val patternList as patternList1=patternList1 ()
 )
  in (LrTable.NT 23,(result,pattern1left,patternList1right),rest671)
  end
-| (67,(_,(_,_,R_PAR1right))::(_,(_,L_PAR1left,_))::rest671) => let 
+| (67,(_,(_,_,R_PAR1right))::(_,(_,L_PAR1left,_))::rest671) => let
 val result=MlyValue.pattern(fn _ => ( ypTUPLE [] ))
  in (LrTable.NT 22,(result,L_PAR1left,R_PAR1right),rest671) end
-| (68,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (68,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.pattern(fn _ => let val ID as ID1=ID1 ()
  in ( ypVAR ID) end
 )
  in (LrTable.NT 22,(result,ID1left,ID1right),rest671) end
 | (69,(_,(MlyValue.pattern pattern1,_,pattern1right))::(_,(MlyValue.ID
- ID1,ID1left,_))::rest671) => let val result=MlyValue.pattern(fn _ => 
+ ID1,ID1left,_))::rest671) => let val result=MlyValue.pattern(fn _ =>
 let val ID as ID1=ID1 ()
 val pattern as pattern1=pattern1 ()
  in ( ypCTR(ID, pattern) ) end
@@ -1687,7 +1687,7 @@ fn _ => let val patternList as patternList1=patternList1 ()
 )
  in (LrTable.NT 22,(result,L_PAR1left,R_PAR1right),rest671) end
 | (71,(_,(MlyValue.NUM NUM2,_,NUM2right))::_::(_,(MlyValue.NUM NUM1,
-NUM1left,_))::rest671) => let val result=MlyValue.pattern(fn _ => let 
+NUM1left,_))::rest671) => let val result=MlyValue.pattern(fn _ => let
 val NUM1=NUM1 ()
 val NUM2=NUM2 ()
  in (
@@ -1696,13 +1696,13 @@ val NUM2=NUM2 ()
 )
  in (LrTable.NT 22,(result,NUM1left,NUM2right),rest671) end
 | (72,(_,(MlyValue.NUM NUM1,_,NUM1right))::(_,(_,RANGE1left,_))::
-rest671) => let val result=MlyValue.pattern(fn _ => let val NUM as 
+rest671) => let val result=MlyValue.pattern(fn _ => let val NUM as
 NUM1=NUM1 ()
  in ( ypINTRANGE(valOf(Int.minInt), valOf(Int.fromString(NUM)) )) end
 )
  in (LrTable.NT 22,(result,RANGE1left,NUM1right),rest671) end
 | (73,(_,(_,_,RANGE1right))::(_,(MlyValue.NUM NUM1,NUM1left,_))::
-rest671) => let val result=MlyValue.pattern(fn _ => let val NUM as 
+rest671) => let val result=MlyValue.pattern(fn _ => let val NUM as
 NUM1=NUM1 ()
  in ( ypINTRANGE(valOf(Int.fromString(NUM)), valOf(Int.maxInt)) ) end
 )
@@ -1710,9 +1710,9 @@ NUM1=NUM1 ()
 | (74,(_,(_,DONTCARE1left,DONTCARE1right))::rest671) => let val result
 =MlyValue.pattern(fn _ => ( ypVAR "_" ))
  in (LrTable.NT 22,(result,DONTCARE1left,DONTCARE1right),rest671) end
-| (75,(_,(_,_,R_PAR1right))::(_,(MlyValue.recPatternList 
-recPatternList1,_,_))::(_,(_,L_PAR1left,_))::rest671) => let val 
-result=MlyValue.pattern(fn _ => let val recPatternList as 
+| (75,(_,(_,_,R_PAR1right))::(_,(MlyValue.recPatternList
+recPatternList1,_,_))::(_,(_,L_PAR1left,_))::rest671) => let val
+result=MlyValue.pattern(fn _ => let val recPatternList as
 recPatternList1=recPatternList1 ()
  in ( ypRECORD recPatternList ) end
 )
@@ -1742,35 +1742,35 @@ val pattern as pattern1=pattern1 ()
 )
  in (LrTable.NT 26,(result,ID1left,pattern1right),rest671) end
 | (79,(_,(MlyValue.ID ID2,_,ID2right))::_::(_,(MlyValue.ID ID1,ID1left
-,_))::rest671) => let val result=MlyValue.recPattern(fn _ => let val 
+,_))::rest671) => let val result=MlyValue.recPattern(fn _ => let val
 ID1=ID1 ()
 val ID2=ID2 ()
  in ( (ID1, ypFUN ID2) ) end
 )
  in (LrTable.NT 26,(result,ID1left,ID2right),rest671) end
-| (80,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (80,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.functionCall(fn _ => let val ID as ID1=ID1 ()
  in ( yCOMB(ID, []) ) end
 )
  in (LrTable.NT 28,(result,ID1left,ID1right),rest671) end
-| (81,(_,(_,_,R_BRACE1right))::(_,(MlyValue.functionBodyList 
+| (81,(_,(_,_,R_BRACE1right))::(_,(MlyValue.functionBodyList
 functionBodyList1,_,_))::(_,(MlyValue.COMB_ID COMB_ID1,COMB_ID1left,_)
-)::rest671) => let val result=MlyValue.functionCall(fn _ => let val 
+)::rest671) => let val result=MlyValue.functionCall(fn _ => let val
 COMB_ID as COMB_ID1=COMB_ID1 ()
 val functionBodyList as functionBodyList1=functionBodyList1 ()
  in ( yCOMB(COMB_ID, functionBodyList) ) end
 )
  in (LrTable.NT 28,(result,COMB_ID1left,R_BRACE1right),rest671) end
-| (82,(_,(_,_,R_RECUR1right))::(_,(MlyValue.recursiveFunList 
-recursiveFunList1,_,_))::(_,(_,L_RECUR1left,_))::rest671) => let val 
-result=MlyValue.functionCall(fn _ => let val recursiveFunList as 
+| (82,(_,(_,_,R_RECUR1right))::(_,(MlyValue.recursiveFunList
+recursiveFunList1,_,_))::(_,(_,L_RECUR1left,_))::rest671) => let val
+result=MlyValue.functionCall(fn _ => let val recursiveFunList as
 recursiveFunList1=recursiveFunList1 ()
  in ( yLOCALFUN recursiveFunList ) end
 )
  in (LrTable.NT 28,(result,L_RECUR1left,R_RECUR1right),rest671) end
 | (83,(_,(MlyValue.functionBody functionBody1,functionBody1left,
 functionBody1right))::rest671) => let val result=
-MlyValue.functionBodyList(fn _ => let val functionBody as 
+MlyValue.functionBodyList(fn _ => let val functionBody as
 functionBody1=functionBody1 ()
  in ( [functionBody] ) end
 )
@@ -1779,29 +1779,29 @@ rest671) end
 | (84,(_,(MlyValue.functionBodyList functionBodyList1,_,
 functionBodyList1right))::_::(_,(MlyValue.functionBody functionBody1,
 functionBody1left,_))::rest671) => let val result=
-MlyValue.functionBodyList(fn _ => let val functionBody as 
+MlyValue.functionBodyList(fn _ => let val functionBody as
 functionBody1=functionBody1 ()
 val functionBodyList as functionBodyList1=functionBodyList1 ()
  in ( functionBody::functionBodyList ) end
 )
  in (LrTable.NT 29,(result,functionBody1left,functionBodyList1right),
 rest671) end
-| (85,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val 
+| (85,(_,(MlyValue.ID ID1,ID1left,ID1right))::rest671) => let val
 result=MlyValue.term(fn _ => let val ID as ID1=ID1 ()
  in ( yVAR ID ) end
 )
  in (LrTable.NT 30,(result,ID1left,ID1right),rest671) end
-| (86,(_,(MlyValue.NUM NUM1,NUM1left,NUM1right))::rest671) => let val 
+| (86,(_,(MlyValue.NUM NUM1,NUM1left,NUM1right))::rest671) => let val
 result=MlyValue.term(fn _ => let val NUM as NUM1=NUM1 ()
  in ( yINT (valOf(Int.fromString(NUM))) ) end
 )
  in (LrTable.NT 30,(result,NUM1left,NUM1right),rest671) end
-| (87,(_,(MlyValue.FLOAT FLOAT1,FLOAT1left,FLOAT1right))::rest671) => 
+| (87,(_,(MlyValue.FLOAT FLOAT1,FLOAT1left,FLOAT1right))::rest671) =>
 let val result=MlyValue.term(fn _ => let val FLOAT as FLOAT1=FLOAT1 ()
  in ( yFLOAT FLOAT ) end
 )
  in (LrTable.NT 30,(result,FLOAT1left,FLOAT1right),rest671) end
-| (88,(_,(_,_,R_PAR1right))::(_,(_,L_PAR1left,_))::rest671) => let 
+| (88,(_,(_,_,R_PAR1right))::(_,(_,L_PAR1left,_))::rest671) => let
 val result=MlyValue.term(fn _ => ( yNULL ))
  in (LrTable.NT 30,(result,L_PAR1left,R_PAR1right),rest671) end
 | (89,(_,(MlyValue.STRING STRING1,STRING1left,STRING1right))::rest671)
@@ -1811,13 +1811,13 @@ STRING1 ()
 )
  in (LrTable.NT 30,(result,STRING1left,STRING1right),rest671) end
 | (90,(_,(_,_,R_PAR1right))::(_,(MlyValue.term term1,_,_))::(_,(_,
-L_PAR1left,_))::rest671) => let val result=MlyValue.term(fn _ => let 
+L_PAR1left,_))::rest671) => let val result=MlyValue.term(fn _ => let
 val term as term1=term1 ()
  in ( term ) end
 )
  in (LrTable.NT 30,(result,L_PAR1left,R_PAR1right),rest671) end
 | (91,(_,(_,_,R_PAR1right))::(_,(MlyValue.termList termList1,_,_))::_
-::(_,(MlyValue.term term1,_,_))::(_,(_,L_PAR1left,_))::rest671) => 
+::(_,(MlyValue.term term1,_,_))::(_,(_,L_PAR1left,_))::rest671) =>
 let val result=MlyValue.term(fn _ => let val term as term1=term1 ()
 val termList as termList1=termList1 ()
  in ( yTUPLE(term::termList) ) end
@@ -1829,7 +1829,7 @@ record1 ()
  in ( record ) end
 )
  in (LrTable.NT 30,(result,record1left,record1right),rest671) end
-| (93,(_,(MlyValue.term term1,_,term1right))::(_,(MlyValue.funterm 
+| (93,(_,(MlyValue.term term1,_,term1right))::(_,(MlyValue.funterm
 funterm1,funterm1left,_))::rest671) => let val result=MlyValue.term(
 fn _ => let val funterm as funterm1=funterm1 ()
 val term as term1=term1 ()
@@ -1866,183 +1866,183 @@ rest671) => let val result=MlyValue.term(fn _ => let val term as term1
  in ( yAPP(yCOMB("#neg",[]),      term)                 ) end
 )
  in (LrTable.NT 30,(result,NEG1left,term1right),rest671) end
-| (99,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (99,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op+",[]),   yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (100,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (100,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op+f",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (101,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (101,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op-",[]),   yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (102,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (102,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op-f",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (103,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (103,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op*",[]),   yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (104,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (104,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op*f",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (105,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (105,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op/",[]),   yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (106,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (106,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op/f",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (107,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (107,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("opmod",[]),   yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (108,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (108,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#mod_float",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (109,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (109,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op>",[]),     yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (110,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (110,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op>=",[]),    yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (111,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (111,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op<",[]),     yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (112,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (112,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op<=",[]),    yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (113,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (113,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op^",[]),     yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (114,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (114,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#gt_float",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (115,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (115,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#ge_float",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (116,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (116,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#lt_float",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (117,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (117,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#le_float",[]), yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (118,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (118,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op==", []),     yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (119,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (119,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("op<>",[]),      yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (120,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (120,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("and",[]),       yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (121,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (121,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("or",[]),        yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (122,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (122,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("#xor",[]),      yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (123,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term 
-term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ => 
+| (123,(_,(MlyValue.term term2,_,term2right))::_::(_,(MlyValue.term
+term1,term1left,_))::rest671) => let val result=MlyValue.term(fn _ =>
 let val term1=term1 ()
 val term2=term2 ()
  in ( yAPP(yCOMB("cons",[]),      yTUPLE[term1, term2]) ) end
 )
  in (LrTable.NT 30,(result,term1left,term2right),rest671) end
-| (124,(_,(MlyValue.term term1,term1left,term1right))::rest671) => 
-let val result=MlyValue.termList(fn _ => let val term as term1=term1 
+| (124,(_,(MlyValue.term term1,term1left,term1right))::rest671) =>
+let val result=MlyValue.termList(fn _ => let val term as term1=term1
 ()
  in ( [ term ] ) end
 )
@@ -2054,8 +2054,8 @@ val termList as termList1=termList1 ()
  in ( term::termList ) end
 )
  in (LrTable.NT 31,(result,term1left,termList1right),rest671) end
-| (126,(_,(MlyValue.term term1,term1left,term1right))::rest671) => 
-let val result=MlyValue.listItems(fn _ => let val term as term1=term1 
+| (126,(_,(MlyValue.term term1,term1left,term1right))::rest671) =>
+let val result=MlyValue.listItems(fn _ => let val term as term1=term1
 ()
  in ( yAPP(yCOMB("cons",[]), yTUPLE[term, yCOMB("nil",[])]) ) end
 )
@@ -2067,21 +2067,21 @@ val listItems as listItems1=listItems1 ()
  in ( yAPP(yCOMB("cons",[]), yTUPLE[term, listItems]) ) end
 )
  in (LrTable.NT 45,(result,term1left,listItems1right),rest671) end
-| (128,(_,(_,_,R_BRACE1right))::(_,(MlyValue.pattAbstraction 
-pattAbstraction1,_,_))::(_,(_,L_BRACE1left,_))::rest671) => let val 
-result=MlyValue.funterm(fn _ => let val pattAbstraction as 
+| (128,(_,(_,_,R_BRACE1right))::(_,(MlyValue.pattAbstraction
+pattAbstraction1,_,_))::(_,(_,L_BRACE1left,_))::rest671) => let val
+result=MlyValue.funterm(fn _ => let val pattAbstraction as
 pattAbstraction1=pattAbstraction1 ()
  in ( pattAbstraction ) end
 )
  in (LrTable.NT 32,(result,L_BRACE1left,R_BRACE1right),rest671) end
 | (129,(_,(_,_,R_FOLD1right))::(_,(MlyValue.fold fold1,_,_))::(_,(_,
-L_FOLD1left,_))::rest671) => let val result=MlyValue.funterm(fn _ => 
+L_FOLD1left,_))::rest671) => let val result=MlyValue.funterm(fn _ =>
 let val fold as fold1=fold1 ()
  in ( fold ) end
 )
  in (LrTable.NT 32,(result,L_FOLD1left,R_FOLD1right),rest671) end
 | (130,(_,(_,_,R_UNFOLD1right))::(_,(MlyValue.unfold unfold1,_,_))::(_
-,(_,L_UNFOLD1left,_))::rest671) => let val result=MlyValue.funterm(fn 
+,(_,L_UNFOLD1left,_))::rest671) => let val result=MlyValue.funterm(fn
 _ => let val unfold as unfold1=unfold1 ()
  in ( unfold ) end
 )
@@ -2093,16 +2093,16 @@ functionCall1right))::rest671) => let val result=MlyValue.funterm(fn _
 )
  in (LrTable.NT 32,(result,functionCall1left,functionCall1right),
 rest671) end
-| (132,(_,(_,_,R_PAR1right))::(_,(MlyValue.recordPhraseList 
-recordPhraseList1,_,_))::(_,(_,L_PAR1left,_))::rest671) => let val 
-result=MlyValue.record(fn _ => let val recordPhraseList as 
+| (132,(_,(_,_,R_PAR1right))::(_,(MlyValue.recordPhraseList
+recordPhraseList1,_,_))::(_,(_,L_PAR1left,_))::rest671) => let val
+result=MlyValue.record(fn _ => let val recordPhraseList as
 recordPhraseList1=recordPhraseList1 ()
  in ( yRECORD recordPhraseList ) end
 )
  in (LrTable.NT 33,(result,L_PAR1left,R_PAR1right),rest671) end
 | (133,(_,(MlyValue.recordPhrase recordPhrase1,recordPhrase1left,
 recordPhrase1right))::rest671) => let val result=
-MlyValue.recordPhraseList(fn _ => let val recordPhrase as 
+MlyValue.recordPhraseList(fn _ => let val recordPhrase as
 recordPhrase1=recordPhrase1 ()
  in ( [recordPhrase] ) end
 )
@@ -2111,7 +2111,7 @@ rest671) end
 | (134,(_,(MlyValue.recordPhraseList recordPhraseList1,_,
 recordPhraseList1right))::_::(_,(MlyValue.recordPhrase recordPhrase1,
 recordPhrase1left,_))::rest671) => let val result=
-MlyValue.recordPhraseList(fn _ => let val recordPhrase as 
+MlyValue.recordPhraseList(fn _ => let val recordPhrase as
 recordPhrase1=recordPhrase1 ()
 val recordPhraseList as recordPhraseList1=recordPhraseList1 ()
  in ( recordPhrase::recordPhraseList ) end
@@ -2119,7 +2119,7 @@ val recordPhraseList as recordPhraseList1=recordPhraseList1 ()
  in (LrTable.NT 34,(result,recordPhrase1left,recordPhraseList1right),
 rest671) end
 | (135,(_,(MlyValue.term term1,_,term1right))::_::(_,(MlyValue.ID ID1,
-ID1left,_))::rest671) => let val result=MlyValue.recordPhrase(fn _ => 
+ID1left,_))::rest671) => let val result=MlyValue.recordPhrase(fn _ =>
 let val ID as ID1=ID1 ()
 val term as term1=term1 ()
  in ( (ID, term) ) end
@@ -2164,9 +2164,9 @@ val casephrase as casephrase1=casephrase1 ()
  in ( (ID, yPattABS [ casephrase ]) ) end
 )
  in (LrTable.NT 40,(result,ID1left,casephrase1right),rest671) end
-| (141,(_,(_,_,R_BRACE1right))::(_,(MlyValue.pattAbstraction 
+| (141,(_,(_,_,R_BRACE1right))::(_,(MlyValue.pattAbstraction
 pattAbstraction1,_,_))::_::_::(_,(MlyValue.ID ID1,ID1left,_))::rest671
-) => let val result=MlyValue.foldPhrase(fn _ => let val ID as ID1=ID1 
+) => let val result=MlyValue.foldPhrase(fn _ => let val ID as ID1=ID1
 ()
 val pattAbstraction as pattAbstraction1=pattAbstraction1 ()
  in ( (ID, pattAbstraction) ) end
@@ -2180,7 +2180,7 @@ unfoldPatt1right))::rest671) => let val result=MlyValue.unfold(fn _
  in (LrTable.NT 41,(result,unfoldPatt1left,unfoldPatt1right),rest671)
  end
 | (143,(_,(MlyValue.dtrPhraseList dtrPhraseList1,_,dtrPhraseList1right
-))::_::(_,(MlyValue.pattern pattern1,pattern1left,_))::rest671) => 
+))::_::(_,(MlyValue.pattern pattern1,pattern1left,_))::rest671) =>
 let val result=MlyValue.unfoldPatt(fn _ => let val pattern as pattern1
 =pattern1 ()
 val dtrPhraseList as dtrPhraseList1=dtrPhraseList1 ()
@@ -2211,7 +2211,7 @@ end
 val void = MlyValue.VOID
 val extract = fn a => (fn MlyValue.program x => x
 | _ => let exception ParseInternal
-	in raise ParseInternal end) a ()
+        in raise ParseInternal end) a ()
 end
 end
 structure Tokens : ch_TOKENS =

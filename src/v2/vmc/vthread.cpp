@@ -30,7 +30,7 @@ VThread* VMachine::blockedThreads[VMC_MAXDATASLOT]; //threads blocked by the sen
 
 //basic operations on B and P stack
 #define B_PUSH(x)  *(--b_top)=x
-#define P_PUSH(x)  *(++p_top)=x  
+#define P_PUSH(x)  *(++p_top)=x
 #define B_POP (*(b_top++))
 #define P_POP (*(p_top--))
 #define B_POPN(n) (b_top+=(n))
@@ -51,11 +51,11 @@ VThread::VThread(VThread* parent,       //parent thread
     :pParent(parent)
 {
     memBase= new VInt[maxStackSize+VMC_STACK_MARGIN*3];
-    p_fp= p_top = p_base = (VPtr*)(memBase+VMC_STACK_MARGIN-1); 
-    
+    p_fp= p_top = p_base = (VPtr*)(memBase+VMC_STACK_MARGIN-1);
+
     b_fp= b_top = b_base = memBase+maxStackSize+2*VMC_STACK_MARGIN;
     memset(memBase,0,sizeof(VInt)*(maxStackSize+VMC_STACK_MARGIN*3));
-    if(pParent!=0){ 
+    if(pParent!=0){
         int i;
         for(i=0;i<bCnt; i++)
             B_PUSH(pParent->getBItem(i));
@@ -72,13 +72,13 @@ VThread::~VThread()
 
 VStopReason VThread::run()
 {
-	//step through first, so that it won't break again if current address is a break point
-	VStopReason r=stepThrough();
-	if(r==vsrBreak) //no error occured
-		r=doRun(false);
-	return r;
+    //step through first, so that it won't break again if current address is a break point
+    VStopReason r=stepThrough();
+    if(r==vsrBreak) //no error occured
+        r=doRun(false);
+    return r;
 /*    int addr=IP;
-    //if the current address is a breakpoint, disable it 
+    //if the current address is a breakpoint, disable it
     VMachine::theCodeBase->disableBreakPoint(addr);
     VStopReason r=doRun(false);
     VMachine::theCodeBase->enableBreakPoint(addr);
@@ -95,7 +95,7 @@ VStopReason VThread::stepThrough()
 VStopReason VThread::stepOver()
 {
     int addr=IP;
-    //if the current address is a breakpoint, disable it 
+    //if the current address is a breakpoint, disable it
     VMachine::theCodeBase->disableBreakPoint(addr);
     int breakaddr;
     VStopReason r;
@@ -118,7 +118,7 @@ VStopReason VThread::stepOver()
     }
     VMachine::theCodeBase->enableBreakPoint(addr);
     return r;
-}                            
+}
 
 
 
@@ -210,7 +210,7 @@ inline VLong lABS(VLong x) { return x>0?x:-x; }
     B_POP; \
     break;
 
-//for unary operators whose operand are all 1 unit datatype        
+//for unary operators whose operand are all 1 unit datatype
 //it should be somewhat faster than the normal one
 #define CASE_FAST_UNARY(opCode, T1, T2, func) \
     case opCode:    \
@@ -246,7 +246,7 @@ VStopReason VThread::doRun(bool step)
         CASE_FAST_BINARY(v_modF, VFloat,  VFloat,  VFloat,  fmod   )
         CASE_NORM_BINARY(v_modL, VLong,   VLong,   VLong,   OP_MOD )
         CASE_NORM_BINARY(v_modD, VDouble, VDouble, VDouble, fmod   )
-        
+
         CASE_FAST_UNARY(v_negI, VInt,    VInt,    OP_NEG )
         CASE_FAST_UNARY(v_negF, VFloat,  VFloat,  OP_NEG )
         CASE_NORM_UNARY(v_negL, VLong,   VLong,   OP_NEG )
@@ -256,11 +256,11 @@ VStopReason VThread::doRun(bool step)
         CASE_FAST_BINARY(v_shr, VInt, VInt, VInt, OP_SHR)
         CASE_FAST_BINARY(v_and, VInt, VInt, VInt, OP_AND )
         CASE_FAST_BINARY(v_or,  VInt, VInt, VInt, OP_OR )
-		CASE_FAST_UNARY(v_not,  VInt, VInt, OP_NOT)
+        CASE_FAST_UNARY(v_not,  VInt, VInt, OP_NOT)
         CASE_FAST_BINARY(v_bitand, VInt, VInt, VInt, OP_BITAND )
         CASE_FAST_BINARY(v_bitor,  VInt, VInt, VInt, OP_BITOR )
         CASE_FAST_BINARY(v_bitxor, VInt, VInt, VInt, OP_BITXOR )
-		CASE_FAST_UNARY(v_bitnot,  VInt, VInt, OP_BITNOT)
+        CASE_FAST_UNARY(v_bitnot,  VInt, VInt, OP_BITNOT)
 
         //data type conversion
         CASE_FAST_UNARY(v_i2f, VInt, VFloat, VFloat)
@@ -279,11 +279,11 @@ VStopReason VThread::doRun(bool step)
         CASE_FAST_BINARY(v_eqB, VInt,    VInt,    VInt, OP_EQ)
         CASE_NORM_BINARY(v_eqU, VLong,   VLong,   VInt, OP_EQ)
         case v_eqP:
-			CHECK_P_UNDERFLOW(2);
-			B_PUSH(VHeap::equivalent(P_ITEM(0),P_ITEM(1)));
-			P_POPN(2);
-			break;
-		CASE_FAST_BINARY(v_gtI, VInt,    VInt,    VInt, OP_GT)
+            CHECK_P_UNDERFLOW(2);
+            B_PUSH(VHeap::equivalent(P_ITEM(0),P_ITEM(1)));
+            P_POPN(2);
+            break;
+        CASE_FAST_BINARY(v_gtI, VInt,    VInt,    VInt, OP_GT)
         CASE_FAST_BINARY(v_gtF, VFloat,  VFloat,  VInt, OP_GT)
         CASE_NORM_BINARY(v_gtL, VLong,   VLong,   VInt, OP_GT)
         CASE_NORM_BINARY(v_gtD, VDouble, VDouble, VInt, OP_GT)
@@ -333,31 +333,31 @@ VStopReason VThread::doRun(bool step)
             IP++;
             break;
         case v_dupB:
-			{
-				CHECK_B_OFFSET(pcode[IP]);
-    	        VInt t=B_ITEM(pcode[IP]);
-				B_PUSH(t);
-	            IP++;
-			}
+            {
+                CHECK_B_OFFSET(pcode[IP]);
+                VInt t=B_ITEM(pcode[IP]);
+                B_PUSH(t);
+                IP++;
+            }
             break;
         case v_dupU:
-			{
-				CHECK_B_OFFSET(pcode[IP]+1);
-				int offset=pcode[IP];
-				VInt t1=B_ITEM(offset);
-				VInt t2=B_ITEM(offset+1);
-				B_PUSH(t2);
-				B_PUSH(t1);
-            	IP++;
-			}
+            {
+                CHECK_B_OFFSET(pcode[IP]+1);
+                int offset=pcode[IP];
+                VInt t1=B_ITEM(offset);
+                VInt t2=B_ITEM(offset+1);
+                B_PUSH(t2);
+                B_PUSH(t1);
+                IP++;
+            }
             break;
         case v_dupP:
-			{
-				CHECK_P_OFFSET(pcode[IP]);
-				VPtr p=P_ITEM(pcode[IP]); //to avoid problem
-	            P_PUSH(p);
-	            IP++;
-			}
+            {
+                CHECK_P_OFFSET(pcode[IP]);
+                VPtr p=P_ITEM(pcode[IP]); //to avoid problem
+                P_PUSH(p);
+                IP++;
+            }
             break;
         case v_moveB:
             CHECK_B_OFFSET(pcode[IP]);
@@ -466,24 +466,24 @@ VStopReason VThread::doRun(bool step)
             else
                 IP++;
             break;
-		case v_ifzero:
+        case v_ifzero:
             if(B_POP==0)
                 IP=pcode[IP];
             else
                 IP++;
             break;
-		case v_ifpos:
-			if(B_POP>0)
+        case v_ifpos:
+            if(B_POP>0)
                 IP=pcode[IP];
             else
                 IP++;
-			break;
-		case v_ifneg:
-			if(B_POP<0)
+            break;
+        case v_ifneg:
+            if(B_POP<0)
                 IP=pcode[IP];
             else
                 IP++;
-			break; 
+            break;
         case v_goto:
             IP=pcode[IP];
             break;
@@ -515,76 +515,76 @@ VStopReason VThread::doRun(bool step)
                 IP=newip;
             }
             break;
-*/		
-		case v_retB:
-			{
-				CHECK_B_UNDERFLOW(pcode[IP]+2);
-				CHECK_P_UNDERFLOW(pcode[IP+1]);
-				VInt t=B_ITEM(0);
-				int ip=B_ITEM(1);
-				B_POPN(pcode[IP]+1);
-				P_POPN(pcode[IP+1]);
-				B_ITEM(0)=t;
-				IP=ip;
-			}
-			break;
-		case v_retU:
-			{
-				CHECK_B_UNDERFLOW(pcode[IP]+3);
-				CHECK_P_UNDERFLOW(pcode[IP+1]);
-				VInt t1=B_ITEM(0);
-				VInt t2=B_ITEM(1);
-				int ip=B_ITEM(2);
-				B_POPN(pcode[IP]+1);
-				P_POPN(pcode[IP+1]);
-				IP=ip;
-				B_ITEM(0)=t1;
-				B_ITEM(1)=t2;
-			}
-			break;					
-		case v_retP:
-			{
-				CHECK_B_UNDERFLOW(pcode[IP]+1);
-				CHECK_P_UNDERFLOW(pcode[IP+1]+1);
-				VPtr t=P_ITEM(0);
-				int ip=B_ITEM(0);
-				B_POPN(pcode[IP]+1);
-				P_POPN(pcode[IP+1]);
-				P_ITEM(0)=t;
-				IP=ip;
-			}
-			break;
-		case v_retM:
-			{
-				int ibcnt=pcode[IP]; //input b count
-				int ipcnt=pcode[IP+1];
-				int obcnt=pcode[IP+2];//output
-				int opcnt=pcode[IP+3];
-				CHECK_B_UNDERFLOW(ibcnt+obcnt+1);
-				CHECK_P_UNDERFLOW(ipcnt+opcnt);
-				int ip=B_ITEM(obcnt);
-				//move the elements on B stack
-				for(int i=obcnt-1;i>=0;i--)
-					B_ITEM(i+1+ibcnt)=B_ITEM(i);
-				//move the elements on P stack
-				if(ipcnt>0){
-					for(int i=opcnt-1;i>=0;i--)
-						P_ITEM(i+ipcnt)=P_ITEM(i);
-				}
-				B_POPN(ibcnt+1);
-				P_POPN(ipcnt);
-				IP=ip;
-			}
-			break;
+*/
+        case v_retB:
+            {
+                CHECK_B_UNDERFLOW(pcode[IP]+2);
+                CHECK_P_UNDERFLOW(pcode[IP+1]);
+                VInt t=B_ITEM(0);
+                int ip=B_ITEM(1);
+                B_POPN(pcode[IP]+1);
+                P_POPN(pcode[IP+1]);
+                B_ITEM(0)=t;
+                IP=ip;
+            }
+            break;
+        case v_retU:
+            {
+                CHECK_B_UNDERFLOW(pcode[IP]+3);
+                CHECK_P_UNDERFLOW(pcode[IP+1]);
+                VInt t1=B_ITEM(0);
+                VInt t2=B_ITEM(1);
+                int ip=B_ITEM(2);
+                B_POPN(pcode[IP]+1);
+                P_POPN(pcode[IP+1]);
+                IP=ip;
+                B_ITEM(0)=t1;
+                B_ITEM(1)=t2;
+            }
+            break;
+        case v_retP:
+            {
+                CHECK_B_UNDERFLOW(pcode[IP]+1);
+                CHECK_P_UNDERFLOW(pcode[IP+1]+1);
+                VPtr t=P_ITEM(0);
+                int ip=B_ITEM(0);
+                B_POPN(pcode[IP]+1);
+                P_POPN(pcode[IP+1]);
+                P_ITEM(0)=t;
+                IP=ip;
+            }
+            break;
+        case v_retM:
+            {
+                int ibcnt=pcode[IP]; //input b count
+                int ipcnt=pcode[IP+1];
+                int obcnt=pcode[IP+2];//output
+                int opcnt=pcode[IP+3];
+                CHECK_B_UNDERFLOW(ibcnt+obcnt+1);
+                CHECK_P_UNDERFLOW(ipcnt+opcnt);
+                int ip=B_ITEM(obcnt);
+                //move the elements on B stack
+                for(int i=obcnt-1;i>=0;i--)
+                    B_ITEM(i+1+ibcnt)=B_ITEM(i);
+                //move the elements on P stack
+                if(ipcnt>0){
+                    for(int i=opcnt-1;i>=0;i--)
+                        P_ITEM(i+ipcnt)=P_ITEM(i);
+                }
+                B_POPN(ibcnt+1);
+                P_POPN(ipcnt);
+                IP=ip;
+            }
+            break;
         case v_callnative:
             assert(0); //unimplemented yet
             break;
-		
+
         case v_newtuple: //newtuple nb, np
             {
                 int np=pcode[IP+1];
                 int nb=pcode[IP];
-				int n=nb+np;
+                int n=nb+np;
                 CHECK_B_UNDERFLOW(nb);
                 CHECK_P_UNDERFLOW(np);
                 VPtr p=VHeap::newTuple(nb,np);
@@ -593,27 +593,27 @@ VStopReason VThread::doRun(bool step)
                     p[i] = B_POP;
                 for(;i<n;i++)
                     p[i] = VInt(P_POP);
-                P_PUSH(p);            
+                P_PUSH(p);
                 IP+=2;
             }
             break;
-		case v_nulltuple:
-			{
-				P_PUSH(VHeap::nullTuple());
-			}
-			break;
+        case v_nulltuple:
+            {
+                P_PUSH(VHeap::nullTuple());
+            }
+            break;
 #define CHECK_P_FIELD_INDEX(p,n) RUNCHECK(n< VHeap::bFieldCnt(p) || \
                                           n>=VHeap::fieldCnt(p), \
-										  "\nField index out of range")
+                                          "\nField index out of range")
 #define CHECK_B_FIELD_INDEX(p,n) RUNCHECK(n>=VHeap::bFieldCnt(p), \
-                                          "\nField index out of range");        
+                                          "\nField index out of range");
 /*        case v_getfield: //getfield n
             CHECK_P_UNDERFLOW(pcode[IP]+1);
             CHECK_B_FIELD_INDEX(P_ITEM(pcode[IP]), pcode[IP+1]);
             B_PUSH( (P_ITEM(pcode[IP]))[pcode[IP+1]] );
             IP+=2;
             break;*/
-        case v_getfieldB: 
+        case v_getfieldB:
             CHECK_P_UNDERFLOW(1);
             CHECK_B_FIELD_INDEX(P_ITEM(0), pcode[IP]);
             B_PUSH( (P_POP)[pcode[IP]]);
@@ -623,9 +623,9 @@ VStopReason VThread::doRun(bool step)
             {
                 int i=pcode[IP+1];
                 VPtr p=P_ITEM(pcode[IP]);
-				CHECK_B_FIELD_INDEX(p, i+1);
-				B_PUSH( p[i+1]);
-				B_PUSH( p[i]);
+                CHECK_B_FIELD_INDEX(p, i+1);
+                B_PUSH( p[i+1]);
+                B_PUSH( p[i]);
                 IP+=2;
             }
             break; */
@@ -653,7 +653,7 @@ VStopReason VThread::doRun(bool step)
             P_ITEM(0)=VPtr(P_ITEM(0)[pcode[IP]]);
             IP++;
             break;
-            
+
 /*        case v_setfield:
             CHECK_B_FIELD_INDEX(P_ITEM(pcode[IP]), pcode[IP+1]);
             (P_ITEM(pcode[IP]))[pcode[IP+1]] = B_ITEM(0);
@@ -670,8 +670,8 @@ VStopReason VThread::doRun(bool step)
             {
                 int i=pcode[IP+1];
                 VPtr p=P_ITEM(pcode[IP]);
-				CHECK_B_FIELD_INDEX(p, i+1);
-				p[i]  = B_POP;
+                CHECK_B_FIELD_INDEX(p, i+1);
+                p[i]  = B_POP;
                 p[i+1]= B_POP;
                 IP+=2;
             }
@@ -698,8 +698,8 @@ VStopReason VThread::doRun(bool step)
         case v_setfieldP:
             CHECK_P_UNDERFLOW(2);
             CHECK_P_FIELD_INDEX(P_ITEM(1), pcode[IP]);
-//9.26**BUG**            P_ITEM(0)[pcode[IP]]=VInt(P_ITEM(1)); 
-			P_ITEM(1)[pcode[IP]]=VInt(P_ITEM(0));
+//9.26**BUG**            P_ITEM(0)[pcode[IP]]=VInt(P_ITEM(1));
+            P_ITEM(1)[pcode[IP]]=VInt(P_ITEM(0));
             P_POPN(2);
             IP++;
             break;
@@ -717,20 +717,20 @@ VStopReason VThread::doRun(bool step)
                     B_PUSH(p[--i]);
             }
             break;
-		case v_tuplesizeB:
-			{
-				CHECK_P_UNDERFLOW(1);
-				VPtr p=P_POP;
-				B_PUSH(VHeap::bFieldCnt(p));
-			}
-			break;
-		case v_tuplesizeP:
-			{
-				CHECK_P_UNDERFLOW(1);
-				VPtr p=P_POP;
-				B_PUSH(VHeap::pFieldCnt(p));
-			}
-			break;
+        case v_tuplesizeB:
+            {
+                CHECK_P_UNDERFLOW(1);
+                VPtr p=P_POP;
+                B_PUSH(VHeap::bFieldCnt(p));
+            }
+            break;
+        case v_tuplesizeP:
+            {
+                CHECK_P_UNDERFLOW(1);
+                VPtr p=P_POP;
+                B_PUSH(VHeap::pFieldCnt(p));
+            }
+            break;
 
         case v_newint:
             P_PUSH(VHeap::newInt(pcode[IP]));
@@ -743,75 +743,75 @@ VStopReason VThread::doRun(bool step)
                 P_PUSH(p);
             }
             break;
-		case v_strlen:
-			{
-				CHECK_P_UNDERFLOW(1);
-				const char* p= (const char*)(P_POP);
-				B_PUSH(strlen(p));
-			}
-			break;
-		case v_strcat:
-			{
+        case v_strlen:
+            {
+                CHECK_P_UNDERFLOW(1);
+                const char* p= (const char*)(P_POP);
+                B_PUSH(strlen(p));
+            }
+            break;
+        case v_strcat:
+            {
 
-				CHECK_P_UNDERFLOW(2);
-				//!! A subtle error found here: if garbage collection
-				// occurs during newBArray, p1,p2 no longer point to
-				// a valid area.
-				//const char* p2=(const char*)(P_POP);
-				//const char* p1=(const char*)(P_POP);
-				int p1len = strlen((const char*)P_ITEM(1));//VHeap::bArraySize(VPtr(p1))-1;
-				int p2len = strlen((const char*)P_ITEM(0));//VHeap::bArraySize(VPtr(p2))-1;
+                CHECK_P_UNDERFLOW(2);
+                //!! A subtle error found here: if garbage collection
+                // occurs during newBArray, p1,p2 no longer point to
+                // a valid area.
+                //const char* p2=(const char*)(P_POP);
+                //const char* p1=(const char*)(P_POP);
+                int p1len = strlen((const char*)P_ITEM(1));//VHeap::bArraySize(VPtr(p1))-1;
+                int p2len = strlen((const char*)P_ITEM(0));//VHeap::bArraySize(VPtr(p2))-1;
 
-				//2003.3.17 The parameter might be some very large strings,
-				//to improve speed, the following:
-				//char *p=(char*)VHeap::newBArray(strlen(p1)+strlen(p2)+1);
-				//strcpy(p,p1);
-				//strcat(p,p2);
-				//are changed to
-				char *p=(char*)VHeap::newBArray(p1len+p2len+1);
-				const char* p2=(const char*)(P_POP);
-				const char* p1=(const char*)(P_POP);
-				memcpy(p, p1, p1len);
-				memcpy(p+p1len, p2, p2len);
-				p[p1len+p2len] = 0;
-				//end change
-				P_PUSH(VPtr(p));
-			}
-			break;
-		case v_strcmp:
-			{
-				CHECK_P_UNDERFLOW(2);
-				const char* p2=(const char*)(P_POP);
-				const char* p1=(const char*)(P_POP);
-				B_PUSH(strcmp(p1,p2));
-			}
-			break;
-		case v_str2i:
-			{
-				char *endptr;
-				const char*str=(const char*)P_POP;
-				VInt i=strtol(str, &endptr, 10);
-				if(str==0 || *endptr!='\0'){ //an invalid string
-					B_PUSH(i);
-					B_PUSH(-1);
-				}
-				else{
-					B_PUSH(i);
-					B_PUSH(0);
-				}
-			}
-			break;
-		case v_i2str:
-			{
-				char buf[100];
-				int i=B_POP;
-				sprintf(buf, "%d", i);
-				P_PUSH(VHeap::newStr(buf));
-			}
-			break;
+                //2003.3.17 The parameter might be some very large strings,
+                //to improve speed, the following:
+                //char *p=(char*)VHeap::newBArray(strlen(p1)+strlen(p2)+1);
+                //strcpy(p,p1);
+                //strcat(p,p2);
+                //are changed to
+                char *p=(char*)VHeap::newBArray(p1len+p2len+1);
+                const char* p2=(const char*)(P_POP);
+                const char* p1=(const char*)(P_POP);
+                memcpy(p, p1, p1len);
+                memcpy(p+p1len, p2, p2len);
+                p[p1len+p2len] = 0;
+                //end change
+                P_PUSH(VPtr(p));
+            }
+            break;
+        case v_strcmp:
+            {
+                CHECK_P_UNDERFLOW(2);
+                const char* p2=(const char*)(P_POP);
+                const char* p1=(const char*)(P_POP);
+                B_PUSH(strcmp(p1,p2));
+            }
+            break;
+        case v_str2i:
+            {
+                char *endptr;
+                const char*str=(const char*)P_POP;
+                VInt i=strtol(str, &endptr, 10);
+                if(str==0 || *endptr!='\0'){ //an invalid string
+                    B_PUSH(i);
+                    B_PUSH(-1);
+                }
+                else{
+                    B_PUSH(i);
+                    B_PUSH(0);
+                }
+            }
+            break;
+        case v_i2str:
+            {
+                char buf[100];
+                int i=B_POP;
+                sprintf(buf, "%d", i);
+                P_PUSH(VHeap::newStr(buf));
+            }
+            break;
 #define CASE_NEWBARRAY(opCode, T) \
     case opCode: \
-		CHECK_B_UNDERFLOW(1); \
+        CHECK_B_UNDERFLOW(1); \
         RUNCHECK(B_ITEM(0)<=0 || B_ITEM(0)*sizeof(T)>=VMC_MAXARRAYSIZE, "Invalid array size"); \
         P_PUSH(VHeap::newBArray(B_POP*sizeof(T))); \
         break;
@@ -825,22 +825,22 @@ VStopReason VThread::doRun(bool step)
             P_PUSH(VHeap::newPArray(B_POP) );
             break;
 
-#define CHECK_ARRAYSIZE(p, size) RUNCHECK(VHeap::bArraySize(p)<=(size),"\nArray index out of range"); 
+#define CHECK_ARRAYSIZE(p, size) RUNCHECK(VHeap::bArraySize(p)<=(size),"\nArray index out of range");
 #define CASE_GETARR(opCode, T) \
     case opCode: { \
         CHECK_P_UNDERFLOW(1); \
-		VPtr p=P_POP;  \
+        VPtr p=P_POP;  \
         CHECK_ARRAYSIZE(p, B_ITEM(0)*sizeof(T)); \
         B_ITEM(0)= VInt( ((T*)p)[B_ITEM(0)]); \
         } break;
- 
-        CASE_GETARR(v_getitemC, VChar)        
+
+        CASE_GETARR(v_getitemC, VChar)
         CASE_GETARR(v_getitemS, VShort)
         CASE_GETARR(v_getitemB, VInt)
 
         case v_getitemU:
             {
-		        CHECK_P_UNDERFLOW(1); \
+                CHECK_P_UNDERFLOW(1); \
                 VPtr p=P_POP;
                 CHECK_ARRAYSIZE(p, B_ITEM(0)*sizeof(VLong));
                 int i=B_POP*(sizeof(VLong)/sizeof(VInt));
@@ -850,7 +850,7 @@ VStopReason VThread::doRun(bool step)
             break;
         case v_getitemP:
             {
-		        CHECK_P_UNDERFLOW(1); \
+                CHECK_P_UNDERFLOW(1); \
                 VPtr p=P_POP;
                 CHECK_ARRAYSIZE(p, B_ITEM(0)*sizeof(VPtr));
                 P_PUSH( ((VPtr*)p)[B_POP]);
@@ -860,7 +860,7 @@ VStopReason VThread::doRun(bool step)
     case opCode: { \
         CHECK_P_UNDERFLOW(1); \
         VPtr p=P_ITEM(0);  \
-		T item=T(B_POP); \
+        T item=T(B_POP); \
         int i=B_POP; \
         CHECK_ARRAYSIZE(p, i*sizeof(T)); \
         ((T*)p)[i]=item; \
@@ -871,20 +871,20 @@ VStopReason VThread::doRun(bool step)
         CASE_SETARR(v_setitemB, VInt)
         case v_setitemU:
             {
-                CHECK_P_UNDERFLOW(1); 
-                VPtr p=P_ITEM(0); 
+                CHECK_P_UNDERFLOW(1);
+                VPtr p=P_ITEM(0);
                 CHECK_ARRAYSIZE(p, B_ITEM(0)*sizeof(VLong));
                 int i=B_ITEM(2)*2;
                 p[i]=B_ITEM(0);
                 p[i+1]=B_ITEM(1);
-				B_POPN(3);
+                B_POPN(3);
             }
             break;
         case v_setitemP:
             {
-                CHECK_P_UNDERFLOW(2); 
-				VPtr data=P_POP;
-                VPtr p=P_ITEM(0); 
+                CHECK_P_UNDERFLOW(2);
+                VPtr data=P_POP;
+                VPtr p=P_ITEM(0);
                 CHECK_ARRAYSIZE(p, B_ITEM(0)*sizeof(VPtr));
                 p[B_POP]=AS_INT(data);
             }
@@ -893,7 +893,7 @@ VStopReason VThread::doRun(bool step)
 #define CASE_ARRAYSIZE(opCode, T) \
     case opCode: \
         CHECK_P_UNDERFLOW(1); \
-    	B_PUSH(VHeap::bArraySize(P_POP)/sizeof(T));\
+        B_PUSH(VHeap::bArraySize(P_POP)/sizeof(T));\
         break;
 
         CASE_ARRAYSIZE(v_arraysizeC, VChar)
@@ -904,88 +904,88 @@ VStopReason VThread::doRun(bool step)
         CHECK_P_UNDERFLOW(1); \
         B_PUSH(VHeap::pArraySize(P_POP));
         break;
-	case v_callExt:
-		{
-			ExtFun* fptr=(ExtFun*)(pcode[IP]);
-			int ibcnt=pcode[IP+1];
-			int ipcnt=pcode[IP+2];
-			int obcnt=pcode[IP+3];
-			int opcnt=pcode[IP+4];
-			RUNCHECK( ibcnt>VMC_MAX_B_ARG || 
-	                  ipcnt>VMC_MAX_P_ARG ||
-					  obcnt>VMC_MAX_B_ARG ||
-					  opcnt>VMC_MAX_P_ARG , "too many arguments for external functions");
-			CHECK_B_UNDERFLOW(ibcnt);
-			CHECK_P_UNDERFLOW(ipcnt);
+    case v_callExt:
+        {
+            ExtFun* fptr=(ExtFun*)(pcode[IP]);
+            int ibcnt=pcode[IP+1];
+            int ipcnt=pcode[IP+2];
+            int obcnt=pcode[IP+3];
+            int opcnt=pcode[IP+4];
+            RUNCHECK( ibcnt>VMC_MAX_B_ARG ||
+                      ipcnt>VMC_MAX_P_ARG ||
+                      obcnt>VMC_MAX_B_ARG ||
+                      opcnt>VMC_MAX_P_ARG , "too many arguments for external functions");
+            CHECK_B_UNDERFLOW(ibcnt);
+            CHECK_P_UNDERFLOW(ipcnt);
 
-			VInt barg[VMC_MAX_B_ARG];
-			VPtr parg[VMC_MAX_P_ARG];
-			int i;
-			for(i=0;i<ibcnt;i++)
-				barg[i]=B_POP;
-			for(i=0;i<ipcnt;i++)
-				parg[i]=P_POP;
-			(*fptr)(barg,parg);
-			for(i=obcnt-1;i>=0;i--)
-				B_PUSH(barg[i]);
-			for(i=opcnt-1;i>=0;i--)
-				P_PUSH(parg[i]);
-			IP+=5;
-		}
-		break;
+            VInt barg[VMC_MAX_B_ARG];
+            VPtr parg[VMC_MAX_P_ARG];
+            int i;
+            for(i=0;i<ibcnt;i++)
+                barg[i]=B_POP;
+            for(i=0;i<ipcnt;i++)
+                parg[i]=P_POP;
+            (*fptr)(barg,parg);
+            for(i=obcnt-1;i>=0;i--)
+                B_PUSH(barg[i]);
+            for(i=opcnt-1;i>=0;i--)
+                P_PUSH(parg[i]);
+            IP+=5;
+        }
+        break;
 /*
-	case v_callExtB:
-		{
-			ExtFunPtrB fptr=ExtFunPtrB(pcode[IP]);
-			int bcnt=pcode[IP+1];
-			int pcnt=pcode[IP+2];
-			CHECK_B_UNDERFLOW(bcnt);
-			CHECK_P_UNDERFLOW(pcnt);
-			VInt barg[20];
-			VPtr parg[10];
-			for(int i=0;i<bcnt && i<20;i++)
-				barg[i]=B_POP;
-			for(int j=0;j<pcnt && j<10;j++)
-				parg[j]=P_POP;
-			B_PUSH((*fptr)(barg,parg));
-			IP+=3;
-		}
-		break;
-	case v_callExtU:
-		{
-			ExtFunPtrU fptr=ExtFunPtrU(pcode[IP]);
-			int bcnt=pcode[IP+1];
-			int pcnt=pcode[IP+2];
-			CHECK_B_UNDERFLOW(bcnt);
-			CHECK_P_UNDERFLOW(pcnt);
-			VInt barg[20];
-			VPtr parg[10];
-			for(int i=0;i<bcnt && i<20;i++)
-				barg[i]=B_POP;
-			for(int j=0;j<pcnt && j<10;j++)
-				parg[j]=P_POP;
-			VLong r=(*fptr)(barg,parg);
-			SAVE_VLong(r);
-			IP+=3;
-		}
-		break;
-	case v_callExtP:
-		{
-			ExtFunPtrP fptr=ExtFunPtrP(pcode[IP]);
-			int bcnt=pcode[IP+1];
-			int pcnt=pcode[IP+2];
-			CHECK_B_UNDERFLOW(bcnt);
-			CHECK_P_UNDERFLOW(pcnt);
-			VInt barg[20];
-			VPtr parg[10];
-			for(int i=0;i<bcnt && i<20;i++)
-				barg[i]=B_POP;
-			for(int j=0;j<pcnt && j<10;j++)
-				parg[j]=P_POP;
-			P_PUSH((*fptr)(barg,parg));
-			IP+=3;
-		}
-		break;
+    case v_callExtB:
+        {
+            ExtFunPtrB fptr=ExtFunPtrB(pcode[IP]);
+            int bcnt=pcode[IP+1];
+            int pcnt=pcode[IP+2];
+            CHECK_B_UNDERFLOW(bcnt);
+            CHECK_P_UNDERFLOW(pcnt);
+            VInt barg[20];
+            VPtr parg[10];
+            for(int i=0;i<bcnt && i<20;i++)
+                barg[i]=B_POP;
+            for(int j=0;j<pcnt && j<10;j++)
+                parg[j]=P_POP;
+            B_PUSH((*fptr)(barg,parg));
+            IP+=3;
+        }
+        break;
+    case v_callExtU:
+        {
+            ExtFunPtrU fptr=ExtFunPtrU(pcode[IP]);
+            int bcnt=pcode[IP+1];
+            int pcnt=pcode[IP+2];
+            CHECK_B_UNDERFLOW(bcnt);
+            CHECK_P_UNDERFLOW(pcnt);
+            VInt barg[20];
+            VPtr parg[10];
+            for(int i=0;i<bcnt && i<20;i++)
+                barg[i]=B_POP;
+            for(int j=0;j<pcnt && j<10;j++)
+                parg[j]=P_POP;
+            VLong r=(*fptr)(barg,parg);
+            SAVE_VLong(r);
+            IP+=3;
+        }
+        break;
+    case v_callExtP:
+        {
+            ExtFunPtrP fptr=ExtFunPtrP(pcode[IP]);
+            int bcnt=pcode[IP+1];
+            int pcnt=pcode[IP+2];
+            CHECK_B_UNDERFLOW(bcnt);
+            CHECK_P_UNDERFLOW(pcnt);
+            VInt barg[20];
+            VPtr parg[10];
+            for(int i=0;i<bcnt && i<20;i++)
+                barg[i]=B_POP;
+            for(int j=0;j<pcnt && j<10;j++)
+                parg[j]=P_POP;
+            P_PUSH((*fptr)(barg,parg));
+            IP+=3;
+        }
+        break;
 */
 /*
 
@@ -1020,7 +1020,7 @@ VStopReason VThread::doRun(bool step)
         case v_io_close:
             {
                 int handle=B_POP;
-                if(handle<3 || handle>=VMC_MAXSTREAMS || 
+                if(handle<3 || handle>=VMC_MAXSTREAMS ||
                     (VMachine::theIStreams[handle]==0 && VMachine::theOStreams[handle]==0)){
                     B_PUSH(-1);
                 }
@@ -1036,7 +1036,7 @@ VStopReason VThread::doRun(bool step)
             }
             break;
         case v_io_read:
-            {   
+            {
                 CHECK_B_UNDERFLOW(2);
                 CHECK_P_UNDERFLOW(1);
                 int handle=B_POP;
@@ -1108,7 +1108,7 @@ VStopReason VThread::doRun(bool step)
             else \
                 B_PUSH(-1);  \
             } break;
-                
+
         CASE_IO_GETDATA(v_io_getc, VChar)
 //        CASE_IO_GETDATA(v_io_getw, VWChar)
         CASE_IO_GETDATA(v_io_gets, VShort)
@@ -1141,13 +1141,13 @@ VStopReason VThread::doRun(bool step)
                 CHECK_B_UNDERFLOW(1);
                 char buf[1024];
                 int handle=B_POP;
-                if(IS_ISTREAM(handle) && (ISTREAM(handle)>>buf) ){ 
+                if(IS_ISTREAM(handle) && (ISTREAM(handle)>>buf) ){
                     P_PUSH(VHeap::newStr(buf));
                     B_PUSH(0);
                 }    
-                else 
-                    B_PUSH(-1);  
-            } 
+                else
+                    B_PUSH(-1);
+            }
             break;
 
         case v_io_putstr:
@@ -1193,8 +1193,8 @@ VStopReason VThread::doRun(bool step)
                 IP+=1+(pcode[IP]+3)/sizeof(VByteCode);
             }
             break;
-		*/
-		case v_startthread: //startthread label bcnt pcnt
+        */
+        case v_startthread: //startthread label bcnt pcnt
             {
                 //find an empty slot
                 int i;
@@ -1262,8 +1262,8 @@ VStopReason VThread::doRun(bool step)
             break;
         case v_BREAK:
             stop=vsrBreak;
-            IP--; 
-            break;            
+            IP--;
+            break;
         default:
             cerr<<"unknown instruction id -- "<<pcode[IP-1]<<endl;
             stop=vsrError;
@@ -1293,7 +1293,7 @@ bool VMachine::findActiveThread()
 
     curThread=theThreads[0];
     curThreadID=0;
-    return false; 
+    return false;
 }
 void VMachine::run()
 {
@@ -1384,15 +1384,15 @@ void VMachine::clear(int aStackSize, int aHeapSize)
         blockedThreads[i]=0;
     }
     VHeap::init(aHeapSize);
-	theThreads[0]=new VThread(0, aStackSize);
+    theThreads[0]=new VThread(0, aStackSize);
     curThread=theThreads[0];
     curThreadID = 0;
 }
 void VMachine::init(int aStackSize, int aHeapSize)
 {
-	clear(aStackSize, aHeapSize);
-	delete theCodeBase;
-	theCodeBase=new VCodeBase;
+    clear(aStackSize, aHeapSize);
+    delete theCodeBase;
+    theCodeBase=new VCodeBase;
 }
 /*
 int VMachine::openStream(const char* name, int mode)
@@ -1476,7 +1476,7 @@ int VMachine::getString(int handle, char* aStr)
         return strlen(aStr);
     return -1;
 }
-    
+
 int VMachine::putString(int handle, char* aStr)
 {
     if(handle<0 || handle>=VMC_MAXSTREAMS || theOStreams[handle]==0)

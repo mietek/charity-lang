@@ -10,13 +10,13 @@
 ostream& operator <<(ostream&os, VLong&t)
 {
     char buf[40];
-	_i64toa(t,buf,10);
-	return os<<buf;
+    _i64toa(t,buf,10);
+    return os<<buf;
 }
 istream& operator >>(istream&is, VLong&t)
 {
     char buf[40];
-	_i64toa(t,buf,10);
+    _i64toa(t,buf,10);
     return is>>t;
 }
 #endif
@@ -26,10 +26,10 @@ VCodeBase* VMachine::theCodeBase=0;
 //implement class VCodeBase
 VCodeBase::VCodeBase()
 {
-	//buildup the index to lookup the _instrSpec[].
-	int i;
-	for(i=0;_instrSpec[i].name!=0;i++)
-		name2Index.insert(TName2Index::value_type(_instrSpec[i].name, i));
+    //buildup the index to lookup the _instrSpec[].
+    int i;
+    for(i=0;_instrSpec[i].name!=0;i++)
+        name2Index.insert(TName2Index::value_type(_instrSpec[i].name, i));
     codeVec.push_back(v_halt);
 }
 
@@ -46,7 +46,7 @@ int VCodeBase::loadFromFile(const char* aFilename)
     }
     //save the old code & map so that we can restore them if compile not successful
     vector<VByteCode> oldcode(codeVec);
-    TLabel2Addr oldmap(label2Addr); 
+    TLabel2Addr oldmap(label2Addr);
     int r=doCompile(is);
     if(r){ //compile failed, restore
         label2Addr.swap(oldmap);
@@ -54,12 +54,12 @@ int VCodeBase::loadFromFile(const char* aFilename)
     }
     undefTbl.clear();
     return r;
-}		
+}
 int VCodeBase::compileError(const char* errMsg, const char* errCode)
 {
     cerr<<endl
-		<<_curTk->curFile()<<" "
-	    <<"line "<<_curTk->curLineNo()<<":"<<errMsg;
+        <<_curTk->curFile()<<" "
+        <<"line "<<_curTk->curLineNo()<<":"<<errMsg;
     if(errCode!=0)
             cerr<<" -- "<<errCode;
     return -1;
@@ -74,40 +74,40 @@ void putData(vector<VByteCode>& vec, const char* text)
     for(int i=0;i<sizeof(T)/sizeof(VByteCode);i++)
         vec.push_back(((VByteCode*)&t)[i]);
 }*/
-	VTokenizer tk;
+    VTokenizer tk;
 
 int VCodeBase::doCompile(istream& theIS)
 {
-	tk.attach(theIS);
-	_curTk=&tk;
-	_curTk->setLineNo(1);
+    tk.attach(theIS);
+    _curTk=&tk;
+    _curTk->setLineNo(1);
     int token;
     while((token=tk.getToken())!=T_EOF){
         switch(token){
-		case T_ERROR:
-			return compileError(tk.curErrMsg(),tk.curToken());
-		case T_EXTFUN:
-			{ //the first character is "!", ignore it
-			  const char* extname=tk.curToken();
-			  VExtFunSpec* p;
-			  for(p=_extFunSpec; p->name!=0; p++){
-				  if(strcmp(p->name,extname)==0){
-					  codeVec.push_back(v_callExt);
-					  codeVec.push_back(int(p->funptr));
-					  codeVec.push_back(p->ibcnt);
-					  codeVec.push_back(p->ipcnt);
-					  codeVec.push_back(p->obcnt);
-					  codeVec.push_back(p->opcnt);
-				 	  int t=tk.getToken();
-					  if(t!=T_EOF && t!=T_NEWLINE)
-							return compileError("Too many parameters");
-					  break;
-				  }
-			  }
-			  if(p->name==0)
-				  return compileError("Undefined external function",extname);
-			}
-			break;
+        case T_ERROR:
+            return compileError(tk.curErrMsg(),tk.curToken());
+        case T_EXTFUN:
+            { //the first character is "!", ignore it
+              const char* extname=tk.curToken();
+              VExtFunSpec* p;
+              for(p=_extFunSpec; p->name!=0; p++){
+                  if(strcmp(p->name,extname)==0){
+                      codeVec.push_back(v_callExt);
+                      codeVec.push_back(int(p->funptr));
+                      codeVec.push_back(p->ibcnt);
+                      codeVec.push_back(p->ipcnt);
+                      codeVec.push_back(p->obcnt);
+                      codeVec.push_back(p->opcnt);
+                      int t=tk.getToken();
+                      if(t!=T_EOF && t!=T_NEWLINE)
+                            return compileError("Too many parameters");
+                      break;
+                  }
+              }
+              if(p->name==0)
+                  return compileError("Undefined external function",extname);
+            }
+            break;
         case T_LABELDEF:
             if(isLabel(tk.curToken()))
                 return compileError("Duplicate label", tk.curToken());
@@ -150,18 +150,18 @@ int VCodeBase::doCompile(istream& theIS)
                         codeVec.push_back(n2);
                     }
                     break;
-				case otFourIndex:
-					{
-						for(int i=0;i<4;i++){
-							if(tk.getToken()!=T_INTEGER)
-								return compileError("Expecting four index");
-							int num=atoi(tk.curToken());
-							if(num<0 || num>VMC_MAX_INDEX_VALUE)
-								return compileError("Index must be a small non-negative integer");
-							codeVec.push_back(num);
-						}
-					}
-					break;
+                case otFourIndex:
+                    {
+                        for(int i=0;i<4;i++){
+                            if(tk.getToken()!=T_INTEGER)
+                                return compileError("Expecting four index");
+                            int num=atoi(tk.curToken());
+                            if(num<0 || num>VMC_MAX_INDEX_VALUE)
+                                return compileError("Index must be a small non-negative integer");
+                            codeVec.push_back(num);
+                        }
+                    }
+                    break;
 //VC6's template function generation seems to be problematic, so I use macro here
 #define SAVE_DATA(T) { \
     T t; istrstream is(tk.curToken());  is>>t; \
@@ -176,7 +176,7 @@ int VCodeBase::doCompile(istream& theIS)
                     }
                     break;
                 case otLong:
-                    {   
+                    {
                         if(tk.getToken()!=T_INTEGER)
                             return compileError("Expecting one integer");
                         SAVE_DATA(VLong);
@@ -279,7 +279,7 @@ int VCodeBase::doCompile(istream& theIS)
                             return compileError("expecting at least one label");
                         //now fill the argument count
                         codeVec[pos]=argcnt;
-                        
+
                         expectNewline=false;
                     }
                     break;
@@ -349,56 +349,56 @@ const char* VCodeBase:: getLabel(int addr)
 
 ostream& operator <<(ostream& os, PChar pch)
 {
-	const char* s;
-	char buf[10];
-	ostrstream ss(buf,10);
+    const char* s;
+    char buf[10];
+    ostrstream ss(buf,10);
 
-	switch(pch.ch){
-	case '\a':
-		s="\\a";
-		break;
-	case '\b':
-		s="\\b";
-		break;
-	case '\f':
-		s="\\f";
-		break;
-	case '\n':
-		s="\\n";
-		break;
-	case '\r':
-		s="\\r";
-		break;
-	case '\t':
-		s="\\t";
-		break;
-	case '\v':
-		s="\\v";
-		break;
-	case '\"':
-		s="\\\"";
-		break;
-	case '\'':
-		s="\\\'";
-		break;
-	case '\\':
-		s="\\\\";
-		break;
-	default:
-		if(isprint(pch.ch)){
-			return os<<pch.ch;
-		}
-		ss<<"\\x"<<setw(2)<<hex<<setfill('0')<<int(pch.ch)<<ends;
-		s=buf;
-		break;
-	}
-	return os<<s;
+    switch(pch.ch){
+    case '\a':
+        s="\\a";
+        break;
+    case '\b':
+        s="\\b";
+        break;
+    case '\f':
+        s="\\f";
+        break;
+    case '\n':
+        s="\\n";
+        break;
+    case '\r':
+        s="\\r";
+        break;
+    case '\t':
+        s="\\t";
+        break;
+    case '\v':
+        s="\\v";
+        break;
+    case '\"':
+        s="\\\"";
+        break;
+    case '\'':
+        s="\\\'";
+        break;
+    case '\\':
+        s="\\\\";
+        break;
+    default:
+        if(isprint(pch.ch)){
+            return os<<pch.ch;
+        }
+        ss<<"\\x"<<setw(2)<<hex<<setfill('0')<<int(pch.ch)<<ends;
+        s=buf;
+        break;
+    }
+    return os<<s;
 }
 ostream& operator <<(ostream& os, PString s)
 {
-	while(s->ch!='\0')
-		os<<*(s++);
-	return os;
+    while(s->ch!='\0')
+        os<<*(s++);
+    return os;
 }
 //un-assembly the code at addr, put the string in buf, return the
 //next code's address, return 0 if error
@@ -411,25 +411,25 @@ int VCodeBase::unasm(int addr, ostream& os)
     //check if there is a label defined here
     const char* ps=getLabel(addr);
     if(ps!=0)
-        os<<"\n     "<<ps<<':';    
+        os<<"\n     "<<ps<<':';
     os<<endl<<setw(5)<<setfill('0')<<addr<<setfill(' ');
-	if(isBreakPoint(addr))
-		os<<"*";
+    if(isBreakPoint(addr))
+        os<<"*";
     else
-		os<<" ";
+        os<<" ";
     //find the name corresponding to the byte code
     int i;
-	if(code==v_callExt){
-		VExtFunSpec* efs; 
-		for(efs= _extFunSpec; efs->name!=0; efs++)
-			if(efs->funptr==(ExtFun*)(codeVec[addr+1])){
-				os<<"    !"<<efs->name;
-				break;
-			}
-		if(efs->name==0)
-			os<<"Undefined external function";
-		return addr+6;
-	}
+    if(code==v_callExt){
+        VExtFunSpec* efs;
+        for(efs= _extFunSpec; efs->name!=0; efs++)
+            if(efs->funptr==(ExtFun*)(codeVec[addr+1])){
+                os<<"    !"<<efs->name;
+                break;
+            }
+        if(efs->name==0)
+            os<<"Undefined external function";
+        return addr+6;
+    }
 
     for(i=0; _instrSpec[i].name!=0; i++)
         if(_instrSpec[i].opCode==code)
@@ -455,11 +455,11 @@ int VCodeBase::unasm(int addr, ostream& os)
         os<<codeVec[addr]<<"  "<<codeVec[addr+1];
         addr+=2;
         break;
-	case otFourIndex:
-		for(i=0;i<4;i++)
-			os<<codeVec[addr+i]<<"  ";
-		addr+=4;
-		break;
+    case otFourIndex:
+        for(i=0;i<4;i++)
+            os<<codeVec[addr+i]<<"  ";
+        addr+=4;
+        break;
     case otInt:
         os<<*(VInt*)&codeVec[addr];
         addr+=sizeof(VInt)/sizeof(VByteCode);
@@ -477,13 +477,13 @@ int VCodeBase::unasm(int addr, ostream& os)
         addr+=sizeof(VDouble)/sizeof(VByteCode);
         break;
     case otString:
-		{  
-//			char buf[512];
-//		    str2cstr(buf,(const char*)&codeVec[addr+1]);
-//			os<<'"'<<buf<<'"';
-			os<<'"'<<PString(&codeVec[addr+1])<<'"';
-			addr+= 1+(codeVec[addr]+3)/sizeof(VByteCode);
-		}
+        {
+//          char buf[512];
+//          str2cstr(buf,(const char*)&codeVec[addr+1]);
+//          os<<'"'<<buf<<'"';
+            os<<'"'<<PString(&codeVec[addr+1])<<'"';
+            addr+= 1+(codeVec[addr]+3)/sizeof(VByteCode);
+        }
         break;
     case otLabel:
         {
@@ -520,7 +520,7 @@ int VCodeBase::unasm(int addr, ostream& os)
             }
         }
         addr+=1+ codeVec[addr]*sizeof(VInt)/sizeof(VByteCode);
-        break;                                 
+        break;
     default:
         assert(0);
     }
@@ -535,7 +535,7 @@ int VCodeBase::setBreakPoint(int addr)
     codeVec[addr]=v_BREAK;
     return 0;
 }
-       
+
 int VCodeBase::clearBreakPoint(int addr)
 {
     if(!isBreakPoint(addr))
@@ -544,7 +544,7 @@ int VCodeBase::clearBreakPoint(int addr)
     codeVec[addr]=bp2Code[addr];
     bp2Code.erase(bp2Code.find(addr));
     return 0;
-}         
+}
 int VCodeBase::clearAllBreakPoints()
 {
     TBp2Code::iterator it;
@@ -566,7 +566,7 @@ int VCodeBase::getBreakPointAddr(int i) //return the address of the ith break po
 void VCodeBase::disableBreakPoint(int addr)
 {
     if(isBreakPoint(addr))
-        codeVec[addr] = bp2Code[addr]; 
+        codeVec[addr] = bp2Code[addr];
 }
 void VCodeBase::enableBreakPoint(int addr)
 {
