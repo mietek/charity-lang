@@ -64,7 +64,7 @@ Papers and Reports
     }
     ```
 
-* Charitable Thoughts ([PDF](pdf/1996-cockett-charitable-thoughts))
+* Charitable Thoughts ([PDF](pdf/1996-cockett-charitable-thoughts.pdf))
 
     ```
     @misc
