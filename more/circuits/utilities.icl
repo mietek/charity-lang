@@ -419,7 +419,7 @@ where
 
 GetConnectionPoint nearPoint [] = ((-1,-1), (NONE, -1, -1, dummyWireType))
 
-////////// IsNotConnected 
+////////// IsNotConnected
 // Used to determine if the information returned from GetConnectionPoint
 // indicates that a connection point was found for the mouse position.
 IsNotConnected :: !ConnectionInfo -> Bool
@@ -507,7 +507,7 @@ where
 GetTypeOnConnect nearPoint [] = (False, dummyWireType)
 
 //////////  GetTypeOnWire
-// Takes a mouse position and a list of wires, and returns True if the 
+// Takes a mouse position and a list of wires, and returns True if the
 // mouse position is near one of the wires (False otherwise) and the
 // wire type of the wire if so.
 GetTypeOnWire :: Point ![Wire] -> (Bool, WireType)
@@ -886,8 +886,8 @@ ComponentRectangle {pos=(PT (x,y))}
 // the sides of its border and the connection areas.
 BoxEdgeRectangles :: !Rectangle -> [Rectangle]
 BoxEdgeRectangles ((leftX, topY), (rightX, bottomY))
-  = [((leftX - 1, topY), (leftX + 1, bottomY)), ((leftX, topY - 1), (rightX, topY + 1)), 
-     ((rightX - 1, topY), (rightX + 1, bottomY)), ((leftX, bottomY - 1), (rightX, bottomY + 1)), 
+  = [((leftX - 1, topY), (leftX + 1, bottomY)), ((leftX, topY - 1), (rightX, topY + 1)),
+     ((rightX - 1, topY), (rightX + 1, bottomY)), ((leftX, bottomY - 1), (rightX, bottomY + 1)),
      ((horizCentre - gateRadius, bottomY - gateRadius), (horizCentre + gateRadius, bottomY + gateRadius)),
      ((horizCentre - terminalRadius, topY), (horizCentre + terminalRadius, topY + 2*terminalRadius))
     ]
@@ -1333,7 +1333,7 @@ where
   boxMargin      = 4
 
 ////////// DrawSelection
-// Given a component, a wire ID and a list of wires, returns the 
+// Given a component, a wire ID and a list of wires, returns the
 // list of drawing functions necessary to draw a "selection
 // indicator" (which shows that the component or wire is currently
 // selected) around the component (if the wire ID is -1) or wire.
@@ -1367,25 +1367,25 @@ where
   secondLine = ((x1 - norm2X, y1 - norm2Y), (x2 - norm2X, y2 - norm2Y))
 
 ////////// TopLeftRectangle
-// Returns the rectangle at the top left of a box's border that can 
+// Returns the rectangle at the top left of a box's border that can
 // be selected for sizing the box from this corner.
 TopLeftRectangle :: !Rectangle -> !Rectangle
 TopLeftRectangle ((leftX, topY), _) = ((leftX - 6, topY - 6), (leftX + 4, topY + 4))
 
 ////////// TopRightRectangle
-// Returns the rectangle at the top right of a box's border that can 
+// Returns the rectangle at the top right of a box's border that can
 // be selected for sizing the box from this corner.
 TopRightRectangle :: !Rectangle -> !Rectangle
 TopRightRectangle ((_, topY), (rightX, _)) = ((rightX - 3, topY - 6), (rightX + 7, topY + 4))
 
 ////////// BottomRightRectangle
-// Returns the rectangle at the bottom left of a box's border that can 
+// Returns the rectangle at the bottom left of a box's border that can
 // be selected for sizing the box from this corner.
 BottomRightRectangle :: !Rectangle -> !Rectangle
 BottomRightRectangle (_, (rightX, bottomY)) = ((rightX - 3, bottomY - 3), (rightX + 7, bottomY + 7))
 
 ////////// BottomLeftRectangle
-// Returns the rectangle at the bottom left of a box's border that can 
+// Returns the rectangle at the bottom left of a box's border that can
 // be selected for sizing the box from this corner.
 BottomLeftRectangle :: !Rectangle -> !Rectangle
 BottomLeftRectangle ((leftX, _), (_, bottomY)) = ((leftX - 6, bottomY - 3), (leftX + 4, bottomY + 7))
@@ -1424,10 +1424,10 @@ halfLassoWidth      :== 5
 // Half the height of the lasso loop in the UnitEL, UnitER, CounitIL and CounitIR.
 halfLassoHeight     :== 3
 // Gives the vertical distance from the lasso loop centre to the outside edge of
-// the input and output connection regions for the lasso loop in the UnitEL, 
+// the input and output connection regions for the lasso loop in the UnitEL,
 // UnitER, CounitIL and CounitIR.
 halfLassoLineLength :== 5
-// Gives the radius of the lasso "cord" (the arc connecting the unit or counit 
+// Gives the radius of the lasso "cord" (the arc connecting the unit or counit
 // with the lasso loop) in the UnitEL, UnitER, CounitIL and CounitIR.
 lassoCordRadius     :== 12
 //*^*lassoCordRadius     :== 18
@@ -1477,7 +1477,7 @@ NewConnection type = {cWireID=(-1), cWireType=(Free type)}
 
 ////////// SubsIntoCircuit
 // Takes a list of variable substitutions and a circuit, and makes the variable
-// substitutions in all free wire types of the circuit.  (Assumes that the 
+// substitutions in all free wire types of the circuit.  (Assumes that the
 // variables being substituted in are independent of the variables being replaced.)
 SubsIntoCircuit :: [Substitution] !Circuit -> Circuit
 SubsIntoCircuit subs [comp : circuit] = [SubsIntoComponent subs comp : SubsIntoCircuit subs circuit]
@@ -1485,7 +1485,7 @@ SubsIntoCircuit _ [] = []
 
 ////////// SubsIntoComponent
 // Takes a list of variable substitutions and a component, and makes the variable
-// substitutions in all free wire types of the component.  (Assumes that the 
+// substitutions in all free wire types of the component.  (Assumes that the
 // variables being substituted in are independent of the variables being replaced.)
 SubsIntoComponent :: [Substitution] !Component -> Component
 SubsIntoComponent subs comp=:{spec=Box boxCircuit, inputs, outputs}
@@ -1497,7 +1497,7 @@ SubsIntoComponent subs comp=:{inputs, outputs}
 
 ////////// SubsIntoConnect
 // Takes a list of variable substitutions and a connection, and makes the variable
-// substitutions in all free wire types of the connection.  (Assumes that the 
+// substitutions in all free wire types of the connection.  (Assumes that the
 // variables being substituted in are independent of the variables being replaced.)
 SubsIntoConnect :: [Substitution] !Connection -> Connection
 SubsIntoConnect subs connect=:{cWireType}
@@ -1573,7 +1573,7 @@ ReverseAppend [x : xs] ys = ReverseAppend xs [x : ys]
 ReverseAppend [] ys = ys
 
 //////// RemoveIntersection
-// Given two lists (each with no duplicate items), 
+// Given two lists (each with no duplicate items),
 // returns the two lists in their original orders,
 // with all items that they have in common removed.
 RemoveIntersection :: [a] [a] -> ([a],[a]) | == a
@@ -1945,7 +1945,7 @@ where
   (maxCompID, maxWireID, maxVar) = GetCircuitMaxVals circuit 0 0 1
 
 ///////// GetCircuitMaxVals
-// Takes a circuit, a component ID, a wire ID and a variable number and returns 
+// Takes a circuit, a component ID, a wire ID and a variable number and returns
 // a maximum component ID, wire ID and variable number (using the given values
 // as the initial maximums).
 GetCircuitMaxVals :: !Circuit ComponentID WireID Int -> (ComponentID, WireID, Int)

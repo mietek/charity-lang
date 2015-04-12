@@ -110,7 +110,7 @@ where
 // in wire) to the wire ID of the  wire that connects down from the lasso of the original thinning link (the
 // out wire) if it encounters it before it finds the upper connection of the lasso wire.  When it finds the
 // lasso wire's upper connection, it goes back through the circuit that preceded it at that level, collecting
-// everything that doesn't have a direct or indirect connection down to the lasso wire and combines this 
+// everything that doesn't have a direct or indirect connection down to the lasso wire and combines this
 // with the part of the circuit that hasn't yet been searched at that level (fixing the thinning link's old
 // wire at this point if it hasn't already been done), then checks that the rewiring is possible by
 // sequentializing this part of the circuit as far as possible, then verifying that the old wire and the new
@@ -297,7 +297,7 @@ PutUnitEInBox comp _ [] = (True, comp, [])
 // wire that connects down into the lasso of the original thinning link (the in wire) to the wire ID of
 // the  wire that connects down from the lasso of the original thinning link (the out wire) when it
 // encounters it (it must encounter it before it encounters the lasso wire's connection point), and also
-// changing the wire ID on the upper connection of the thinning link's new wire to the wire ID of the 
+// changing the wire ID on the upper connection of the thinning link's new wire to the wire ID of the
 // thinning link's in wire if it finds it on the internal output connection of a box.  When it finds the
 // lasso wire's lower connection (or finds that the lasso connects into a box that doesn't contain it),
 // it first verifies that the thinning link is not being rewired into a box further down in the circuit,

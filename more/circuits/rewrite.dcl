@@ -68,7 +68,7 @@ DoRewrite :: !Rewrite WireID Point !Circuit [Wire] WireID ComponentID Int [(Int,
 //   - a list giving the old and new wire IDs for the inputs of connections in the circuits
 //     whose wire IDs must be changed because of the rewrite (only used after returning from
 //     a box),
-//   - a list of wire IDs identifying wires from the circuit above the rewrite that must 
+//   - a list of wire IDs identifying wires from the circuit above the rewrite that must
 //     have user-specified types (only used after returning from a box),
 //   - a list of wire IDs identifying wires into the circuit below the rewrite that must
 //     have user-specified types (only used after returning from a box).

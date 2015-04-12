@@ -33,7 +33,7 @@ where
 ////////// SetGenericTypes
 // This function is called after the user has set the types for a new generic component to
 // convert the user's variables (both UserVar and Var) to new variables starting at 0.
-// Variables normally start at 1, but starting at zero allows the component to be 
+// Variables normally start at 1, but starting at zero allows the component to be
 // instantiated by adding the next free variable number to all connection variables.
 
 //*^*SetGenericTypes :: !CompSpecifics -> CompSpecifics
@@ -58,7 +58,7 @@ ResetGenericTypes [] subs nextVar = ([], subs, nextVar)
 // Takes a type, a list of substitution pairs giving variable-number
 // substitutions for variables and user variables already
 // encountered, and the next free variable number, and returns the
-// type with all variables and user variables replaced with new 
+// type with all variables and user variables replaced with new
 // variables, a new list giving variable-number substitutions for
 // variables and user variables (with any new ones added), and the
 // new next free variable number.
@@ -140,7 +140,7 @@ SaveGeneric (Generic name inputTypes outputTypes, width, height) file
         ] file
 
 ////////// ReadGeneric
-// This reads a generic-component definition from a file.  The file pointer should be 
+// This reads a generic-component definition from a file.  The file pointer should be
 // positioned at the beginning of a rewrite (or at the end of the file).
 // Returns:
 //   - True if the end of the file has been reached, False otherwise,

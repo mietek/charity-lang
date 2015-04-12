@@ -19,7 +19,7 @@ import deltaPicture, typeDefs
 //*^*                outputs :: [Connection],
 //*^*                pos :: Placement
 //*^*               }
-:: Component = {spec    :: CompSpecifics Component, 
+:: Component = {spec    :: CompSpecifics Component,
                 id      :: ComponentID,
                 inputs  :: [Connection],
                 outputs :: [Connection],

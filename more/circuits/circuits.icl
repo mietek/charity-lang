@@ -1,7 +1,7 @@
 // Written by Gillian Posey, 1996.
 
 // This is the main module of the program.  It contains one function (Start) with interface
-// code in its where clause.  Mouse events for both circuit windows are handled by 
+// code in its where clause.  Mouse events for both circuit windows are handled by
 // HandleMouse.
 
 // Note that all drawing is done in XOR mode, so that a component, etc. can be erased by
@@ -291,12 +291,12 @@ where
   ////////////////////// *** Toolbox functions
 
   ////////// DrawButton
-  // Takes an edit type indicating which button is to be drawn and its select state, indicating 
+  // Takes an edit type indicating which button is to be drawn and its select state, indicating
   // whether it is enabled or not (the current button will not be enabled, and will be drawn
   // with a thick border, other buttons are enabled and will be drawn with a normal (thin) border.
   // Returns the drawing functions to draw the button.
   DrawButton :: EditType !SelectState -> [DrawFunction]
-  DrawButton item Able 
+  DrawButton item Able
     = [DrawRectangle buttonDomain :
        DrawButtonIcon item
       ]
@@ -669,7 +669,7 @@ where
     (newBox2OK, newBox2, newCircuit2, newWires2, redraws2) = ChangeSizedBox oldComp newComp circuit wires
     sizedIO1 = DrawInWindow windowID [SetPenMode XorMode : redraws1] io
     sizedIO2 = DrawInWindow windowID
-                            [SetPenMode XorMode : 
+                            [SetPenMode XorMode :
                              ((DrawSelection currentComp (-1) []) ++ (DrawComponent {currentComp & spec=Box []}) ++
                               (DrawSelection newComp (-1) []) ++ (DrawComponent {newComp & spec=Box []}) ++
                               redraws2
@@ -706,7 +706,7 @@ where
 
     sizedIO1 = DrawInWindow windowID [SetPenMode XorMode : redraws1] io
     sizedIO2 = DrawInWindow windowID
-                            [SetPenMode XorMode : 
+                            [SetPenMode XorMode :
                              ((DrawSelection currentComp (-1) []) ++ (DrawComponent {currentComp & spec=Box []}) ++
                               (DrawSelection newComp (-1) []) ++ (DrawComponent {newComp & spec=Box []}) ++
                               redraws2
@@ -1324,7 +1324,7 @@ where
     (newState2, io4) = DrawInWindowFrame windowID (RedrawCircuit currentWindow) newState1
                          (ChangeWindowTitle windowID (windowName +++ ": " +++ fileName) io3)
 
-  // If a circuit is read in in ProofMode, it must be checked to see if it sequentializes.  If it doesn't, 
+  // If a circuit is read in in ProofMode, it must be checked to see if it sequentializes.  If it doesn't,
   // the program goes into EditingCircuit mode.  Otherwise, new input and output position pairs are needed.
   Read state=:{editMode=ProofMode, files, currentWindow, windowInfo} io1
     | NotWindow currentWindow = (state,
@@ -1424,7 +1424,7 @@ where
   SaveNewRewrite state io
     = OpenModalDialog rewriteDialog state io
   where
-    rewriteDialog = 
+    rewriteDialog =
       (CommandDialog rewriteInfoID "Save Rewrite" [] ok1ID
        [StaticText text1ID Left "Before creating a rewrite, you should make sure that the right side is",
         StaticText text1ID Left "as compact as possible (excluding terminals).",
@@ -1621,7 +1621,7 @@ where
                (state, DisplayNotice "This type doesn't unify." io)
       | successB
           = ({state & windowInfo=newWindowInfoB},
-             seq [CloseDialog wireTypeDlgID, EnableMenuSystem, EnableAllWindows windowInfo, 
+             seq [CloseDialog wireTypeDlgID, EnableMenuSystem, EnableAllWindows windowInfo,
                   // VVV The wire's appearance changes when the type becomes user-specified.
                   DrawInWindow windowID [SetPenMode XorMode : ((DrawWire wire) ++ (DrawWire newWire))]
                  ] io
@@ -1796,7 +1796,7 @@ where
                  ] io
 
   ////////// AddGeneric
-  // Allows the user to create a new component.  First opens a dialog box in which the user gives the name 
+  // Allows the user to create a new component.  First opens a dialog box in which the user gives the name
   // and number of inputs and outputs for the component, then opens a window displaying the component to
   // allow the user to specify the input and output types by clicking on each one and then entering
   // the type.
@@ -1820,13 +1820,13 @@ where
     ContinueGeneric :: DialogInfo ProgState IO -> (ProgState, IO)
     ContinueGeneric dlgInfo state=:{generics} io
       | compName==""
-          = (state, 
+          = (state,
              seq [CloseDialog addGenericID, EnableAllWindows windowInfo, EnableMenuSystem,
                   DisplayNotice "The component must have a name."
                  ] io
             )
       | (inputCount < 0) || (outputCount < 0)
-          = (state, 
+          = (state,
              seq [CloseDialog addGenericID, EnableAllWindows windowInfo, EnableMenuSystem,
                   DisplayNotice "You cannot have a negative number of inputs or outputs"
                  ] io
@@ -2226,7 +2226,7 @@ where
     (windowsOpen, io2) = RewriteWindowsOpen io1
 
     (state2, io3)
-      = DrawInWindowFrame leftSideWindowID DrawLeftCirc state1 
+      = DrawInWindowFrame leftSideWindowID DrawLeftCirc state1
                           (seq [ChangeUpdateFunction leftSideWindowID DrawLeftCirc,
                                 ChangeMouseFunction leftSideWindowID (DisplayTypesHandler leftSide leftWires),
                                 ChangeWindowTitle leftSideWindowID (rewriteName +++ ": left side"),
@@ -2284,7 +2284,7 @@ where
     (windowsOpen, io2) = RewriteWindowsOpen io1
 
     (state2, io3)
-      = DrawInWindowFrame leftSideWindowID DrawLeftCirc state1 
+      = DrawInWindowFrame leftSideWindowID DrawLeftCirc state1
           (seq [ChangeUpdateFunction leftSideWindowID DrawLeftCirc,
                 ChangeMouseFunction leftSideWindowID (DisplayTypesHandler boxReductLeftSide boxReductLeftWires),
                 ChangeWindowTitle leftSideWindowID "Box reduction: left side",
@@ -2758,11 +2758,11 @@ where
   // First calls ChangeComponentAux, which searches the circuit for the component or a box containing the
   // component.  If ChangeComponentAux finds the component, it removes it and sets removed=True so that
   // it can be reinserted into the circuit.  If the component's old and new positions are both in a box,
-  // ChangeComponentAux calls ChangeComponent recursively to move the component in the box, and returns 
+  // ChangeComponentAux calls ChangeComponent recursively to move the component in the box, and returns
   // removed=False to indicate that it is done.  If the component's old position is in a box but not its
-  // new position, it removes the component from the box and sets removed=True so that it can be 
+  // new position, it removes the component from the box and sets removed=True so that it can be
   // reinsertion.  If a cycle is caused by the move, reinsertion of the component will fail.
-  //*^* Note that it isn't necessary to have to old component's entire enclosing rectangle to determine 
+  //*^* Note that it isn't necessary to have to old component's entire enclosing rectangle to determine
   //*^* whether it was in a box - a single point on the component would be sufficient.
   ChangeComponent :: Rectangle Component Circuit -> (Bool, Circuit)
   ChangeComponent oldCompRect newcomp circuit
@@ -2807,7 +2807,7 @@ where
   // Similar to ChangeComponent, except that when removing a component from a box, the outermost
   // box that it is removed from is checked for sequentialization after the removal, and when
   // inserting a component into a box, the innermost box that it is inserted into is checked for
-  // sequentialization after the insertion.  This should ensure that if the whole circuit 
+  // sequentialization after the insertion.  This should ensure that if the whole circuit
   // sequentialized before the component was moved, it will still sequentialize.
   ChangeComponentInProof :: Rectangle Component Circuit -> (Bool, Circuit)
   ChangeComponentInProof oldCompRect newcomp circuit
@@ -2856,7 +2856,7 @@ where
     (noProblem, removed, newCircuit) = ChangeComponentInProofAux oldCompRect newcomp circuit
 
   ////////// MoveComponentOut
-  // Takes the enclosing rectangle of a component, its ID, and a circuit, and removes the 
+  // Takes the enclosing rectangle of a component, its ID, and a circuit, and removes the
   // component from the circuit (including the box circuit if the component is a box).
   MoveComponentOut :: Rectangle ComponentID Circuit -> Circuit
 
@@ -2871,7 +2871,7 @@ where
 
   ////////// MoveWires
   // Takes a component that has been moved and a list of circuit wires, and moves the endpoints of the wires
-  // attached to the component to their new positions, returning the new list of wires and a list of 
+  // attached to the component to their new positions, returning the new list of wires and a list of
   // drawing functions used to erase the old wires and draw the new ones.
   MoveWires :: Component [Wire] -> ([Wire], [DrawFunction])
   MoveWires component wires
@@ -3002,9 +3002,9 @@ where
   // Proceeds down the circuit until it finds the box, finds a box that encloses the box,
   // or finds a component that is now contained in the box.  If it finds the box, it
   // calls GetBackSubs to remove components following the box that are now inside it and put
-  // them in the box, then returns the box to be reinserted.  If it finds a box that 
+  // them in the box, then returns the box to be reinserted.  If it finds a box that
   // encloses the box, it recursively calls CollectBoxContents to do the job.  If it finds
-  // something that is inside the box, it calls GetFrontComps to remove all components 
+  // something that is inside the box, it calls GetFrontComps to remove all components
   // now in the box from the circuit and put them in the box, then returns the new box
   // for reinsertion.
   CollectBoxContents :: !Component [Component] !Circuit -> (Bool, Bool, Component, Circuit)
@@ -3158,7 +3158,7 @@ where
 
   ////////// MakeComponent
   // Takes an edit type indicating what component is to be made, the component's ID, the point
-  // that will be used to position the component, and the next free variable number, and 
+  // that will be used to position the component, and the next free variable number, and
   // returns the component with its types set to the most general types possible using new
   // variables and the new next free variable number.
   MakeComponent :: EditType ComponentID Point Int -> (Component, Int)

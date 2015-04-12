@@ -94,7 +94,7 @@ ConvertToComp (DEBUG spec id inputs outputs pos)
 ConvertSpec :: !(CompSpecifics Debug) -> (CompSpecifics Component)
 ConvertSpec StartTerminal = StartTerminal
 ConvertSpec EndTerminal = EndTerminal
-ConvertSpec TensorE = TensorE 
+ConvertSpec TensorE = TensorE
 ConvertSpec TensorI = TensorI
 ConvertSpec SumE = SumE
 ConvertSpec SumI = SumI

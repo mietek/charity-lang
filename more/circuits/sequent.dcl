@@ -1,4 +1,4 @@
-// Contains the code used to check whether a circuit sequentializes, and also to 
+// Contains the code used to check whether a circuit sequentializes, and also to
 // produce a string used to show what a circuit sequentialized to.
 
 definition module sequent
@@ -11,7 +11,7 @@ import StdEnv, circuitDefs
 // horizontal position of the terminal endpoints of the corresponding wires.
 SequentString :: !Circuit [Wire] -> String
 
-// Sequentializes a circuit, returning True if it was successful with 
+// Sequentializes a circuit, returning True if it was successful with
 // the sequentialized circuit.
 FILLSequentialize :: !Circuit -> (Bool, Circuit)
 

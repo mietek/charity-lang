@@ -1,4 +1,4 @@
-// Contains the code used to check whether a circuit sequentializes, and also to 
+// Contains the code used to check whether a circuit sequentializes, and also to
 // produce a string used to show what a circuit sequentialized to.
 
 //*** NOTE : Could use NotFullyWired (in utilities) to check wiring before removing terminals
@@ -28,7 +28,7 @@ ConnectsString [(_, {cWireType}) : connects]
 ConnectsString [] = ""
 
 ////////// FILLSequentialize
-// Sequentializes a circuit, returning True if it was successful with 
+// Sequentializes a circuit, returning True if it was successful with
 // the sequentialized circuit.
 FILLSequentialize :: !Circuit -> (Bool, Circuit)
 FILLSequentialize circuit
@@ -186,7 +186,7 @@ InternalWireIDs {spec=Sequent wireIDs} = wireIDs
 // which might be used in a cut (all the original sequent box's wires plus any new input wires acquired by
 // absorbing TensorE components).  It pushes the sequent box into the circuit, absorbing other sequent boxes and
 // TensorE components when possible.  It returns False if it encounters a sequent box that is connected to the
-// new sequent box by more than one cut wire or that is connected by a cut wire and also has an indirect 
+// new sequent box by more than one cut wire or that is connected by a cut wire and also has an indirect
 // connection to the box.
 PushBackSequent :: !Component !Circuit Circuit [WireID] -> (Bool, Circuit)
 

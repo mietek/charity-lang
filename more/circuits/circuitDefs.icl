@@ -19,7 +19,7 @@ import deltaPicture, typeDefs
 //*^*                outputs :: [Connection],
 //*^*                pos :: Placement
 //*^*               }
-:: Component = {spec    :: CompSpecifics Component,   //*^* This version is currently in use to allow 
+:: Component = {spec    :: CompSpecifics Component,   //*^* This version is currently in use to allow
                 id      :: ComponentID,               //*^* (CompSpecifics Debug) to be used in debugging.
                 inputs  :: [Connection],
                 outputs :: [Connection],
@@ -53,7 +53,7 @@ import deltaPicture, typeDefs
 :: Placement = PT Point | RCT Rectangle
 
 // This is used when connecting two components by a wire - it gives information about one of the two connection points.
-// ConnectionType gives the type of connection, ComponentID identifies the component, ConnectionID identifies the 
+// ConnectionType gives the type of connection, ComponentID identifies the component, ConnectionID identifies the
 // input or output connection on the component, and WireType gives the connection's wire type.
 :: ConnectionInfo :== (ConnectionType, ComponentID, ConnectionID, WireType)
 

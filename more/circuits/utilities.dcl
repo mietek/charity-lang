@@ -150,25 +150,25 @@ DrawComponentWires :: !Component ![Wire] -> [DrawFunction]
  // Takes a wire and returns a list of drawing functions necessary to draw the wire.
 DrawWire :: !Wire -> [DrawFunction]
 
- // Given a component, a wire ID and a list of wires, returns the 
+ // Given a component, a wire ID and a list of wires, returns the
  // list of drawing functions necessary to draw a "selection
  // indicator" (which shows that the component or wire is currently
  // selected) around the component (if the wire ID is -1) or wire.
 DrawSelection :: !Component !WireID [Wire] -> [DrawFunction]
 
- // Returns the rectangle at the top left of a box's border that can 
+ // Returns the rectangle at the top left of a box's border that can
  // be selected for sizing the box from this corner.
 TopLeftRectangle :: !Rectangle -> !Rectangle
 
- // Returns the rectangle at the top right of a box's border that can 
+ // Returns the rectangle at the top right of a box's border that can
  // be selected for sizing the box from this corner.
 TopRightRectangle :: !Rectangle -> !Rectangle
 
- // Returns the rectangle at the bottom left of a box's border that can 
+ // Returns the rectangle at the bottom left of a box's border that can
  // be selected for sizing the box from this corner.
 BottomRightRectangle :: !Rectangle -> !Rectangle
 
- // Returns the rectangle at the bottom left of a box's border that can 
+ // Returns the rectangle at the bottom left of a box's border that can
  // be selected for sizing the box from this corner.
 BottomLeftRectangle :: !Rectangle -> !Rectangle
 
@@ -202,12 +202,12 @@ GetType :: !WireType -> Type
 NewConnection :: Type -> Connection
 
  // Takes a list of variable substitutions and a circuit, and makes the variable
- // substitutions in all free wire types of the circuit.  (Assumes that the 
+ // substitutions in all free wire types of the circuit.  (Assumes that the
  // variables being substituted in are independent of the variables being replaced.)
 SubsIntoCircuit :: [Substitution] !Circuit -> Circuit
 
  // Takes a list of variable substitutions and a connection, and makes the variable
- // substitutions in all free wire types of the connection.  (Assumes that the 
+ // substitutions in all free wire types of the connection.  (Assumes that the
  // variables being substituted in are independent of the variables being replaced.)
 SubsIntoConnect :: [Substitution] !Connection -> Connection
 
@@ -247,7 +247,7 @@ GetFirst :: !(a -> Bool) ![a] -> a
  // Reverses and appends the first list to the second.
 ReverseAppend :: ![a] [a] -> [a]
 
- // Given two lists (each with no duplicate items), 
+ // Given two lists (each with no duplicate items),
  // returns the two lists in their original orders,
  // with all items that they have in common removed.
 RemoveIntersection :: [a] [a] -> ([a],[a]) | == a

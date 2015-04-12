@@ -19,7 +19,7 @@ MakeNewGeneric :: String Int Int -> (CompSpecifics Component, Int, Int)
 
  // This function is called after the user has set the types for a new generic component to
  // convert the user's variables (both UserVar and Var) to new variables starting at 0.
- // Variables normally start at 1, but starting at zero allows the component to be 
+ // Variables normally start at 1, but starting at zero allows the component to be
  // instantiated by adding the next free variable number to all connection variables.
 //*^*SetGenericTypes :: !CompSpecifics -> CompSpecifics
 SetGenericTypes :: !(CompSpecifics Component) -> (CompSpecifics Component)
@@ -36,7 +36,7 @@ MakeGenericComp :: !(!(CompSpecifics Component), Int, Int) ComponentID Int !Poin
 //*^*SaveGeneric :: !(CompSpecifics, Int, Int) *File -> *File
 SaveGeneric :: !(CompSpecifics Component, Int, Int) *File -> *File
 
- // This reads a generic-component definition from a file.  The file pointer should be 
+ // This reads a generic-component definition from a file.  The file pointer should be
  // positioned at the beginning of a rewrite (or at the end of the file).
  // Returns:
  //   - True if the end of the file has been reached, False otherwise,

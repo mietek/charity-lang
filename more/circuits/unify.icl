@@ -59,7 +59,7 @@ Args (UserFunc _ types)       = types
 
 ///////// SubsIntoSubs
 SubsIntoSubs :: ![Substitution] [Substitution] -> [Substitution]
-SubsIntoSubs subs1 subs2 = (foldl (flip (map o SubIntoSub)) subs2 subs1) 
+SubsIntoSubs subs1 subs2 = (foldl (flip (map o SubIntoSub)) subs2 subs1)
 
 ///////// SubsIntoType
 SubsIntoType :: ![Substitution] Type -> Type
@@ -102,7 +102,7 @@ OccursIn a type    = any (OccursIn a) (Args type)
 //////////////////////////////////
 
 //////// MatchTypes
-// Matches two types.  Returns True if the first type is no more 
+// Matches two types.  Returns True if the first type is no more
 // general than the second, with a list of variable substitutions that
 // will make second type equal to the first.  The two types are assumed
 // to have independent variables.  It won't allow a variable to be

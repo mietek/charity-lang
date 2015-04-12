@@ -8,7 +8,7 @@
 
 //*** User variables in the right-side of a rule are made "independent" from the user variables
 //*** in the circuit by appending an asterisk.  If a rewrite contained any user variables that
-//*** did not appear in its inputs or outputs, they would remain in the final circuit, and 
+//*** did not appear in its inputs or outputs, they would remain in the final circuit, and
 //*** independence would not be guaranteed in further rewrites.
 
 //*** Could probably avoid having SetTypeOn... functions take two circuits as args
@@ -61,7 +61,7 @@ import circuitDefs, rewriteDefs, utilities, insert, circuitSave, unify, circuitW
 //     for the remaining circuit (this is ruleRect).
 //   - If the rule is an expansion (i.e. the left side consists of a single wire connecting a start
 //     terminal and an end terminal), it changes the right-side's input wire's ID to the live wire's
-//     ID and makes variable substitutions in the right side (this isn't needed on the left side, 
+//     ID and makes variable substitutions in the right side (this isn't needed on the left side,
 //     because the left side isn't used for type-matching when doing a rewrite), puts the right side's
 //     single input connection in the inConnects list (with its type made free if it isn't already,
 //     since an expansion rewrite rule never needs to introduce a user type into a circuit), and saves
@@ -71,9 +71,9 @@ import circuitDefs, rewriteDefs, utilities, insert, circuitSave, unify, circuitW
 //     components between the input and output wires.
 //   - If the rule is not an expansion, it finds all the inputs that are connected to outputs
 //     in the right side, and saves a list with the input wire ID (in both the left and right sides),
-//     output wire ID (from the left side) and type for each of these in connectedPairs.  The 
+//     output wire ID (from the left side) and type for each of these in connectedPairs.  The
 //     remaining inputs and outputs go into inConnects and outConnects, variable substitutions are
-//     made into the right side, user-specified types are put in on the right where necessary 
+//     made into the right side, user-specified types are put in on the right where necessary
 //     because of substitutions, and the wire IDs in the right side are changed to match the left side.
 //     A dummy connection with a wire ID of -1 is put in for brokenWireConnect to indicate that the
 //     rule is not an expansion.
@@ -285,7 +285,7 @@ where
 // and returns True if their types unify with a list of variable substitutions
 // to do the unification, two lists pairing input and output wire IDs from the
 // left side with the matching input and output connections from the right side
-// (with variable substitutions made), and two lists identifying input and 
+// (with variable substitutions made), and two lists identifying input and
 // output wires on the right side that will need user types because substitutions
 // had to be made to unify them with the left side.
 CheckTypeMatch :: ![Connection] [Connection] ![Connection] [Connection]
@@ -498,7 +498,7 @@ MakeWireSub [] _ = (False, [])
 // Takes two lists pairing left-side input and output wire IDs with right-side input and output
 // connections, and returns two lists of right-side input and output connections with no wires in
 // common, with their wire IDs changed to match the wire IDs of the corresponding left-side inputs
-// and outputs, a list identifying inputs and outputs that belong to single wires, with the 
+// and outputs, a list identifying inputs and outputs that belong to single wires, with the
 // input wire ID (in both the left and right sides), the output wire ID (in the left side), and
 // the type, and a list of wire ID substitutions identifying wires whose IDs must be changed in
 // the right side to match the left side.
@@ -751,8 +751,8 @@ where
   // (inWireSubs1), a list pairing input wire types from the rule with wire types from the circuit (typePairs1B),
   // a list of drawing functions used to erase the current input wires in the circuit (redraws2B), a list of
   // wire IDs identifying wires in the circuit that need to be changed to have user-specified types because the
-  // corresponding wire types in the rule are user-specified, a list of variable substitutions for variables that 
-  // must become user variables in the circuit (newUserVarSubs1B), and the remaining wire substitutions (wireSubs2) 
+  // corresponding wire types in the rule are user-specified, a list of variable substitutions for variables that
+  // must become user variables in the circuit (newUserVarSubs1B), and the remaining wire substitutions (wireSubs2)
   // and circuit wires (wires2) (with all input wires to the rewrite removed).
   (wireSubs2, wires2, inWireSubs1, typePairs1B, redraws2B, userWiresFromCirc1B, newUserVarSubs1B)
     = GetOuterWireInfo inConnects1B wireSubs1 wires [] [] redraws1B [] []
@@ -890,7 +890,7 @@ where
   (rightSide2, typeSubs2, nextVar2) = MakeIndependentCircuit rightSide [] nextVar
   (ruleWireType2, _, nextVar3)      = MakeIndependentWireType ruleWireType1 typeSubs2 nextVar2
 
-  // This changes the positions and component IDs of components in the right side (rightSide3), adds the rewrite's 
+  // This changes the positions and component IDs of components in the right side (rightSide3), adds the rewrite's
   // external wires (with the endpoints changed) to the circuit's other wires (wires3), creates new internal wires
   // for the rewrites (newWires1), returns the new next free wire ID (nextWireID2) and component ID (nextCompID2),
   // and adds drawing functions to draw the new components and wires (a list containing functions to erase the live
@@ -955,7 +955,7 @@ where
 //     circuit to have user-specified types (only used after recursion into boxes),
 //   - a list of variable substitutions for variables that must become user variables.
 //
-// Assumptions:  Both endpoints of the live wire are on the outermost level of the rule (although a wire that is 
+// Assumptions:  Both endpoints of the live wire are on the outermost level of the rule (although a wire that is
 //               external to the rule may exit a box in the circuit) - selectedPoint is used to determine the
 //               level at which the rewrite is to be performed.
 //
@@ -968,7 +968,7 @@ DoRewrite2
      -> (ErrorVal, Bool, Circuit, [Wire], WireID, ComponentID, Int, [DrawFunction], [(Int, Connection)], [WireID],
          [(Type, Type)])
 DoRewrite2 rewrite liveWireID selectedPoint [box=:{spec=Box boxCircuit, inputs=[inC], pos=RCT boxRect} : circuit]
-           wires nextWireID nextCompID nextVar outputPairs 
+           wires nextWireID nextCompID nextVar outputPairs
   | IsInRectangle selectedPoint boxRect  // Rewrite will be done inside the box
       = if (IsNotError returnCode1)
            (if (all ((Encloses boxRect) o ComponentRectangle) newBoxCirc)  // Check if the new box circuit is in the box
@@ -1010,7 +1010,7 @@ DoRewrite2 _ _ _ [] wires nextWireID nextCompID nextVar outputPairs
   = (NoError, False, [], wires, nextWireID, nextCompID, nextVar, [], outputPairs, [], [])
 
 ///////// MakeIndependent
-// Takes as arguments the right side's circuit, input connections, output connections, 
+// Takes as arguments the right side's circuit, input connections, output connections,
 // and connected wire information, and the next free variable number in the circuit,
 // and changes all variables and user variables in the right side to variables that
 // are not duplicated in the circuit.
@@ -1090,9 +1090,9 @@ where
 // Takes a type, a list of substitution pairs giving variable-number
 // substitutions for variables and user variables already
 // encountered, and the next free variable number, and returns the
-// type with all variables and user variables replaced with new 
-// variables and user variables, a new list giving variable-number 
-// substitutions for variables and user variables (with any new ones 
+// type with all variables and user variables replaced with new
+// variables and user variables, a new list giving variable-number
+// substitutions for variables and user variables (with any new ones
 // added), and the new next free variable number.
 ResetTypeVars :: !Type [(Type, Int)] Int -> (Type, [(Type, Int)], Int)
 
@@ -1387,7 +1387,7 @@ where
 ChangeInputIDInRewrite _ _ _ [] [] outputPairs = (False, [], [], outputPairs)
 
 ////////// MakeUserVarSubsFromTypes
-// Takes a list of types and a list of substitutions for variables that must 
+// Takes a list of types and a list of substitutions for variables that must
 // become user variables, and adds substitutions to replace any variables in the
 // types with numeric user variables (with the same number).
 MakeUserVarSubsFromTypes :: [Type] [(Type, Type)] -> [(Type, Type)]
@@ -1520,14 +1520,14 @@ ModifyRule [] _ wires newWires _ _ wireSubs nextWireID nextCompID newCirc redraw
 //   - a list of circuit wires,
 //   - a list of new wires internal to the rewrite,
 //   - a list pairing outer input wire IDs in the rule with the corresponding wires in the circuit,
-//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper 
+//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper
 //     endpoint for new internal wires whose lower endpoint hasn't been found yet,
 //   - a list of drawing functions.
 // Returns:
 //   - the new list of input connections, with wire IDs changed,
 //   - a list of circuit wires, with outer input wires put back in with their lower endpoints changed,
 //   - a list of new wires internal to the rewrite, with new wire IDs and positions, but the old types,
-//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper 
+//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper
 //     endpoint for new internal wires whose lower endpoint hasn't been found yet,
 //   - a list of drawing functions, with functions to draw new wires added.
 //*^*ChangeInputs :: CompSpecifics Placement Int ![Connection] [Wire] [Wire] [(WireID, Wire)] [(WireSub, Point)]
@@ -1573,14 +1573,14 @@ ChangeInputs _ _ _ [] wires newWires _ wireSubs redraws
 //   - a list of circuit wires,
 //   - a list pairing outer output wire IDs in the rule with the corresponding wires in the circuit,
 //   - the next free wire ID in the circuit,
-//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper 
+//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper
 //     endpoint for new internal wires whose lower endpoint hasn't been found yet,
 //   - a list of drawing functions.
 // Returns:
 //   - the new list of input connections, with wire IDs changed,
 //   - a list of circuit wires, with outer output wires put back in with their upper endpoints changed,
 //   - the new next free wire ID in the circuit,
-//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper 
+//   - a list giving the old wire ID in the rule, the new wire ID in the circuit and the upper
 //     endpoint for new internal wires whose lower endpoint hasn't been found yet,
 //   - a list of drawing functions, with functions to draw new external output wires added.
 
@@ -1645,12 +1645,12 @@ where
 MatchTypePairs [] subs newUserVarSubs = (True, subs, newUserVarSubs)
 
 //////// MatchRewriteTypes
-// Matches two types.  Returns True if the first type is no more 
+// Matches two types.  Returns True if the first type is no more
 // general than the second, with a list of substitutions for variables
-// and user variables that will make second type equal to the first.  
-// The two types are assumed to have independent variables.  It won't 
+// and user variables that will make second type equal to the first.
+// The two types are assumed to have independent variables.  It won't
 // allow a variable to be substituted by more than one type.  It also
-// adds to a list of substitutions for variables that must become 
+// adds to a list of substitutions for variables that must become
 // user variables (its third argument).
 MatchRewriteTypes :: Type !Type [(Type, Type)] [(Type, Type)] -> (Bool, [(Type, Type)], [(Type, Type)])
 MatchRewriteTypes type (Var a) subs1 newUserVarSubs
@@ -1767,7 +1767,7 @@ SubIntoRuleTypes _ [] = []
 
 ////////// SetUserTypeOnOutputs
 // Changes the output wire types to be user-specified for wires identified by the wire ID list in the middle
-// and top parts of the circuit, returning the new middle and top parts of the circuit and a list of wire 
+// and top parts of the circuit, returning the new middle and top parts of the circuit and a list of wire
 // IDs for any output connections that weren't found.  Does not recurse into boxes.
 SetUserTypeOnOutputs :: ![WireID] Circuit Circuit [WireID] -> (Circuit, Circuit, [WireID])
 SetUserTypeOnOutputs [] midCirc topCirc newUserWires = (midCirc, topCirc, newUserWires)
@@ -2026,7 +2026,7 @@ where
   FindOutWireAux _ [] = ([], dummyComponent, [])
 
 ////////// MakeWirePairs
-// Takes two lists of connections and a list of wire ID substitutions and pairs the wire IDs from the 
+// Takes two lists of connections and a list of wire ID substitutions and pairs the wire IDs from the
 // connections, returning False if any wire ID pairs include a wire ID that has already been paired
 // with a different wire ID in the wire ID substitutions, and returning True, the wire ID pairs,
 // and the new list of wire ID substitutions otherwise.
@@ -2211,7 +2211,7 @@ SearchBottoms [] bottomPairs [] circMiddle circBottom enclosingRect wireSubs red
 ////////// FindCompBelow
 // Takes a wire ID, the middle part of a circuit and the bottom part of a circuit, and
 // returns the component with the wire as an input, the new middle part of the circuit
-// (extended as far into the bottom part as necessary to find the component, with the 
+// (extended as far into the bottom part as necessary to find the component, with the
 // component removed) and the new bottom part of the circuit (just the part below the
 // component).  Returns a dummy component if no such component if found.
 FindCompBelow :: WireID !Circuit Circuit -> (Component, Circuit, Circuit)
@@ -2531,7 +2531,7 @@ dummyRectangle :== ((0,0),(0,0))
 //   - a list giving the old and new wire IDs for the inputs of connections in the circuits
 //     whose wire IDs must be changed because of the rewrite (only used after returning from
 //     a box),
-//   - a list of wire IDs identifying wires from the circuit above the rewrite that must 
+//   - a list of wire IDs identifying wires from the circuit above the rewrite that must
 //     have user-specified types (only used after returning from a box),
 //   - a list of wire IDs identifying wires into the circuit below the rewrite that must
 //     have user-specified types (only used after returning from a box).
@@ -2705,7 +2705,7 @@ DoBoxRewriteAux liveWireID selectedPoint [box=:{spec=Box boxCircuit, inputs=[inC
                 wires outputPairs
   | IsInRectangle selectedPoint boxRect
       = if (IsNotError returnCodeA)
-           (NoError, True, [{box & spec=Box newBoxCirc, inputs=[newInC2]} : circuit], wires2A, redrawsA, outputPairsA, 
+           (NoError, True, [{box & spec=Box newBoxCirc, inputs=[newInC2]} : circuit], wires2A, redrawsA, outputPairsA,
             newUserTypesFromCircA
            )
            (returnCodeA, False, [], [], [], [], [])
@@ -2732,7 +2732,7 @@ DoBoxRewriteAux _ _ [] wires outputPairs
   = (NoError, False, [], wires, [], outputPairs, [])
 
 ////////// FindInWire
-// Finds the component with the wire identified by the wire ID as an input, and 
+// Finds the component with the wire identified by the wire ID as an input, and
 // returns the part of the circuit that is above the component, reversed, the
 // component, and the part of the circuit that is below the component.  If the
 // component isn't found, it returns a dummy component.

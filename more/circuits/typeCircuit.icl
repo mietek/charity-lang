@@ -1,6 +1,6 @@
 // Contains code used to completely retype a circuit after the deletion
 // of a wire or component or the removal or change of a user-specified
-// type.  It is assumed that component connections that aren't 
+// type.  It is assumed that component connections that aren't
 // attached to a wire will have Free types and a User type will be kept
 // on both component connections of the wire that carries it.
 
@@ -92,7 +92,7 @@ SetConnectionTypes StartTerminal [] [outC=:{cWireType=(Free type)}] nextVar
 
 SetConnectionTypes StartTerminal [] outputs nextVar
   = (True, [], outputs, nextVar)
-  
+
 SetConnectionTypes EndTerminal [inC=:{cWireType=(Free type)}] [] nextVar
   = (True, [{inC & cWireType=(Free (Var nextVar))}], [], nextVar+1)
 
@@ -259,7 +259,7 @@ SubsIntoPair subs (id, (outwireType, start), (inwireType, end))
   = (id, (SubsIntoWireType subs outwireType, start), (SubsIntoWireType subs inwireType, end))
 
 //////// GetConnectionPairs
-// Gets a list with the wire ID and the endpoint types and positions for every wire 
+// Gets a list with the wire ID and the endpoint types and positions for every wire
 // in the circuit.
 GetConnectionPairs :: !Circuit -> [(WireID, (WireType, Point), (WireType, Point))]
 GetConnectionPairs circuit

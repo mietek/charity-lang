@@ -101,7 +101,7 @@ where
 // Takes as arguments:
 //   - a list of wire ID pairs to be searched along,
 //   - the part of the first circuit that is above the component whose input wires are being travelled,
-//     saved as a list of lists of components in reverse order (the break between each pair of 
+//     saved as a list of lists of components in reverse order (the break between each pair of
 //     lists identifies the former position of a component that has already been visited in the search),
 //   - the part of the first circuit that is below the current component,
 //   - the part of the second circuit that is above the current component,
@@ -149,8 +149,8 @@ GoAlongInputs [] ruleTops ruleBottoms circTops circBottoms bottomPairs topPairs 
 //   - a wire ID identifying the wire to be found,
 //   - a list of lists of components representing a circuit,
 // Returns:
-//   - everything in the circuit that was before the component 
-//     with the given wire as an output, in reverse order, 
+//   - everything in the circuit that was before the component
+//     with the given wire as an output, in reverse order,
 //     including the front part of the list in which the component
 //     was found,
 //   - the component with the wire as an output (or a dummy component,
