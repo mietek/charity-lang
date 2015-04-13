@@ -13,10 +13,8 @@ signature CutHml =
 
   val cutElimR : (hml list * hml list) TABLEAU -> (hml list * hml list) TABLEAU
 
-  val mkCut : hml * (hml list * hml list) TABLEAU * 
-		    (hml list * hml list) TABLEAU -> 
-		    (hml list * hml list) TABLEAU  
+  val mkCut : hml * (hml list * hml list) TABLEAU *
+                    (hml list * hml list) TABLEAU ->
+                    (hml list * hml list) TABLEAU
 
   end;
-
-

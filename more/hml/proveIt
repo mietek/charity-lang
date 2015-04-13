@@ -1,5 +1,5 @@
 #/bin/csh
-# get rid of the pesky responses, but not the error messages  
+# get rid of the pesky responses, but not the error messages
 
 sml @SMLload=hmlSml.sparc-solaris $1 | grep -v '^val .*='
 

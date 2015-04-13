@@ -39,10 +39,10 @@ val sam = dp ([P `<a>T`] |- [P `<a>T`, P `<c>T`]);
 val cutProofs = CutHml.mkCut (P `<a>T`, answer', sam);
 
 fun show caption proof =
-	xdvi (ppProp.latexProlog ^ 
-	      (ppProp.ppJudgement proof) ^ 
-	      (ppProp.latexCaption caption)^
-	      ppProp.latexEpilog) ;
+        xdvi (ppProp.latexProlog ^
+              (ppProp.ppJudgement proof) ^
+              (ppProp.latexCaption caption)^
+              ppProp.latexEpilog) ;
 
 show "Cut Zero" cutProofs;
 
@@ -83,8 +83,8 @@ show "At Example Solved" (dp example2'');
 
 (*
 show "Larger Example" (dp ([P `<a>(<b>[c]F /\ [b]<c>T)`] |-
-			   [P `[a](<b>[c]F \/ [b]<c>T) `] ));
+                           [P `[a](<b>[c]F \/ [b]<c>T) `] ));
 *)
 
 show "Larger Example" (dp ([P `[a](<b>[c]F /\ [b]<c>T)`] |-
-			   [P `[a](<b>[c]F \/ [b]<c>T) `] ));
+                           [P `[a](<b>[c]F \/ [b]<c>T) `] ));
