@@ -1,9 +1,9 @@
-mmDoc.dvi:	Documentation on the commands
-proveIt:	command to run the proof generator
-mmExample:	sample set of commands; try running "proveIt hmlExample"
-		It will probably work better in a directory where you
-		have write permission.
-testSh:		shell file needed for the prover
-mmSml.sparc-solaris:	sml file needed for the prover.
-*sig,*sml:	source
+mmDoc.dvi:      Documentation on the commands
+proveIt:        command to run the proof generator
+mmExample:      sample set of commands; try running "proveIt hmlExample"
+                It will probably work better in a directory where you
+                have write permission.
+testSh:         shell file needed for the prover
+mmSml.sparc-solaris:    sml file needed for the prover.
+*sig,*sml:      source
 

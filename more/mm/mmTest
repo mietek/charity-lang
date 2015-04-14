@@ -3,41 +3,41 @@ val rolling = ([parseIt "mu (x. <a><b>x)"] |- [parseIt "<a>mu (x. <b><a>x)"]);
 show "Rolling" (dp [] rolling);
 
 
-val coRolling = 
-	([parseIt "<a>mu (x. <b><a>x)"] |- [parseIt "mu (x. <a><b>x)"]);
+val coRolling =
+        ([parseIt "<a>mu (x. <b><a>x)"] |- [parseIt "mu (x. <a><b>x)"]);
 
 show "CoRolling" (dp [] coRolling);
 
-val diag = ([parseIt "mu (x. <a>x/\\<b>x)"] |- 
-	    [parseIt "mu (x. mu (y. <a>x /\\<b>y))"]);
+val diag = ([parseIt "mu (x. <a>x/\\<b>x)"] |-
+            [parseIt "mu (x. mu (y. <a>x /\\<b>y))"]);
 
 show "Diag" (dp [] diag);
 
-val diagBox = ([parseIt "mu (x. [a]x/\\[b]x)"] |- 
-	    [parseIt "mu (x. mu (y. [a]x /\\[b]y))"]);
+val diagBox = ([parseIt "mu (x. [a]x/\\[b]x)"] |-
+            [parseIt "mu (x. mu (y. [a]x /\\[b]y))"]);
 
 show "DiagBox" (dp [] diagBox);
 
-val coDiag = ([parseIt "mu (x. mu (y. <a>x /\\<b>y))"] |- 
-	      [parseIt "mu (x. <a>x/\\<b>x)"]);
+val coDiag = ([parseIt "mu (x. mu (y. <a>x /\\<b>y))"] |-
+              [parseIt "mu (x. <a>x/\\<b>x)"]);
 
 
 show "CoDiag" (dp [] coDiag);
 
-val coDiagBox = ([parseIt "mu (x. mu (y. [a]x /\\[b]y))"] |- 
-	      [parseIt "mu (x. [a]x/\\[b]x)"]);
+val coDiagBox = ([parseIt "mu (x. mu (y. [a]x /\\[b]y))"] |-
+              [parseIt "mu (x. [a]x/\\[b]x)"]);
 
 
 show "CoDiagBox" (dp [] coDiagBox);
 
 val santocanale = ([parseIt "mu (x. nu (y. <a>x/\\<b>y)) " ]
-		  |- [parseIt "nu (y. mu (x. <a>x/\\<b>y))"]);
+                  |- [parseIt "nu (y. mu (x. <a>x/\\<b>y))"]);
 
 show "Santocanale" (dp [] santocanale);
 
 
 val santocanaleBox = ([parseIt "mu (x. nu (y. [a]x/\\[b]y)) " ]
-		  |- [parseIt "nu (y. mu (x. [a]x/\\[b]y))"]);
+                  |- [parseIt "nu (y. mu (x. [a]x/\\[b]y))"]);
 
 show "SantocanaleBox" (dp [] santocanaleBox);
 
@@ -80,8 +80,8 @@ show "Eliminate cutDiag" (CutMM.cutElimR [] cutDiag);
 
 
 
-val diag2 = ([parseIt "mu (x. <a>(x/\\x))"] |- 
-	    [parseIt "mu (x. mu (y. <a>(x /\\y)))"]);
+val diag2 = ([parseIt "mu (x. <a>(x/\\x))"] |-
+            [parseIt "mu (x. mu (y. <a>(x /\\y)))"]);
 
 show "Diag2" (dp [] diag2);
 
@@ -105,16 +105,16 @@ Wed Nov 15 12:20:45 MST 2000
 
 New try at cut and rolling.
 
-fun ceOnce t = 
-	tabFold (ASSUMPTION,CutMM.cutElim o JUDGEMENT) t;
+fun ceOnce t =
+        tabFold (ASSUMPTION,CutMM.cutElim o JUDGEMENT) t;
 
 val rolling = ([parseIt "mu (x. [a][b]x)"] |- [parseIt "[a]mu (x. [b][a]x)"]);
 
 show "Rolling" (dp [] rolling);
 
 
-val coRolling = 
-	([parseIt "[a]mu (x. [b][a]x)"] |- [parseIt "mu (x. [a][b]x)"]);
+val coRolling =
+        ([parseIt "[a]mu (x. [b][a]x)"] |- [parseIt "mu (x. [a][b]x)"]);
 
 show "CoRolling" (dp [] coRolling);
 

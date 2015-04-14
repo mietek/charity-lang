@@ -26,7 +26,7 @@ The commonly used commands in the MM tool are:
 
 \begin{itemize}
 \item[P] parses a back quoted string and returns an HML proposition
-\item[$\vdash$] uses the characters ``$\mid$'' and ``-'' to 
+\item[$\vdash$] uses the characters ``$\mid$'' and ``-'' to
       turn a pair of lists of propositions into an assumption
 \item[xdviProofOrCe] takes an assumption (or judgement) and returns
      either a proof (displayed on xdvi) or an agent (a counter example
@@ -72,7 +72,7 @@ A Sequent is a pair of lists of Propositions.
 
 A Rule is one of the lAnd,rOr, ... proof rules.
 
-A Tableau is a proof tree (possibly closed) built 
+A Tableau is a proof tree (possibly closed) built
 up from a sequent and rules.
 
 \subsection{dp}
@@ -94,7 +94,7 @@ Some commands:
 The following functions apply the rules to a Judgement.
 They only make sense at Assumptions, and at Judgements
 they are the identity function.  To be useful
-the proofFold function should be applied to them.  
+the proofFold function should be applied to them.
 
 \begin{itemize}
 \item lAnd
@@ -112,11 +112,11 @@ the proofFold function should be applied to them.
 Example:
 
 \begin{verbatim}
-lAnd ([P /\ Q, <a>T, [b]F] |- DELTA) 
+lAnd ([P /\ Q, <a>T, [b]F] |- DELTA)
 \end{verbatim}
 will return
 \begin{verbatim}
-lAnd ([P, Q, <a>T, [b]F] |- DELTA) 
+lAnd ([P, Q, <a>T, [b]F] |- DELTA)
 \end{verbatim}
 
 A more sensible example would be:
@@ -140,14 +140,14 @@ The function $$at : (proofFold lOr) (0::0::2::nil) tableau$$
 will take the left most child (the zero), its leftmost child (the second zero)
 and its ``third'' child (the 2) and apply the function (proofFold lOr)
 to that.  Thus, only a part of the tree have the subsequent explosion
-due to distribution.  
+due to distribution.
 
 \subsection{dualising functions}
 
 \begin{itemize}
 \item dualJudgement (TABLEAU $\mapsto$ TABLEAU)
 \item dualProp : (PROP $\mapsto$ PROP)
-\item dualSeq 
+\item dualSeq
 \item dualRule	(RULE $\mapsto$ RULE)
 \end{itemize}
 
@@ -172,11 +172,11 @@ exception UN\_CUTABLE
 	If the rule isn't a cut (or of the right form) then does nothing.
 
 \item[cutElim]  TABLEAU $\mapsto$  TABLEAU
-	Tries upL; if it is unsuccessful tries upR; if it is unsuccessful 
+	Tries upL; if it is unsuccessful tries upR; if it is unsuccessful
 	tries upBoth.
 \item[cutElimR]  TABLEAU $\mapsto$  TABLEAU
 	Tries cutElim with ``fold''; thus, cutElimR at the root of a proof
-	tree could affect internal nodes of the tree.  
+	tree could affect internal nodes of the tree.
 \item[mkCut] PROP *  TABLEAU * TABLEAU $\mapsto$ TABLEAU
 	Allows the user to take two proofs and ``cut'' them together.
 	e.g. (mkCut (P Q, dp proof1, dp proof2)
@@ -192,7 +192,7 @@ exception UN\_CUTABLE
 		takes a prop and pretty prints in in TEXT (not latex)
 
 \item[ppPropLatex] prop $\mapsto$  string
-		takes a prop and returns a string, which when 
+		takes a prop and returns a string, which when
 		run through latex will pretty print a proposition
 \item[ppJudgement] TABLEAU $\mapsto$ string
 		takes a tableau, and return a string, which when
@@ -213,7 +213,7 @@ print (ppProp.latexProlog \^ (ppProp.ppJudgement proof) \^ ppProp.latexEpilog);
 
 So is the following, but it has a caption on the picture.
 
-print (ppProp.latexProlog \^ (ppProp.ppJudgement proof) \^ 
+print (ppProp.latexProlog \^ (ppProp.ppJudgement proof) \^
 		(ppProp.caption "A Fine caption") \^ ppProp.latexEpilog);
 
 
