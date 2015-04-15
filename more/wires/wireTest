@@ -18,8 +18,8 @@ val suc = COMPILE "<{x}A{y}>{y}P{}";
 val seq1 = ASSUMPTION(["x"],[],[ante],[suc],[],[]);
 show "Poss AND Poss" (dp seq1);
 
-val ante4 = COMPILE ("&(<{x}A{y}>{u,y}P{}, <{x}A{y}>{u,y}Q{}," ^ 
-	"<{u}B{v}>[{x}A{y}]{v,y}R{})") ;
+val ante4 = COMPILE ("&(<{x}A{y}>{u,y}P{}, <{x}A{y}>{u,y}Q{}," ^
+        "<{u}B{v}>[{x}A{y}]{v,y}R{})") ;
 
 val seq4 = ASSUMPTION(["x,u"],[],[ante4],[],[],[]);
 

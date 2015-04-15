@@ -1,15 +1,15 @@
 signature ppProp =
   sig
 
-  val ppPropText : prop -> string 
+  val ppPropText : prop -> string
 
   val ppPropLatex : prop -> string
 
 
-  val ppJudgement   
+  val ppJudgement
         : (string list * ((string list * string * string list) * 'a) list
            * prop list * prop list
-           * ('b * (string list * string * string list)) list * string list) 
+           * ('b * (string list * string * string list)) list * string list)
             TABLEAU
           -> string
 

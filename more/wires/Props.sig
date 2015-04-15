@@ -17,7 +17,7 @@ datatype prop = VAR of act
 (* "type checking" for circuits *)
 val getTypes: prop -> string list * string list
 
-val propErrors: prop -> string 
+val propErrors: prop -> string
 
 val ppPropText: prop -> string
 
@@ -29,7 +29,7 @@ val COMPILE: string -> prop
 
 val reverse: prop -> prop
 
-val propFold: (prop -> prop) -> prop -> prop 
+val propFold: (prop -> prop) -> prop -> prop
 val wireSubst: (string * string) list -> string -> string
 val reWireL:  (string * string) list -> prop -> prop
 val reWireRight:  (string * string) list -> prop -> prop

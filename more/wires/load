@@ -1,2 +1,2 @@
-app use ["Props.sig", "Props.sml", "gencir.sml", 
+app use ["Props.sig", "Props.sml", "gencir.sml",
 "PetriCounter.sig", "PetriCounter.sml"];

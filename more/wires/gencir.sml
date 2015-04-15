@@ -1,6 +1,6 @@
 (* Build a Gentzen style sequent for Circuits  *)
 (* This is the version from August.  It uses the decision procedure
-   in the Wires chapter.  
+   in the Wires chapter.
 *)
 (* AND/OR take a set of propositions (not a list);
    Box/Poss take a relation * a proposition
@@ -25,7 +25,7 @@ datatype prop = VAR of act
 
 *)
 
-(*	TEST		 *)
+(*      TEST             *)
 
 fun verbose () =
     (Compiler.Control.Print.printDepth := 30;
@@ -37,8 +37,8 @@ verbose ();
 
 
 
-(* Utilities 
-   Most of these utilities are for "set as a list" 
+(* Utilities
+   Most of these utilities are for "set as a list"
    I is the identity;
    findLeast will find the "least" element in a non empty list
 *)
@@ -64,7 +64,7 @@ and setDiff set1 set2 = List.filter (fn x => not (isMem x set2)) set1
 and setEQ a b = setDiff a b = [] andalso setDiff b a = []
 and rm item set = List.filter (fn i => not (i = item)) set
 and rmOnce item [] = []
-  | rmOnce item (a::rest) = 
+  | rmOnce item (a::rest) =
       if item = a
       then rest
       else a::(rmOnce item rest)
@@ -80,7 +80,7 @@ and I x = x
 fun isNeg name =
     String.size name > 0 andalso String.substring (name,0,1) = "-"
 and getAct name =
-    if isNeg name 
+    if isNeg name
     then String.substring (name,1,String.size name-1)
     else name
 ;
@@ -90,7 +90,7 @@ and getAct name =
 fun substitute [] wild = wild
   | substitute substDict (VAR v ) =
       (case List.find (fn (v',_) => v'= v) substDict of
-	NONE => VAR v
+        NONE => VAR v
       | SOME(_,body) => body
       )
   | substitute substDict (AND props) =
@@ -102,11 +102,11 @@ fun substitute [] wild = wild
   | substitute substDict (BOX(function, prop))   =
       BOX(function, substitute substDict prop)
   | substitute substDict (MU(var, prop))   =
-      MU(var, substitute 
-	(List.filter (fn (v',_) => not (v' = var)) substDict) prop)
+      MU(var, substitute
+        (List.filter (fn (v',_) => not (v' = var)) substDict) prop)
   | substitute substDict (NU(var, prop))   =
-      NU(var, substitute 
-	(List.filter (fn (v',_) => not (v' = var)) substDict) prop)
+      NU(var, substitute
+        (List.filter (fn (v',_) => not (v' = var)) substDict) prop)
 and substituteActs allActs [] wild = wild
   | substituteActs allActs substDict (VAR v ) = (VAR v)
   | substituteActs allActs substDict (AND props) =
@@ -115,24 +115,24 @@ and substituteActs allActs [] wild = wild
       OR(map (substituteActs allActs substDict) props)
   | substituteActs allActs substDict (POSS(act, prop))   =
       (case List.find (fn (a',_) => a'= (getAct act)) substDict of
-	NONE => POSS(act,substituteActs allActs substDict prop)
-      | SOME(_,newActs) => 
-	  if isNeg act
-	  then OR (map (fn a => (POSS(a,prop))) (setDiff allActs newActs))
-	  else OR (map (fn a => (POSS(a,prop))) newActs)
+        NONE => POSS(act,substituteActs allActs substDict prop)
+      | SOME(_,newActs) =>
+          if isNeg act
+          then OR (map (fn a => (POSS(a,prop))) (setDiff allActs newActs))
+          else OR (map (fn a => (POSS(a,prop))) newActs)
       )
   | substituteActs allActs substDict (BOX(act, prop))   =
       (case List.find (fn (a',_) => a'= (getAct act)) substDict of
-	NONE => POSS(act,substituteActs allActs substDict prop)
-      | SOME(_,newActs) => 
-	  if isNeg act
-	  then AND (map (fn a => (POSS(a,prop))) (setDiff allActs newActs))
-	  else AND (map (fn a => (POSS(a,prop))) newActs)
+        NONE => POSS(act,substituteActs allActs substDict prop)
+      | SOME(_,newActs) =>
+          if isNeg act
+          then AND (map (fn a => (POSS(a,prop))) (setDiff allActs newActs))
+          else AND (map (fn a => (POSS(a,prop))) newActs)
       )
   | substituteActs allActs substDict (MU(var, prop))   =
-      MU(var, substituteActs allActs substDict prop) 
+      MU(var, substituteActs allActs substDict prop)
   | substituteActs allActs substDict (NU(var, prop))   =
-      NU(var, substituteActs allActs substDict prop) 
+      NU(var, substituteActs allActs substDict prop)
 ;
 *)
 
@@ -143,34 +143,34 @@ and substituteActs allActs [] wild = wild
    A Proof is a tableau where there are no Assumptions;
    That is, all leaves are Judgements with an empty set of parents.
    That is sufficient for a completed proof, but we may need to explore.
-   Compare this to be an AND/OR tree; 
+   Compare this to be an AND/OR tree;
    This just looks like an AND tree
 *)
 
 datatype 'a RULE =
-	LFALSE | RTRUE | LAND | ROR | LOR | RAND | ID
+        LFALSE | RTRUE | LAND | ROR | LOR | RAND | ID
 
-	| LPOSS | RBOX | LSSOP | RXOB
-	| LBOX  | RPOSS | LXOB | RSSOP
-	| WEAKP | WEAKG | CUT of 'a
-	| GUARDL | GUARDR
+        | LPOSS | RBOX | LSSOP | RXOB
+        | LBOX  | RPOSS | LXOB | RSSOP
+        | WEAKP | WEAKG | CUT of 'a
+        | GUARDL | GUARDR
 
 
 (*
-	| BOX_R of act * 'a 	| POSS_R of act * 'a	| WEAK | CUT of 'a
-	| MUFOLD of (string * 'a)	
-	| NUFOLD of (string * 'a)	
-	| MUCONS   of string  	| NUCONS   of string
-	| MUINDUCT of string 	| NUINDUCT of string
-	| CYCLE of string
+        | BOX_R of act * 'a     | POSS_R of act * 'a    | WEAK | CUT of 'a
+        | MUFOLD of (string * 'a)
+        | NUFOLD of (string * 'a)
+        | MUCONS   of string    | NUCONS   of string
+        | MUINDUCT of string    | NUINDUCT of string
+        | CYCLE of string
 *)
 ;
 
 exception ILL_FORMED_PROOF;
 
-datatype  'a TABLEAU = 
-	    JUDGEMENT of ( prop RULE * 'a * 'a TABLEAU list) 
-	  | ASSUMPTION of 'a
+datatype  'a TABLEAU =
+            JUDGEMENT of ( prop RULE * 'a * 'a TABLEAU list)
+          | ASSUMPTION of 'a
 ;
 
 fun conclusion (ASSUMPTION(a)) = a
@@ -178,26 +178,26 @@ fun conclusion (ASSUMPTION(a)) = a
 ;
 
 fun proofFold f (JUDGEMENT(rule,sequent,parents)) =
-		f (JUDGEMENT(rule,sequent,map (proofFold f) parents))
+                f (JUDGEMENT(rule,sequent,map (proofFold f) parents))
   | proofFold f (ASSUMPTION s) = f (ASSUMPTION s)
 ;
 
-(* another proofFold: This one is "more general" 
-   The preceeding one folds proofs over proofs.  
+(* another proofFold: This one is "more general"
+   The preceeding one folds proofs over proofs.
 
 fun proofFold (a,j) (ASSUMPTION s) = a s
   | proofFold (a,j) (JUDGEMENT(rule,s,children)) =
-		j (rule,s,map (proofFold (a,j)) children)
+                j (rule,s,map (proofFold (a,j)) children)
 ;
 
-fun isAProof' tableau = 
-	proofFold (fn _ => true, fn (_,_,children) => List.all I children)
+fun isAProof' tableau =
+        proofFold (fn _ => true, fn (_,_,children) => List.all I children)
 ;
 
 *)
 fun tabFold (a,j) (ASSUMPTION s) = a s
   | tabFold (a,j) (JUDGEMENT(rule,s,children)) =
-		j (rule,s,map (tabFold (a,j)) children)
+                j (rule,s,map (tabFold (a,j)) children)
 ;
 
 fun isAProof (ASSUMPTION _) = false
@@ -209,23 +209,23 @@ fun isAProof (ASSUMPTION _) = false
 
    ID
 
-   L-False, R-True		The only rules which are terminals
+   L-False, R-True              The only rules which are terminals
 
-   L-And,  R-Or,		Essentially just adding to the set
+   L-And,  R-Or,                Essentially just adding to the set
 
-   L-Or,   R-And		Distribution
+   L-Or,   R-And                Distribution
 
-   L-Poss, R-Box, 		Release
-   L-Box,  R-Poss, 		Bind
-   L-ssoP, R-xoB, 		Release
-   L-xoB,  R-ssoP, 		Bind
+   L-Poss, R-Box,               Release
+   L-Box,  R-Poss,              Bind
+   L-ssoP, R-xoB,               Release
+   L-xoB,  R-ssoP,              Bind
 
-   Weak-P			Weaken a Proposition	either side
-   Weak-G			Weaken a Guard		either side
-   ForceGuard			Unwrap a guard		either side
+   Weak-P                       Weaken a Proposition    either side
+   Weak-G                       Weaken a Guard          either side
+   ForceGuard                   Unwrap a guard          either side
 
 
-   
+
 
    MUFOLD, NUFOLD
 
@@ -233,13 +233,13 @@ fun isAProof (ASSUMPTION _) = false
 
    MUINDUCT, NUINDUCT
 
-	Weak
+        Weak
 
 There is one weaking rule:
 
-	    G  |- D
-        ---------------- 
-	G U G' |- D U D'
+            G  |- D
+        ----------------
+        G U G' |- D U D'
 
 *)
 
@@ -256,18 +256,18 @@ and actOuts (_,_,outs) = outs
 and actIns (ins,_,_) = ins
 (* usedInputVarsSeq returns not only the "input" vars, but also the
    outputs of the guards.  *)
-and usedInputVarsSeq (i,gL,ante,suc,gR,ou) = 
-	(List.concat (map inputVars ante))@(List.concat (map inputVars suc))
-	@(List.concat (map (actOuts o fst)  gL))@
-	(List.concat (map (actIns o fst)  gL))@i
-and usedOutputVarsSeq (i,gL,ante,suc,gR,ou) = 
-	(List.concat (map outputVars ante))@(List.concat (map outputVars suc))
-	@(List.concat (map (actIns o snd) gR))
-	@(List.concat (map (actOuts o snd) gR))@ou
+and usedInputVarsSeq (i,gL,ante,suc,gR,ou) =
+        (List.concat (map inputVars ante))@(List.concat (map inputVars suc))
+        @(List.concat (map (actOuts o fst)  gL))@
+        (List.concat (map (actIns o fst)  gL))@i
+and usedOutputVarsSeq (i,gL,ante,suc,gR,ou) =
+        (List.concat (map outputVars ante))@(List.concat (map outputVars suc))
+        @(List.concat (map (actIns o snd) gR))
+        @(List.concat (map (actOuts o snd) gR))@ou
 and newVar var =
     let val (name,suffix) =  Substring.splitr Char.isDigit (Substring.all var)
-	val newSuffix = Int.toString ( 
-		(getOpt (Int.fromString (Substring.string suffix),0)) +1)
+        val newSuffix = Int.toString (
+                (getOpt (Int.fromString (Substring.string suffix),0)) +1)
     in
       (Substring.string name)^newSuffix
     end
@@ -284,7 +284,7 @@ and freshVars [] usedVars = []
 and uniqueLeftVars ((ins,act,outs),prop) sequent =
     let val reWirings = freshVars outs (usedInputVarsSeq sequent)
     in
-      ((ins,act,map (wireSubst reWirings) outs), 
+      ((ins,act,map (wireSubst reWirings) outs),
        reWireL reWirings prop)
     end
 and uniqueRightVars (prop,(ins,act,outs)) sequent =
@@ -299,7 +299,7 @@ and uniqueRightVars (prop,(ins,act,outs)) sequent =
 
 (* MAKE UNIQUE VARIABLES  *)
 
-(* I need a way to calculate "unique identifiers"  
+(* I need a way to calculate "unique identifiers"
    reset will set everything back to zero.
    This is useful for testing so that on subsequent runs,
    things will look equivalent.
@@ -310,7 +310,7 @@ val unique_id = ref 0;
 fun reset () = unique_id :=0;
 
 
-fun inc x = x := !x +1 
+fun inc x = x := !x +1
 fun mkNewVar varName =
       let val x =  inc unique_id
           in
@@ -318,52 +318,52 @@ fun mkNewVar varName =
           end
 ;
 
-fun lAnd (ASSUMPTION(i,gL,ante,suc,gR,ou)) = 
-    let val ante' = List.concat 
-			(map (fn (AND (_,props,_)) => props | p => [p]) ante)
+fun lAnd (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
+    let val ante' = List.concat
+                        (map (fn (AND (_,props,_)) => props | p => [p]) ante)
     in
       if ante = ante'
       then (ASSUMPTION (i,gL,ante,suc,gR,ou))
-      else (JUDGEMENT(LAND,(i,gL,ante,suc,gR,ou), 
-	[ASSUMPTION(i,gL,ante',suc,gR,ou)]))
+      else (JUDGEMENT(LAND,(i,gL,ante,suc,gR,ou),
+        [ASSUMPTION(i,gL,ante',suc,gR,ou)]))
     end
   | lAnd (JUDGEMENT j) = JUDGEMENT j
 and rOr (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
-    let val suc' = List.concat 
-			(map (fn (OR (_,props,_)) => props | p => [p]) suc)
+    let val suc' = List.concat
+                        (map (fn (OR (_,props,_)) => props | p => [p]) suc)
     in
       if suc = suc'
       then (ASSUMPTION (i,gL,ante,suc,gR,ou))
-      else (JUDGEMENT(ROR,(i,gL,ante,suc,gR,ou), 
-	[ASSUMPTION (i,gL,ante,suc',gR,ou)]))
+      else (JUDGEMENT(ROR,(i,gL,ante,suc,gR,ou),
+        [ASSUMPTION (i,gL,ante,suc',gR,ou)]))
     end
   | rOr (JUDGEMENT j) = JUDGEMENT j
 and lFalse (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
-	if List.exists (fn (OR(_,[],_)) => true | _ => false) ante
-	then (JUDGEMENT (LFALSE,(i,gL,ante,suc,gR,ou),[]))
+        if List.exists (fn (OR(_,[],_)) => true | _ => false) ante
+        then (JUDGEMENT (LFALSE,(i,gL,ante,suc,gR,ou),[]))
         else (ASSUMPTION (i,gL,ante,suc,gR,ou))
   | lFalse (JUDGEMENT j) = JUDGEMENT j
 and rTrue (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
-	if List.exists (fn (AND(_,[],_)) => true | _ => false) suc
-	then (JUDGEMENT (RTRUE,(i,gL,ante,suc,gR,ou),[]))
-	else (ASSUMPTION (i,gL,ante,suc,gR,ou))
+        if List.exists (fn (AND(_,[],_)) => true | _ => false) suc
+        then (JUDGEMENT (RTRUE,(i,gL,ante,suc,gR,ou),[]))
+        else (ASSUMPTION (i,gL,ante,suc,gR,ou))
   | rTrue (JUDGEMENT j) = JUDGEMENT j
 and lOr (ASSUMPTION (i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (OR _) => true | _ => false) suc of
       NONE => ASSUMPTION (i,gL,ante,suc,gR,ou)
-    | SOME (OR (l,props,r)) => 
-	(JUDGEMENT(LOR,(i,gL,ante,suc,gR,ou), 
-	    map (fn p => 
-	    (ASSUMPTION(i,gL,p::(rm (OR (l,props,r)) ante),suc,gR,ou))) props))
+    | SOME (OR (l,props,r)) =>
+        (JUDGEMENT(LOR,(i,gL,ante,suc,gR,ou),
+            map (fn p =>
+            (ASSUMPTION(i,gL,p::(rm (OR (l,props,r)) ante),suc,gR,ou))) props))
     )
   | lOr (JUDGEMENT j) = JUDGEMENT j
 and rAnd (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (AND _) => true | _ => false) suc of
       NONE => ASSUMPTION (i,gL,ante,suc,gR,ou)
-    | SOME (AND (l,props,r)) => 
-	(JUDGEMENT(RAND,(i,gL,ante,suc,gR,ou), 
-	map (fn p => ASSUMPTION(i,gL,ante,p::(rm (AND (l,props,r)) suc),gR,ou)
-	    ) props))
+    | SOME (AND (l,props,r)) =>
+        (JUDGEMENT(RAND,(i,gL,ante,suc,gR,ou),
+        map (fn p => ASSUMPTION(i,gL,ante,p::(rm (AND (l,props,r)) suc),gR,ou)
+            ) props))
     )
   | rAnd (JUDGEMENT j) = JUDGEMENT j
 
@@ -372,7 +372,7 @@ and rAnd (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
    find a left poss;
    find all free variables used in antecedent, succedent
    change the bound variables to fresh variables.
-   put the guard (with fresh variables) in the guard section 
+   put the guard (with fresh variables) in the guard section
    and the proposition in antecedent.  Delete the original LeftPoss
 The right Box, Left ssoP, Right xoB are dual.
 *)
@@ -381,195 +381,195 @@ The right Box, Left ssoP, Right xoB are dual.
 and lPoss (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (L_POSS _) => true | _ => false) ante of
       NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-    | SOME (L_POSS ((ins,a,outs),p)) => 
-	let val (act',p') = uniqueLeftVars ((ins,a,outs),p)
-						    (i,gL,ante,suc,gR,ou)
-	in
-	  JUDGEMENT(LPOSS, (i,gL,ante,suc,gR,ou), 
-	  [ASSUMPTION(i,(act',[])::gL, p'::(rm (L_POSS((ins,a,outs),p)) ante),
-		      suc,gR,ou)])
-	end
+    | SOME (L_POSS ((ins,a,outs),p)) =>
+        let val (act',p') = uniqueLeftVars ((ins,a,outs),p)
+                                                    (i,gL,ante,suc,gR,ou)
+        in
+          JUDGEMENT(LPOSS, (i,gL,ante,suc,gR,ou),
+          [ASSUMPTION(i,(act',[])::gL, p'::(rm (L_POSS((ins,a,outs),p)) ante),
+                      suc,gR,ou)])
+        end
     )
 and rBox (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (L_BOX _) => true | _ => false) suc of
       NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-    | SOME (L_BOX ((ins,a,outs),p)) => 
-	let val (act',p') = uniqueLeftVars ((ins,a,outs),p)
-						    (i,gL,ante,suc,gR,ou)
-	in
-	  JUDGEMENT(RBOX, (i,gL,ante,suc,gR,ou), 
-	  [ASSUMPTION(i,(act',[])::gL, ante,
-		      p'::(rm (L_BOX((ins,a,outs),p)) suc),gR,ou)])
-	end
+    | SOME (L_BOX ((ins,a,outs),p)) =>
+        let val (act',p') = uniqueLeftVars ((ins,a,outs),p)
+                                                    (i,gL,ante,suc,gR,ou)
+        in
+          JUDGEMENT(RBOX, (i,gL,ante,suc,gR,ou),
+          [ASSUMPTION(i,(act',[])::gL, ante,
+                      p'::(rm (L_BOX((ins,a,outs),p)) suc),gR,ou)])
+        end
     )
 and lSsop (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (R_POSS _) => true | _ => false) ante of
       NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-    | SOME (R_POSS (p,(ins,a,outs))) => 
-	let val (p',act') = uniqueRightVars (p,(ins,a,outs))
-						    (i,gL,ante,suc,gR,ou)
-	in
-	  JUDGEMENT(LSSOP, (i,gL,ante,suc,gR,ou), 
-	  [ASSUMPTION(i,gL, p'::(rm (R_POSS(p,(ins,a,outs))) ante),
-		      suc,([],act')::gR,ou)])
-	end
+    | SOME (R_POSS (p,(ins,a,outs))) =>
+        let val (p',act') = uniqueRightVars (p,(ins,a,outs))
+                                                    (i,gL,ante,suc,gR,ou)
+        in
+          JUDGEMENT(LSSOP, (i,gL,ante,suc,gR,ou),
+          [ASSUMPTION(i,gL, p'::(rm (R_POSS(p,(ins,a,outs))) ante),
+                      suc,([],act')::gR,ou)])
+        end
     )
 and rXob (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.find (fn (R_BOX _) => true | _ => false) suc of
       NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-    | SOME (R_BOX (p,(ins,a,outs))) => 
-	let val (p',act') = uniqueRightVars (p,(ins,a,outs))
-						    (i,gL,ante,suc,gR,ou)
-	in
-	  JUDGEMENT(RXOB, (i,gL,ante,suc,gR,ou), 
-	  [ASSUMPTION(i,gL, ante,
-		      p'::(rm (R_BOX(p,(ins,a,outs))) suc),([],act')::gR,ou)])
-	end
+    | SOME (R_BOX (p,(ins,a,outs))) =>
+        let val (p',act') = uniqueRightVars (p,(ins,a,outs))
+                                                    (i,gL,ante,suc,gR,ou)
+        in
+          JUDGEMENT(RXOB, (i,gL,ante,suc,gR,ou),
+          [ASSUMPTION(i,gL, ante,
+                      p'::(rm (R_BOX(p,(ins,a,outs))) suc),([],act')::gR,ou)])
+        end
     )
 and lBox (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val boxes = List.filter (fn (L_BOX _) => true | _ => false) ante
-	val guardBoxes = map (fn ((x,A,y),props) => (((x,A,y),props),
-		List.filter (fn (L_BOX((x',A',y'),p)) =>
-			x = x' andalso A = A' andalso not 
-			    (isMem (L_BOX((x',A',y'),p)) props)) boxes)) gL
-	val releasedBoxes = map (fn (((x,A,y),props),boxes) =>
-		(((x,A,y),boxes@props),map (fn (L_BOX((x',A',y'),p)) =>
-		    reWireL (ListPair.zip (y,y')) p) boxes)) guardBoxes
-	val (guards',releasedBoxes') = ListPair.unzip releasedBoxes
-	val releasedBoxes'' = List.concat releasedBoxes'
+        val guardBoxes = map (fn ((x,A,y),props) => (((x,A,y),props),
+                List.filter (fn (L_BOX((x',A',y'),p)) =>
+                        x = x' andalso A = A' andalso not
+                            (isMem (L_BOX((x',A',y'),p)) props)) boxes)) gL
+        val releasedBoxes = map (fn (((x,A,y),props),boxes) =>
+                (((x,A,y),boxes@props),map (fn (L_BOX((x',A',y'),p)) =>
+                    reWireL (ListPair.zip (y,y')) p) boxes)) guardBoxes
+        val (guards',releasedBoxes') = ListPair.unzip releasedBoxes
+        val releasedBoxes'' = List.concat releasedBoxes'
     in
       if releasedBoxes'' = []
       then (ASSUMPTION(i,gL,ante,suc,gR,ou))
       else JUDGEMENT(LBOX, (i,gL,ante,suc,gR,ou),
-		[ASSUMPTION(i,guards',releasedBoxes''@ante,suc,gR,ou)])
+                [ASSUMPTION(i,guards',releasedBoxes''@ante,suc,gR,ou)])
     end
 and rPoss (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val posses = List.filter (fn (L_POSS _) => true | _ => false) suc
-	val guardPosses = map (fn ((x,A,y),props) => (((x,A,y),props),
-		List.filter (fn (L_POSS((x',A',y'),p)) =>
-			x = x' andalso A = A' andalso not 
-			    (isMem (L_POSS((x',A',y'),p)) props)) posses)) gL
-	val releasedPosses = map (fn (((x,A,y),props),posses) =>
-		(((x,A,y),posses@props),map (fn (L_POSS((x',A',y'),p)) =>
-		    reWireL (ListPair.zip (y,y')) p) posses)) guardPosses
-	val (guards',releasedPosses') = ListPair.unzip releasedPosses
-	val releasedPosses'' = List.concat releasedPosses'
+        val guardPosses = map (fn ((x,A,y),props) => (((x,A,y),props),
+                List.filter (fn (L_POSS((x',A',y'),p)) =>
+                        x = x' andalso A = A' andalso not
+                            (isMem (L_POSS((x',A',y'),p)) props)) posses)) gL
+        val releasedPosses = map (fn (((x,A,y),props),posses) =>
+                (((x,A,y),posses@props),map (fn (L_POSS((x',A',y'),p)) =>
+                    reWireL (ListPair.zip (y,y')) p) posses)) guardPosses
+        val (guards',releasedPosses') = ListPair.unzip releasedPosses
+        val releasedPosses'' = List.concat releasedPosses'
     in
       if releasedPosses'' = []
       then (ASSUMPTION(i,gL,ante,suc,gR,ou))
       else JUDGEMENT(RPOSS, (i,gL,ante,suc,gR,ou),
-		[ASSUMPTION(i,guards',ante,releasedPosses''@suc,gR,ou)])
+                [ASSUMPTION(i,guards',ante,releasedPosses''@suc,gR,ou)])
     end
 
 and lXob (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val boxes = List.filter (fn (R_BOX _) => true | _ => false) ante
-	val guardBoxes = map (fn (props,(x,A,y)) => ((props,(x,A,y)),
-		List.filter (fn (R_BOX(p,(x',A',y'))) =>
-			y = y' andalso A = A' andalso not 
-			    (isMem (R_BOX(p,(x',A',y'))) props)) boxes)) gR
-	val releasedBoxes = map (fn ((props,(x,A,y)),boxes) =>
-		((boxes@props,(x,A,y)),map (fn (R_BOX(p,(x',A',y'))) =>
-		    reWireRight (ListPair.zip (x,x')) p) boxes)) guardBoxes
-	val (guards',releasedBoxes') = ListPair.unzip releasedBoxes
-	val releasedBoxes'' = List.concat releasedBoxes'
+        val guardBoxes = map (fn (props,(x,A,y)) => ((props,(x,A,y)),
+                List.filter (fn (R_BOX(p,(x',A',y'))) =>
+                        y = y' andalso A = A' andalso not
+                            (isMem (R_BOX(p,(x',A',y'))) props)) boxes)) gR
+        val releasedBoxes = map (fn ((props,(x,A,y)),boxes) =>
+                ((boxes@props,(x,A,y)),map (fn (R_BOX(p,(x',A',y'))) =>
+                    reWireRight (ListPair.zip (x,x')) p) boxes)) guardBoxes
+        val (guards',releasedBoxes') = ListPair.unzip releasedBoxes
+        val releasedBoxes'' = List.concat releasedBoxes'
     in
       if releasedBoxes'' = []
       then (ASSUMPTION(i,gL,ante,suc,gR,ou))
       else JUDGEMENT(LXOB, (i,gL,ante,suc,gR,ou),
-		[ASSUMPTION(i,gL,releasedBoxes''@ante,suc,guards',ou)])
+                [ASSUMPTION(i,gL,releasedBoxes''@ante,suc,guards',ou)])
     end
 and rSsop (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val posses = List.filter (fn (R_POSS _) => true | _ => false) ante
-	val guardPosses = map (fn (props,(x,A,y)) => ((props,(x,A,y)),
-		List.filter (fn (R_POSS(p,(x',A',y'))) =>
-			y = y' andalso A = A' andalso not 
-			    (isMem (R_POSS(p,(x',A',y'))) props)) posses)) gR
-	val releasedPosses = map (fn ((props,(x,A,y)),posses) =>
-		((posses@props,(x,A,y)),map (fn (R_POSS(p,(x',A',y'))) =>
-		    reWireRight (ListPair.zip (x,x')) p) posses)) guardPosses
-	val (guards',releasedPosses') = ListPair.unzip releasedPosses
-	val releasedPosses'' = List.concat releasedPosses'
+        val guardPosses = map (fn (props,(x,A,y)) => ((props,(x,A,y)),
+                List.filter (fn (R_POSS(p,(x',A',y'))) =>
+                        y = y' andalso A = A' andalso not
+                            (isMem (R_POSS(p,(x',A',y'))) props)) posses)) gR
+        val releasedPosses = map (fn ((props,(x,A,y)),posses) =>
+                ((posses@props,(x,A,y)),map (fn (R_POSS(p,(x',A',y'))) =>
+                    reWireRight (ListPair.zip (x,x')) p) posses)) guardPosses
+        val (guards',releasedPosses') = ListPair.unzip releasedPosses
+        val releasedPosses'' = List.concat releasedPosses'
     in
       if releasedPosses'' = []
       then (ASSUMPTION(i,gL,ante,suc,gR,ou))
       else JUDGEMENT(RSSOP, (i,gL,ante,suc,gR,ou),
-		[ASSUMPTION(i,gL,ante,releasedPosses''@suc,guards',ou)])
+                [ASSUMPTION(i,gL,ante,releasedPosses''@suc,guards',ou)])
     end
 and idRule (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     (case List.filter (fn VAR _ => true | _ => false) (intersection ante suc) of
       [] => ASSUMPTION(i,gL,ante,suc,gR,ou)
-    | (v::_) => 
-	let val idProof = 
-		if ante = [v] andalso suc = [v] 
-		then ASSUMPTION(i,gL,[v],[v],gR,ou)
-		else JUDGEMENT(WEAKP,(i,gL,ante,suc,gR,ou),
-			[ASSUMPTION(i,gL,[v],[v],gR,ou)])
-	    val idProof' = proofFold guardWeak idProof
-	    val idProof'' = proofFold leftGuard idProof'
-	    val idProof''' = proofFold rightGuard idProof''
-	in
-	  proofFold idRule' idProof'''
-	end
+    | (v::_) =>
+        let val idProof =
+                if ante = [v] andalso suc = [v]
+                then ASSUMPTION(i,gL,[v],[v],gR,ou)
+                else JUDGEMENT(WEAKP,(i,gL,ante,suc,gR,ou),
+                        [ASSUMPTION(i,gL,[v],[v],gR,ou)])
+            val idProof' = proofFold guardWeak idProof
+            val idProof'' = proofFold leftGuard idProof'
+            val idProof''' = proofFold rightGuard idProof''
+        in
+          proofFold idRule' idProof'''
+        end
     )
   | idRule (JUDGEMENT j) = JUDGEMENT j
 and idRule' (ASSUMPTION(i,[],[v1],[v2],[],ou)) =
-	if v1 = v2
-	then JUDGEMENT(ID,(i,[],[v1],[v2],[],ou),[])
-	else (ASSUMPTION(i,[],[v1],[v2],[],ou))
+        if v1 = v2
+        then JUDGEMENT(ID,(i,[],[v1],[v2],[],ou),[])
+        else (ASSUMPTION(i,[],[v1],[v2],[],ou))
   | idRule' j = j
 and guardWeak (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val usedInTypes = List.concat ((map inputVars ante)@
-	    (map (actIns o fst) gL)@(map inputVars suc))
+            (map (actIns o fst) gL)@(map inputVars suc))
         val usedOutTypes = List.concat ((map outputVars ante)@
-		(map (actOuts o snd) gR)@(map outputVars suc))
-	val usedLeftGuards = List.filter (fn ((_,_,outs),_) =>
-			not (intersection outs usedInTypes = [])) gL
-	val usedRightGuards = List.filter (fn (_,(ins,_,_)) =>
-			not (intersection ins usedOutTypes = [])) gR
+                (map (actOuts o snd) gR)@(map outputVars suc))
+        val usedLeftGuards = List.filter (fn ((_,_,outs),_) =>
+                        not (intersection outs usedInTypes = [])) gL
+        val usedRightGuards = List.filter (fn (_,(ins,_,_)) =>
+                        not (intersection ins usedOutTypes = [])) gR
     in
       if usedLeftGuards = gL andalso usedRightGuards = gR
       then (ASSUMPTION(i,gL,ante,suc,gR,ou))
-      else JUDGEMENT(WEAKG,(i,gL,ante,suc,gR,ou), [guardWeak 
-	    (ASSUMPTION(i,usedLeftGuards,ante,suc,usedRightGuards,ou))])
+      else JUDGEMENT(WEAKG,(i,gL,ante,suc,gR,ou), [guardWeak
+            (ASSUMPTION(i,usedLeftGuards,ante,suc,usedRightGuards,ou))])
     end
   | guardWeak  (JUDGEMENT j) = JUDGEMENT j
 and leftGuard (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val usedInPropTypes = List.concat ((map inputVars ante)@
-						(map inputVars suc))
-	val guards = map fst gL
+                                                (map inputVars suc))
+        val guards = map fst gL
     in
       (case List.find (fn (x,A,y) => subset x i andalso
-	intersection x usedInPropTypes = [] andalso 
-	  intersection (List.concat (map actIns (rm (x,A,y) guards))) x = []) 
-				guards of
+        intersection x usedInPropTypes = [] andalso
+          intersection (List.concat (map actIns (rm (x,A,y) guards))) x = [])
+                                guards of
          NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-       | SOME(x,A,y) => 
+       | SOME(x,A,y) =>
          let val i' = y@(setDiff i x)
-	     val gL' = List.filter (fn (act,_) => not (act = (x,A,y))) gL
-	 in
-	   JUDGEMENT(GUARDL,(i,gL,ante,suc,gR,ou),
-		[leftGuard (ASSUMPTION(i',gL',ante,suc,gR,ou))])
-	 end
+             val gL' = List.filter (fn (act,_) => not (act = (x,A,y))) gL
+         in
+           JUDGEMENT(GUARDL,(i,gL,ante,suc,gR,ou),
+                [leftGuard (ASSUMPTION(i',gL',ante,suc,gR,ou))])
+         end
       )
     end
   | leftGuard (JUDGEMENT j) = JUDGEMENT j
 and rightGuard (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
     let val usedOutPropTypes = List.concat ((map outputVars ante)@
-						(map outputVars suc))
-	val guards = map snd gR
+                                                (map outputVars suc))
+        val guards = map snd gR
     in
       (case List.find (fn (x,A,y) => subset y ou andalso
-	intersection y usedOutPropTypes = [] andalso 
-	  intersection (List.concat (map actOuts (rm (x,A,y) guards))) y = [])  
-					guards of
+        intersection y usedOutPropTypes = [] andalso
+          intersection (List.concat (map actOuts (rm (x,A,y) guards))) y = [])
+                                        guards of
          NONE => (ASSUMPTION(i,gL,ante,suc,gR,ou))
-       | SOME(x,A,y) => 
+       | SOME(x,A,y) =>
          let val ou' = x@(setDiff i y)
-	     val gR' = List.filter (fn (_,act) => not (act = (x,A,y))) gR
-	 in
-	   JUDGEMENT(GUARDR,(i,gL,ante,suc,gR,ou),
-		[rightGuard (ASSUMPTION(i,gL,ante,suc,gR',ou'))])
-	 end
+             val gR' = List.filter (fn (_,act) => not (act = (x,A,y))) gR
+         in
+           JUDGEMENT(GUARDR,(i,gL,ante,suc,gR,ou),
+                [rightGuard (ASSUMPTION(i,gL,ante,suc,gR',ou'))])
+         end
       )
     end
   | rightGuard (JUDGEMENT j) = JUDGEMENT j
@@ -579,7 +579,7 @@ and rightGuard (ASSUMPTION(i,gL,ante,suc,gR,ou)) =
 
 (* a decision procedure *)
 
-local 
+local
 fun foldFun [] a = a
   | foldFun (f::rest) assumption =
     (case f assumption of
@@ -588,18 +588,18 @@ fun foldFun [] a = a
     )
 in
 fun dp (JUDGEMENT(rule,conclusion,premises)) =
-	JUDGEMENT(rule,conclusion, map dp  premises)
+        JUDGEMENT(rule,conclusion, map dp  premises)
   | dp (ASSUMPTION seq) =
     (case foldFun [lFalse,rTrue,idRule,lAnd,rOr,lPoss,rBox,
-		   lSsop,rXob,lBox,rPoss,lXob,rSsop,lOr,rAnd] 
-			(ASSUMPTION seq) of
+                   lSsop,rXob,lBox,rPoss,lXob,rSsop,lOr,rAnd]
+                        (ASSUMPTION seq) of
       (JUDGEMENT j) => dp (JUDGEMENT j)
     | (ASSUMPTION seq) => (ASSUMPTION seq) (* failure *)
-    ) 
+    )
 end
 ;
 
-local 
+local
 fun foldFun [] a = a
   | foldFun (f::rest) assumption =
     (case f assumption of
@@ -608,14 +608,14 @@ fun foldFun [] a = a
     )
 in
 fun dpOnce (JUDGEMENT(rule,conclusion,premises)) =
-	JUDGEMENT(rule,conclusion, map dp  premises)
+        JUDGEMENT(rule,conclusion, map dp  premises)
   | dpOnce (ASSUMPTION seq) =
     (case foldFun [lFalse,rTrue,idRule,lAnd,rOr,lPoss,rBox,
-		   lSsop,rXob,lBox,rPoss,lXob,rSsop,lOr,rAnd] 
-			(ASSUMPTION seq) of
+                   lSsop,rXob,lBox,rPoss,lXob,rSsop,lOr,rAnd]
+                        (ASSUMPTION seq) of
       (JUDGEMENT j) => (JUDGEMENT j)
     | (ASSUMPTION seq) => (ASSUMPTION seq) (* failure *)
-    ) 
+    )
 end
 ;
 
@@ -640,7 +640,7 @@ val (JUDGEMENT(rule,conc,[p2])) = dpOnce p1;
 dp seq1;
 
 Test for unique variables:
-  
+
 val ante = COMPILE "&(<{x}A{y}>{y}P{},(<{x}A{y}>{y}Q{}))";
 val suc = COMPILE "<{x}A{y}>{y}P{}";
 
@@ -673,7 +673,7 @@ dp seq4;
 
 
 
-app use ["ppProp.sig", "ppProp.sml"]; 
+app use ["ppProp.sig", "ppProp.sml"];
 
 
 
@@ -693,13 +693,13 @@ fun at f [] p = f p
 ;
 
 fun proofOrCe assumption =
-    let val proof = dp assumption 
+    let val proof = dp assumption
     in
       if isAProof proof
       then ppProp.latexProlog ^ ppProp.ppJudgement proof ^ ppProp.latexEpilog
-      else ppProp.latexProlog ^ 
-	   "Is Not a Proof" ^
-	   ppProp.latexEpilog
+      else ppProp.latexProlog ^
+           "Is Not a Proof" ^
+           ppProp.latexEpilog
     end
 ;
 
@@ -711,8 +711,8 @@ val execute= Unix.streamsOf o Unix.execute;
 (* What is going on here?
    I want to execute "xdvi", but if I don't wait for a bit
    sml will execute before the shell file has a chance to
-   create the latex file.  
-   I could "sleep" for a few seconds; 
+   create the latex file.
+   I could "sleep" for a few seconds;
    I could create the latex file separately and then exec the process
    I could wait for all of the xdvi programs to exit.
    The latter seemed easiest.
@@ -722,22 +722,22 @@ fun xdvi latex =
     let val proc = Unix.execute ("/bin/csh",["testSh"])
         val (ins,outs) = Unix.streamsOf proc
         val _ = TextIO.output (outs, latex)
-	val _ = TextIO.flushOut outs
-	val _ = TextIO.closeOut outs
-	val _ = OS.Process.atExit (fn () => (Unix.reap proc; ()))
+        val _ = TextIO.flushOut outs
+        val _ = TextIO.closeOut outs
+        val _ = OS.Process.atExit (fn () => (Unix.reap proc; ()))
     in
        ()
     end
 and xdviCaption caption latex =
-    let val proc = Unix.execute ("/bin/csh",["testSh", 
-	    String.translate 
-		(fn x => if Char.isAlphaNum x 
-		then Char.toString x else "") caption])
+    let val proc = Unix.execute ("/bin/csh",["testSh",
+            String.translate
+                (fn x => if Char.isAlphaNum x
+                then Char.toString x else "") caption])
         val (ins,outs) = Unix.streamsOf proc
         val _ = TextIO.output (outs, latex)
-	val _ = TextIO.flushOut outs
-	val _ = TextIO.closeOut outs
-	val _ = OS.Process.atExit (fn () => (Unix.reap proc; ()))
+        val _ = TextIO.flushOut outs
+        val _ = TextIO.closeOut outs
+        val _ = OS.Process.atExit (fn () => (Unix.reap proc; ()))
     in
        ()
     end
@@ -745,10 +745,10 @@ and xdviCaption caption latex =
 
 
 fun show caption proof =
-        xdviCaption caption (ppProp.latexProlog ^ 
-              (ppProp.ppJudgement proof) ^ 
+        xdviCaption caption (ppProp.latexProlog ^
+              (ppProp.ppJudgement proof) ^
               (ppProp.latexCaption caption)^
-              ppProp.latexEpilog) 
+              ppProp.latexEpilog)
 ;
 
 (*
@@ -764,12 +764,12 @@ show "Poss Box" (dp seq4);
 
 
 (*
-(*	This doesn't work.
+(*      This doesn't work.
 fun xdvi judgement =
     let val (ins,outs) = execute ("/bin/nohup",["testSh"])
         val _ = TextIO.output (outs, judgementToLatex judgement)
-	val _ = TextIO.flushOut outs
-	val _ = TextIO.closeOut outs
+        val _ = TextIO.flushOut outs
+        val _ = TextIO.closeOut outs
     in
        ()
     end
@@ -792,9 +792,9 @@ fun writeOut (fileName,text) =
 ;
 
 fun showFile fileName caption proof =
-    writeOut (fileName, 
-    	      ppProp.latexProlog ^ 
-              (ppProp.ppJudgement proof) ^ 
+    writeOut (fileName,
+              ppProp.latexProlog ^
+              (ppProp.ppJudgement proof) ^
               (ppProp.latexCaption caption)^
               ppProp.latexEpilog)
 ;
@@ -815,7 +815,7 @@ Compiler.Control.quotation := true;
 (* Turn off all compiler output *)
 (* Compiler.Control.Print.out := {say=fn _=>(), flush=fn()=>()}; *)
 
-fun main (argc,(fileName::rest)) = 
+fun main (argc,(fileName::rest)) =
     (use fileName; OS.Process.exit; OS.Process.success)
   | main (argc,_) = (print "No file name\n"; OS.Process.failure)
 ;
@@ -823,18 +823,18 @@ fun main (argc,(fileName::rest)) =
 (*
 SMLofNJ.exportML "image";
 
-exportFn (filename, f) 
-      Dump the function f into a heap image called filename.arch-opsys 
+exportFn (filename, f)
+      Dump the function f into a heap image called filename.arch-opsys
       (where arch is the machine architecture, such as "sparc" or "x86",
       and opsys is the operating system, such as "solaris" or "win32";)
-      and then exit. 
+      and then exit.
 
-      When the heap image is loaded into an SML runtime system, 
+      When the heap image is loaded into an SML runtime system,
       (with sml @SMLload=filename.arch-opsys arg1 arg2 ..., )
-      computation will start with a call to f(arg0,[arg1,arg2,...]) 
+      computation will start with a call to f(arg0,[arg1,arg2,...])
       where arg0 is the name executable file.
 
-      When f returns, the ML process terminates. 
+      When f returns, the ML process terminates.
 
 Compiler.Control.Print.printDepth := 0;
 SMLofNJ.exportFn ("wires", main);
