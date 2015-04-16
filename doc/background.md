@@ -16,8 +16,6 @@ The Members of The Charity Development Group
 ============================================
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/background.html)._
->
-> _Unfortunately, Gillian Posey’s work has been lost ([#1](https://github.com/mietek/charity-language/issues/1))._
 
 
 The current members of The Charity Development Group are:
@@ -43,7 +41,7 @@ Related Research
 
 * [Ulrich Hensel’s work](http://web.archive.org/web/*/http://wwwtcs.inf.tu-dresden.de/~hensel)
 * [ADL](http://web.archive.org/web/*/http://www.sunlabs.com/research/adl/) (an Algebraic Design Language)
-* Gillian Posey’s ~~circuits~~ package (in Clean)
+* Gillian Posey’s [Circuits package](../more/circuits) (in Clean)
 * A [Modal Mu proof tool](model-checking.md), eventually working over circuits
 
 

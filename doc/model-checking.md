@@ -2,8 +2,6 @@ Modal Mu
 ========
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/modelChecking.html)._
->
-> _Unfortunately, the Modal Mu files have been lost ([#1](https://github.com/mietek/charity-language/issues/1))._
 
 
 Model checking is likely the most widely used formal method. The essential idea is to model a piece of software or hardware as a finite labelled transition system which is then checked to see if the given property holds for all reachable states. Using this technique, it is possible to ensure, for example, that two or more components never simultaneously write to a system bus.
@@ -26,7 +24,7 @@ Hence, P AND Q entails P.
 
 Proof can tell us whether a property holds of all models, without reference to the model. It can therefore even handle infinite models. Unfortunately, to describe a particular model, the number of assumptions needed would rival the size of the model.
 
-I have built sequent checkers (aka a decision procedure); a HML checker, a Modal Mu checker, and a Circuit Logic Checker. To get the HML checker, with documentation and examples, click ~~here~~. To get the modal Mu checker, with documentation and examples, click ~~here~~. To get the Circuit checker, with some examples, click ~~here~~. The Circuit checker is a work in progress and includes a scanner, parser, pretty printer for terms, pretty printer for proofs, and counter examples. The documentation is from the Hml section. Cut elimination and documentation will be added later. Fixed points are not included.
+I have built sequent checkers (aka a decision procedure); a HML checker, a Modal Mu checker, and a Circuit Logic Checker. To get the HML checker, with documentation and examples, click [here](../more/hml). To get the Modal Mu checker, with documentation and examples, click [here](../more/mm). To get the Circuit checker, with some examples, click [here](../more/wires). The Circuit checker is a work in progress and includes a scanner, parser, pretty printer for terms, pretty printer for proofs, and counter examples. The documentation is from the HML section. Cut elimination and documentation will be added later. Fixed points are not included.
 
 
 ---
