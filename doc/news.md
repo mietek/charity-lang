@@ -20,7 +20,7 @@ Latest News
 
 ### 12 October 2000
 
-~~A port of The Charity System for Windows is now available for [download](system.md).~~
+A port of The Charity System for Windows is now available for [download](system.md).
 
 
 ### 11 April 2000

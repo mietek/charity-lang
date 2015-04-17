@@ -17,16 +17,18 @@ Download The Charity System
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/system.html)._
 >
-> _Unfortunately, the Windows binaries have never been published._
+> _Additional [binary releases](../bin) are included in the repository, and listed in the [README](../README.md)._
 
 
 * [Download](../src/v1/) The Charity System, version 1.99.1 (beta), source.
 
-* [Download](bin/charity-bin-sunos-sun4u.tar.gz) The Charity System, version 1.99.1 (beta) of August 2000, for:  
+* [Download](../bin/2000-10-12-charity-bin-windows-i386.zip) The Charity System, version 1.99.1 (beta) of October 2000, for Win9x/WinNT
+
+* [Download](../bin/2000-09-28-charity-bin-sunos-sparc.tar.gz) The Charity System, version 1.99.1 (beta) of August 2000, for:  
   HARDWARE: Sun4 / SPARC  
   SOFTWARE: SunOS 5.7
 
-* [Download](bin/charity-bin-linux-i686.tar.gz) The Charity System, version 1.99.1 (beta) of August 2000, for:  
+* [Download](../bin/2000-09-28-charity-bin-linux-i386.tar.gz) The Charity System, version 1.99.1 (beta) of August 2000, for:  
   HARDWARE: Intel x86  
   SOFTWARE: Linux  
   NOTE: compiled under Red Hat Linux release 6.0 for i686
