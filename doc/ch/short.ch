@@ -109,19 +109,18 @@ EXERCISES
 
 1. Write
 
-	new_takewhile{pred: A -> bool}: Llist(A) -> Llist(A)
-	new_dropwhile{pred: A -> bool}: Llist(A) -> Llist(A)
+        new_takewhile{pred: A -> bool}: Llist(A) -> Llist(A)
+        new_dropwhile{pred: A -> bool}: Llist(A) -> Llist(A)
 
    (hint: write take_drop_while for lazy lists, much as take_drop is written).
 
 2. Write
 
-	eq_Llist{eq_A: A * A -> bool}: Llist(A) * Llist(A) -> bool
+        eq_Llist{eq_A: A * A -> bool}: Llist(A) * Llist(A) -> bool
 
 3. Write the list indexing functions
 
-	get: Lnat * list(A) -> list(A)
-	set: Lnat * list(A) * A -> list(A)
+        get: Lnat * list(A) -> list(A)
+        set: Lnat * list(A) * A -> list(A)
 
 *****)
-
