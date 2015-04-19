@@ -17,16 +17,10 @@ The Charity Literature
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/literature.html)._
 >
-> _Unfortunately, the BibTeX file has been lost, and the 1996 version of the Charity user manual is replaced by the 1991 version ([#1](https://github.com/mietek/charity-language/issues/1)).  All documents are available in PDF._
->
-> _**Additional literature**_
->
-> * _Charity Grammar ([PDF](pdf/1993-schroeder-charity-grammar.pdf))_
-> * _CHIRP: A Front End for Charity ([PDF](pdf/1993-schroeder-chirp-a-front-end-for-charity.pdf))_
-> * _The CHARM Project: A Back End to the Charity Interpreter ([PDF](pdf/1993-yee-the-charm-project-a-back-end-to-the-charity-interpreter.pdf))_
+> _All documents are available in PDF.  Additional [literature](pdf) is included in the repository, and listed in the [README](../README.md)._
 
 
-The complete Charity ~~bibliography~~ (BibTeX).
+The complete Charity [bibliography](charity.bib) (BibTeX).
 
 ~~All documents are available in postscript (.ps) and compressed postscript (.ps.gz) formats.~~
 
@@ -34,7 +28,7 @@ The complete Charity ~~bibliography~~ (BibTeX).
 Manuals
 -------
 
-* The Charity System User Manual ([PDF](pdf/1991-fukushima-charity-user-manual.pdf))
+* The Charity System User Manual ([final PDF](pdf/1996-fukushima-tuckey-charity-user-manual.pdf), [PDF](pdf/1991-fukushima-charity-user-manual.pdf))
 
     ```
     @manual
