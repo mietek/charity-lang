@@ -8,5 +8,3 @@ To play with the system, go to the "test" directory, type "./charity filename"
 to compile and run a program. For example, to run the "fundef.ch" file,
 type "./charity fundef". Don't add the ".ch" suffix as the system will add it
 automatically.
-
- 
