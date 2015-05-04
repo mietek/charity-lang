@@ -6,4 +6,3 @@ mmExample:      sample set of commands; try running "proveIt hmlExample"
 testSh:         shell file needed for the prover
 mmSml.sparc-solaris:    sml file needed for the prover.
 *sig,*sml:      source
-
