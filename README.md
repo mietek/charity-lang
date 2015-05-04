@@ -47,9 +47,12 @@ Includes an [archival version of the Charity website](doc/README.md), all availa
 
 #### Additional literature
 
+* 1991, R. Blute, R. Cockett, R. Seely, T. Trimble, [“Natural deduction and coherence for weakly distributive categories”](doc/pdf/more/1991-blute-cockett-seely-trimble-natural-deduction-and-coherence-for-weakly-distributive-categories.pdf)
 * 1994, R. Cockett, D. Spooner, [“SProc categorically”](doc/pdf/more/1994-cockett-spooner-sproc-categorically.pdf)
 * 1995, R. Cockett, D. Spooner, [“Categories for synchrony and asynchrony”](doc/pdf/more/1995-cockett-spooner-categories-for-synchrony-and-asynchrony.pdf)
+* 1996, R. Blute, R. Cockett, R. Seely, T. Trimble, [“Natural deduction and coherence for weakly distributive categories”](doc/pdf/more/1996-blute-cockett-seely-trimble-natural-deduction-and-coherence-for-weakly-distributive-categories.pdf) (final version)
 * 1996, R. Cockett, D. Spooner, [“Constructing process categories”](doc/pdf/more/1996-cockett-spooner-constructing-process-categories.pdf)
+* 1997, R. Cockett, R. Seely, [“Proof theory for full intuitionistic linear logic, bilinear logic, and MIX categories”](doc/pdf/more/1997-cockett-seely-proof-theory-for-full-intuitionistic-linear-logic-bilinear-logic-and-mix-categories.pdf)
 * 1997, R. Cockett, D. Spooner, [“Constructing process categories”](doc/pdf/more/1997-cockett-spooner-constructing-process-categories.pdf) (final version)
 * 1997, D. Spooner, [“Building process categories”](doc/pdf/more/1997-spooner-building-process-categories.pdf)
 
