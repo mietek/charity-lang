@@ -28,6 +28,7 @@ Includes an [archival version of the Charity website](doc/README.md), all availa
 * 1992, R. Cockett, T. Fukushima, [“About Charity”](doc/pdf/1992-cockett-fukushima-about-charity.pdf)
 * 1992, R. Cockett, D. Spencer, [“Strong Categorical Datatypes I”](doc/pdf/1992-cockett-spencer-strong-categorical-datatypes-i.pdf)
 * 1992, R. Cockett, D. Spencer, [“Strong Categorical Datatypes II: A term logic for categorical programming”](doc/pdf/1992-cockett-spencer-strong-categorical-datatypes-ii-a-term-logic-for-categorical-programming.pdf)
+* 1992, M. Hermann, “A lazy graph reduction machine for Charity: Charity abstract reduction machine (CHARM)”
 * 1992, T. Simpson, R. Cockett, [“Sequentializing Programs Defined by Pattern Matching”](doc/pdf/1992-simpson-cockett-sequentializing-programs-defined-by-pattern-matching.pdf)
 * 1993, R. Cockett, [“Examples of Charity Term Logic Proofs”](doc/pdf/1993-cockett-examples-of-charity-term-logic-proofs.pdf)
 * 1993, M. Schroeder, [“Charity Grammar”](doc/pdf/1993-schroeder-charity-grammar.pdf)
