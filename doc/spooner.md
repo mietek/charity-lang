@@ -14,10 +14,10 @@ Email: ~~spoonerd@cpsc.ucalgary.ca~~, or [~~Home Page~~](http://web.archive.org/
 Papers
 ------
 
-* R. Cockett and D. Spooner, Categories for synchrony and asynchrony ([PDF](pdf/more/1995-cockett-spooner-categories-for-synchrony-and-asynchrony.pdf))
-* R. Cockett and D. Spooner, Constructing process categories ([final PDF](pdf/more/1997-cockett-spooner-constructing-process-categories.pdf), [PDF](pdf/more/1996-cockett-spooner-constructing-process-categories.pdf))
-* R. Cockett and D. Spooner, SProc categorically ([PDF](pdf/more/1994-cockett-spooner-sproc-categorically.pdf))
-* D. Spooner, Building Process Categories ([PDF](pdf/more/1997-spooner-building-process-categories.pdf))
+* R. Cockett and D. Spooner, Categories for synchrony and asynchrony ([PDF](pdf/more/cockett-1995.pdf))
+* R. Cockett and D. Spooner, Constructing process categories ([final PDF](pdf/more/cockett-1997a.pdf), [PDF](pdf/more/cockett-1996.pdf))
+* R. Cockett and D. Spooner, SProc categorically ([PDF](pdf/more/cockett-1994.pdf))
+* D. Spooner, Building Process Categories ([PDF](pdf/more/spooner-1997.pdf))
 
 
 Other Charitable People

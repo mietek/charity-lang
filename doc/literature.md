@@ -28,7 +28,7 @@ The complete Charity [bibliography](charity.bib) (BibTeX).
 Manuals
 -------
 
-* The Charity System User Manual ([final PDF](pdf/1996-fukushima-tuckey-charity-user-manual.pdf), [PDF](pdf/1991-fukushima-charity-user-manual.pdf))
+* The Charity System User Manual ([final PDF](pdf/fukushima-1996.pdf), [PDF](pdf/fukushima-1991.pdf))
 
     ```
     @manual
@@ -45,7 +45,7 @@ Manuals
 Papers and Reports
 ------------------
 
-* Typechecking the Charity Term Logic ([PDF](pdf/1997-vesely-typechecking-the-charity-term-logic.pdf))
+* Typechecking the Charity Term Logic ([PDF](pdf/vesely-1997.pdf))
 
     ```
     @misc
@@ -58,7 +58,7 @@ Papers and Reports
     }
     ```
 
-* Charitable Thoughts ([PDF](pdf/1996-cockett-charitable-thoughts.pdf))
+* Charitable Thoughts ([PDF](pdf/cockett-1996.pdf))
 
     ```
     @misc
@@ -70,7 +70,7 @@ Papers and Reports
     }
     ```
 
-* About Charity ([PDF](pdf/1992-cockett-fukushima-about-charity.pdf))
+* About Charity ([PDF](pdf/cockett-1992a.pdf))
 
     ```
     @techreport
@@ -85,7 +85,7 @@ Papers and Reports
     }
     ```
 
-* Strong Categorical Datatypes I ([PDF](pdf/1992-cockett-spencer-strong-categorical-datatypes-i.pdf))
+* Strong Categorical Datatypes I ([PDF](pdf/cockett-1992c.pdf))
 
     ```
     @inproceedings
@@ -100,7 +100,7 @@ Papers and Reports
     }
     ```
 
-* Strong Categorical Datatypes II: A term logic for categorical programming ([PDF](pdf/1992-cockett-spencer-strong-categorical-datatypes-ii-a-term-logic-for-categorical-programming.pdf))
+* Strong Categorical Datatypes II: A term logic for categorical programming ([PDF](pdf/cockett-1992d.pdf))
 
     ```
     @unpublished
@@ -117,7 +117,7 @@ Papers and Reports
 Theses
 ------
 
-* An Implementation of Charity ([PDF](pdf/2003-zeng-an-implementation-of-charity.pdf))
+* An Implementation of Charity ([PDF](pdf/zeng-2003.pdf))
 
     ```
     @mastersthesis{zeng2003,
@@ -128,7 +128,7 @@ Theses
     }
     ```
 
-* Pattern Matching in Charity ([PDF](pdf/1997-tuckey-pattern-matching-in-charity.pdf))
+* Pattern Matching in Charity ([PDF](pdf/tuckey-1997.pdf))
 
     ```
     @mastersthesis
@@ -141,7 +141,7 @@ Theses
     }
     ```
 
-* Higher-Order Charity ([PDF](pdf/1997-schroeder-higher-order-charity.pdf))
+* Higher-Order Charity ([PDF](pdf/schroeder-1997.pdf))
 
     ```
     @mastersthesis
@@ -154,7 +154,7 @@ Theses
     }
     ```
 
-* Categorical Combinators for Charity ([PDF](pdf/1996-vesely-categorical-combinators-for-charity.pdf))
+* Categorical Combinators for Charity ([PDF](pdf/vesely-1996.pdf))
 
     ```
     @mastersthesis
@@ -167,7 +167,7 @@ Theses
     }
     ```
 
-* Implementing the Charity Abstract Machine ([PDF](pdf/1995-yee-implementing-the-charity-abstract-machine.pdf))
+* Implementing the Charity Abstract Machine ([PDF](pdf/yee-1995.pdf))
 
     ```
     @mastersthesis
@@ -180,7 +180,7 @@ Theses
     }
     ```
 
-* The Implementation of Pattern Matching in Charity (old) ([PDF](pdf/1994-tuckey-the-implementation-of-pattern-matching-in-charity.pdf))
+* The Implementation of Pattern Matching in Charity (old) ([PDF](pdf/tuckey-1994.pdf))
 
     ```
     @misc
@@ -193,7 +193,7 @@ Theses
     }
     ```
 
-* Categorical Programming with Functorial Strength ([PDF](pdf/1993-spencer-categorical-programming-with-functorial-strength.pdf))
+* Categorical Programming with Functorial Strength ([PDF](pdf/spencer-1993.pdf))
 
     ```
     @phdthesis
