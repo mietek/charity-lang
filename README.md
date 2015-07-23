@@ -60,8 +60,9 @@ Includes an [archival version of the Charity website](doc/README.md), all availa
 
 ### Related work
 
+* [_Total_ functional programming](https://github.com/mietek/total-functional-programming)
+* [_Totally_ functional programming](https://github.com/mietek/totally-functional-programming)
 * [The ET language](https://github.com/mietek/et-language)
-* [Total functional programming](https://github.com/mietek/total-functional-programming)
 
 
 About
