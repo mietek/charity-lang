@@ -3,7 +3,7 @@ Charles Tuckey
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/people/charlie.html)._
 >
-> _Unfortunately, the University of Calgary has prevented Tuckey’s home page from being included in the Internet Archive._
+> _Unfortunately, Tuckey’s home page has not been included in the Internet Archive._
 
 
 ![A picture of Charlie.](img/tuckey.png)

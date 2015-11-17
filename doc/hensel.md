@@ -3,7 +3,7 @@ Ulrich Hensel
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/people/ulrich.html)._
 >
-> _Unfortunately, the University of Calgary has prevented Hensel’s home page from being included in the Internet Archive._
+> _Unfortunately, Hensel’s home page has not been included in the Internet Archive._
 
 
 ![A picture of Ulrich.](img/hensel.png)

@@ -2,13 +2,11 @@ Dr. Robin Cockett
 =================
 
 > _**NOTE:**  This is an archival version of a [page from the Charity website](http://pll.cpsc.ucalgary.ca/charity1/www/robin.html)._
->
-> _Unfortunately, the University of Calgary has prevented Cockett’s home page from being included in the Internet Archive._
 
 
 ![A picture of Robin.](img/cockett.png)
 
-Email: ~~robin@cpsc.ucalgary.ca~~, or [~~Home Page~~](http://web.archive.org/web/*/http://www.cpsc.ucalgary.ca/info/research_brochure/cockett.html)
+Email: ~~robin@cpsc.ucalgary.ca~~, or [~~Home Page~~](http://web.archive.org/web/19990428190416/http://www.cpsc.ucalgary.ca/info/research_brochure/cockett.html)
 
 *... an Englishman of Australian descent ...* — F. W. Lawvere
 
