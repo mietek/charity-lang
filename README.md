@@ -1,5 +1,5 @@
-_charity-language_
-==================
+_charity-lang_
+==============
 
 Source code of two interpreters for the Charity language:
 
@@ -60,9 +60,9 @@ Includes an [archival version of the Charity website](doc/README.md), all availa
 
 ### Related work
 
-* [_Total_ functional programming](https://github.com/mietek/total-functional-programming)
-* [_Totally_ functional programming](https://github.com/mietek/totally-functional-programming)
-* [The ET language](https://github.com/mietek/et-language)
+* [_Total_ functional programming](https://github.com/mietek/total-fp)
+* [_Totally_ functional programming](https://github.com/mietek/totally-fp)
+* [ET language](https://github.com/mietek/et-lang)
 
 
 About
